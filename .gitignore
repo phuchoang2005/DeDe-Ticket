@@ -1,0 +1,70 @@
+# =========================
+# LaTeX intermediate files
+# =========================
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.nav
+*.snm
+*.vrb
+
+# =========================
+# Latexmk
+# =========================
+latexmkrc
+*.run.xml
+
+# =========================
+# BibLaTeX
+# =========================
+*-blx.bib
+
+# =========================
+# Build directories
+# =========================
+build/
+out/
+dist/
+
+# =========================
+# Generated PDFs (optional)
+# =========================
+# Nếu bạn KHÔNG muốn commit file PDF
+*.pdf
+
+# =========================
+# OS / Editor files
+# =========================
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# JetBrains IDE
+.idea/
+
+# Temporary files
+*~
+*.swp
+*.swo

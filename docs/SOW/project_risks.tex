@@ -1,0 +1,20 @@
+\chapter{PROJECT RISKS}
+
+The following table identifies potential risks and the corresponding mitigation or contingency plans to ensure project success:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{0.35\textwidth}|p{0.6\textwidth}|}
+\hline
+\rowcolor[HTML]{EFEFEF} 
+\textbf{Issue / Risk} & \textbf{Mitigation / Contingency} \\ \hline
+\textbf{System Overload:} High traffic during "Golden Hour" sales. & Implement horizontal scaling, load balancing, and a queuing system for users entering the checkout process. \\ \hline
+\textbf{Bot Attacks:} Scalper bots attempting to bulk-buy tickets. & Implement CAPTCHA, rate-limiting per IP address, and basic anti-fraud behavior analysis. \\ \hline
+\textbf{QR Code Duplication:} Ticket fraud at the entrance. & Use unique encrypted hashes for each QR code and implement real-time database synchronization. \\ \hline
+\textbf{Offline Scenario:} No internet access at the event venue. & The mobile app will feature a local cache of validated ticket hashes to allow scanning for a limited duration without a connection. \\ \hline
+\textbf{Scope Creep:} Marketing requests additional features mid-sprint. & Strict adherence to the Change Control Board (CCB) and Scrum backlog grooming to assess the impact on timeline and budget. \\ \hline
+\textbf{Payment Failure:} Users pay but do not receive tickets. & Implement a robust "Retry" mechanism and a background job to reconcile failed transactions with the payment gateway API. \\ \hline
+\end{tabular}
+\caption{Project Risk Table}
+\end{table}

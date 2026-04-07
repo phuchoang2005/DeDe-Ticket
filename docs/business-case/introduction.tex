@@ -1,0 +1,60 @@
+\chapter{Introduction}
+
+\textbf{Project Name:} ITPJ2602 – Online Event Management \& Ticketing System \\
+\textbf{Project Sponsor/ Executive:} Board of Directors, Dề Dê Startup \\
+\textbf{Project Manager:} Lê Nguyễn Hoàng Phúc - 23521198
+
+\section{Background}
+
+Dề Dê Startup is currently experiencing a rapid growth phase, organizing an average of 15–20 diverse events per year, ranging from concerts to academic workshops. Despite this success, the organization’s ticketing operations remain primitive, relying heavily on manual Facebook interactions and bank transfer verifications.
+
+The drive for this project stems from the urgent need to digitize and automate the entire ticketing lifecycle. As the scale of events increases, manual processes have become a bottleneck, preventing the startup from handling larger audiences and professionalizing its brand image. The authority for this initiative is granted by the Board of Directors to ensure the startup's infrastructure can support its ambitious expansion plans for 2026 and beyond.
+
+\section{Problem statement}
+
+The current manual ticketing model has reached a breaking point, resulting in four critical ``pain points'':
+\begin{itemize}
+    \item \textbf{Revenue Leakage:} The emergence of counterfeit tickets and the inability to verify bank transfers accurately in real-time are causing direct financial losses.
+    \item \textbf{Operational Instability:} Existing manual systems (and lack of dedicated infrastructure) lead to total system ``blackouts'' during high-demand ``Golden Hour'' sales.
+    \item \textbf{Poor Customer Experience:} Slow, manual check-ins at event gates (exceeding acceptable wait times) lead to crowd congestion and participant dissatisfaction.
+    \item \textbf{Data Blindness:} There is zero visibility into customer behavior, making it impossible for the Marketing and Sales teams to optimize future events.
+\end{itemize}
+
+\section{Strategic objectives}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\bfseries}p{3.5cm}|X|X|}
+\hline
+\rowcolor[HTML]{1F85B5} 
+\color{white}Strategic Priority & \color{white}Project Contribution & \color{white}Success Measure \\ \hline
+\rowcolor[HTML]{DAEEF3} 
+Market Expansion & Enable the system to host large-scale events (up to 50,000 tickets). & Successful management of $>$50,000 tickets/event. \\ \hline
+\rowcolor[HTML]{FFFFFF} 
+Operational Excellence & Automate the sales and check-in flow to minimize human error. & Check-in time $<$ 5 seconds per person. \\ \hline
+\rowcolor[HTML]{DAEEF3} 
+Technological Resilience & Build a high-concurrency architecture that maintains 99.9\% uptime. & Support 10,000 concurrent users without crashes. \\ \hline
+\rowcolor[HTML]{FFFFFF} 
+Financial Integrity & Eliminate fraud and ensure payment transparency. & 100\% unique QR codes; $>$ 98\% payment success rate. \\ \hline
+\end{tabularx}
+\caption{Comparison of Strategic objectives}
+\end{table}
+
+\section{Project objectives}
+
+The primary goal of this project is to deliver a comprehensive digital ticketing ecosystem consisting of:
+\begin{itemize}
+    \item \textbf{Centralized Web Application:} For administrators to manage events/seats and for customers to purchase tickets with real-time seat selection.
+    \item \textbf{Mobile Scanning Module:} A lightweight Android/iOS app with offline capabilities for rapid gate entry verification.
+    \item \textbf{Anti-Fraud Engine:} A backend system to generate and validate encrypted, non-duplicate QR codes.
+    \item \textbf{Automated Reporting Suite:} A dashboard providing real-time sales, revenue, and behavioral analytics.
+\end{itemize}
+
+\section{Related projects}
+
+Currently, there are two internal initiatives that intersect with Project ITPJ2602:
+\begin{enumerate}
+    \item \textbf{Project ``Dề Dê Loyalty'':} A future customer loyalty program. \textit{Interdependency:} This project must ensure that the ticketing database schema is compatible with future CRM integrations.
+    \item \textbf{Infrastructure Migration:} An ongoing move to cloud-based hosting. \textit{Interdependency:} The ITPJ2602 system must be developed using containerized architecture (Docker) to ensure seamless deployment on the new cloud infrastructure.
+\end{enumerate}

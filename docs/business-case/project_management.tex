@@ -1,0 +1,80 @@
+\chapter{Project Management and Control}
+
+\section{Business Case Maintenance}
+
+The Business Case is a ``living document'' and will not be archived after approval. It will be reviewed and updated at the end of each major milestone (M1-M5) to ensure the projected benefits (20\% revenue growth) and costs (1.5 Billion VNĐ) remain valid.
+
+\textbf{Review Points:} Any change in scope (e.g., Marketing requesting additional features) exceeding 10\% of the budget will trigger a formal Business Case review.
+
+\textbf{Version Control:}
+\begin{itemize}
+    \item \textbf{Draft versions:} Identified as v0.x (e.g., v0.1, v0.2).
+    \item \textbf{Approved version:} Identified as v1.0.
+    \item \textbf{Minor updates:} Incremented by 0.1 (e.g., v1.1 for minor budget adjustments).
+    \item \textbf{Major baseline changes:} Incremented to v2.0.
+\end{itemize}
+
+\textbf{Storage:} All versions will be maintained in the project's central repository (Confluence/Google Drive) with a clear change log.
+
+\section{Governance}
+
+To ensure transparency and quick decision-making, the following structure is established:
+\begin{itemize}
+    \item \textbf{Project Steering Committee (Overseers):} Comprised of the CEO and CTO of Dề Dê Startup. They provide high-level direction and approve budget releases.
+    \item \textbf{Project Manager (PM):} Lê Nguyễn Hoàng Phúc - 23521198 is responsible for daily operations, resource allocation, and removing ``blockers'' for the 5-member team.
+\end{itemize}
+
+\textbf{Communication Flow:}
+\begin{itemize}
+    \item \textbf{Weekly Status Report:} A concise email sent every Friday to the Executive Sponsor summarizing progress, upcoming milestones, and critical risks.
+    \item \textbf{Sprint Demo:} Every 2 weeks, the Executive team is invited to a live demo of the working software (Iterative delivery) to provide immediate feedback.
+\end{itemize}
+
+\section{Risk Management}
+
+Based on the startup's risk assessment tools, the following scenarios are prioritized:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\cellcolor[HTML]{1F85B5}\color{white}\bfseries}p{4cm}|>{\centering\arraybackslash}p{2cm}|X|}
+\hline
+\rowcolor[HTML]{1F85B5} 
+\color{white}Risk Scenario & \color{white}Impact & \color{white}Mitigation Strategy \\ \hline
+
+\rowcolor[HTML]{DAEEF3} 
+Bot Attacks during sales & High & Implement CAPTCHA and Rate Limiting at the API Gateway level. \\ \hline
+
+System Overload (10k CCU) & Critical & Use Auto-scaling infrastructure and perform ``Stress Testing'' in Month 4. \\ \hline
+
+\rowcolor[HTML]{DAEEF3} 
+Duplicate QR Codes & High & Use UUID (Universally Unique Identifier) and database constraints to prevent collisions. \\ \hline
+
+Payment Failure/No Ticket & High & Implement an \textbf{Automated Retry Mechanism} and an asynchronous notification worker (RabbitMQ/Kafka). \\ \hline
+
+\rowcolor[HTML]{DAEEF3} 
+Scope Creep (Marketing) & Medium & Use a strict ``Change Request'' process; any new feature must be traded off with an existing one in the backlog. \\ \hline
+\end{tabularx}
+\caption{Priority Risk Assessment and Mitigation}
+\end{table}
+
+\section{Progress Monitoring}
+
+We will compare actual achievements against the \textbf{Project Baseline} using the following mechanisms:
+
+\textbf{Scrum Artifacts:}
+\begin{itemize}
+    \item \textbf{Sprint Burndown Charts:} To monitor daily progress within a 2-week window.
+    \item \textbf{Velocity Tracking:} To measure the team's capacity and predict the final delivery date more accurately.
+\end{itemize}
+
+\textbf{Project Management Tools:}
+\begin{itemize}
+    \item \textbf{Jira:} For tracking individual tasks, bugs, and feature completion.
+    \item \textbf{Kanban Board:} For a visual representation of work-in-progress (WIP).
+\end{itemize}
+
+\textbf{Financial Tracking:} Monthly budget reconciliations to ensure the ``Burn Rate'' does not exceed the 1.5 Billion VNĐ cap.
+
+\textbf{Quality Gates:} \textbf{User Acceptance Testing (UAT):} Final sign-off by the startup’s operational team before the system handles 50,000 tickets.

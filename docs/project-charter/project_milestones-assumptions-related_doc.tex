@@ -1,0 +1,59 @@
+% --- CHAPTER 4: PROJECT MILESTONES ---
+\chapter{PROJECT MILESTONES}
+
+The project follows a Scrum-based Incremental/Iterative approach. The following table outlines the significant milestones and the associated invoicing schedule.
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|p{4cm}|Y|c|}
+\hline
+\textbf{Milestone} & \textbf{Description} & \textbf{Invoicing Date} \\ \hline
+\textbf{Project Kick-off} & Approval of Project Charter and initial Product Backlog. & Month 1 (Day 1) \\ \hline
+\textbf{Core Web MVP} & Completion of Event Management and Ticketing Engine (Sprint 1-2). & Month 2 (End) \\ \hline
+\textbf{Payment \& Security Integration} & Integration of simulated payment gateway and anti-fraud mechanisms. & Month 3 (End) \\ \hline
+\textbf{Mobile App \& Load Test} & Delivery of scanning app and successful simulation of 10,000 concurrent users. & Month 4 (End) \\ \hline
+\textbf{Final Delivery \& UAT} & Completion of User Acceptance Testing and handover of all technical documentation. & Month 5 (End) \\ \hline
+\end{tabularx}
+\caption{Project Milestone Table}
+\end{table}
+
+\vspace{1cm}
+\textit{*Note: Payments are structured as 20\% upon kick-off, 30\% at Core MVP, 30\% after Load Testing, and 20\% upon final handover.}
+
+% --- CHAPTER 5: ASSUMPTIONS, CONSTRAINTS \& DEPENDENCIES ---
+\chapter{ASSUMPTIONS, CONSTRAINTS \& DEPENDENCIES}
+
+\section{Assumptions}
+The following assumptions were made to define the project scope and planning:
+\begin{itemize}
+    \item \textbf{Mock Infrastructure:} It is assumed that the simulated Payment Gateway API is fully documented and available for integration from the start of Sprint 3.
+    \item \textbf{Hardware Readiness:} Customers and event staff are assumed to possess smartphones capable of rendering modern web browsers and running the mobile scanning module.
+    \item \textbf{Environmental Stability:} Stable internet connectivity is assumed to be provided by the venue for the online aspects of ticket validation.
+    \item \textbf{Data Volume:} Planning is based on a maximum capacity of 50,000 tickets per event and a peak of 5,000 daily transactions.
+\end{itemize}
+
+\section{Constraints}
+Constraints that may impact the triple project management boundary (Scope, Time, Cost):
+\begin{itemize}
+    \item \textbf{Time Constraint:} The project must be completed within a strict \textbf{5-month} window to meet Dề Dê's event season.
+    \item \textbf{Financial Constraint:} Total project expenditure is capped at \textbf{1.5 Billion VNĐ}. Any scope creep must be strictly managed via the Scrum Change Management process.
+    \item \textbf{Human Resources:} The team is limited to \textbf{5 members}, requiring high cross-functionality and efficiency.
+    \item \textbf{Technical Requirement:} The mobile app must maintain offline functionality for short durations, adding complexity to local data synchronization.
+\end{itemize}
+
+\section{Dependencies}
+\begin{itemize}
+    \item \textbf{Stakeholder Availability:} Timely feedback from "Dề Dê Startup" stakeholders during Sprint Reviews is critical to avoid development delays.
+    \item \textbf{Regulatory Compliance:} The project depends on the current local regulations regarding e-commerce and digital ticketing being stable throughout the development cycle.
+\end{itemize}
+
+% --- CHAPTER 6: RELATED DOCUMENTS ---
+\chapter{RELATED DOCUMENTS}
+
+The following documents provide the foundational requirements and context for this Project Charter:
+
+\begin{itemize}
+    \item \textbf{Business Requirements Document (BRD):} Detailed functional and non-functional requirements for the ITPJ2602 system.
+    \item \textbf{Technical Proposal (Dề Dê Startup):} The initial solution architecture proposed to address the manual ticketing issues.
+    \item \textbf{Product Backlog:} A prioritized list of features managed within the Scrum framework.
+    \item \textbf{Quality Management Plan:} Guidelines for load testing (10,000 concurrent users) and QR code validation protocols.
+\end{itemize}

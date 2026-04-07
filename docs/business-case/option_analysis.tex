@@ -1,0 +1,51 @@
+\chapter{Options Analysis}
+To address the critical failures in manual ticketing and the need for scalability, three primary options have been evaluated. This analysis considers the long-term strategic fit and the specific technical constraints (10,000 CCU, offline scanning) of Dề Dê Startup.
+
+\section{Option 1: Do Nothing (Maintain Manual Process)}
+
+This option involves continuing the current workflow of selling tickets via Facebook and manually verifying bank transfers.
+
+\textbf{Description:} No financial investment in technology; maintain a team of admins to verify transactions manually.
+
+\section{Option 2: Utilize Third-party SaaS (Ticketing Platforms)}
+
+This option involves using existing platforms like Eventbrite or local providers.
+
+\textbf{Description:} Outsourcing the ticketing infrastructure to a provider. Dề Dê pays a commission fee per ticket sold.
+
+\section{Option 3: Custom Built System (Project ITPJ2602) - Preferred Option}
+
+This option involves building a tailored Web and Mobile ecosystem specifically designed for high-concurrency and fraud prevention.
+
+\textbf{Description:} A 5-month development project to create a proprietary platform owned entirely by Dề Dê.
+
+\vspace{0.5cm}
+
+% --- Bảng 3.3: Comparison of Options ---
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.5}
+% Định nghĩa cột đầu tiên luôn có nền xanh đậm, chữ trắng, in đậm
+\begin{tabularx}{\textwidth}{|>{\cellcolor[HTML]{1F85B5}\color{white}\bfseries}p{2.5cm}|X|X|X|}
+\hline
+\rowcolor[HTML]{1F85B5} 
+\color{white}Criteria & \color{white}Option 1: Do Nothing & \color{white}Option 2: Third-party SaaS & \color{white}Option 3: Custom Build (Preferred) \\ \hline
+
+\rowcolor[HTML]{FFFFFF} 
+Benefits & Zero upfront investment; No technical training required. & Rapid deployment; Proven reliability; No maintenance effort. & \textbf{Total data ownership; Tailored for 10k CCU; Zero per-ticket commission; Custom offline scanning.} \\ \hline
+
+\rowcolor[HTML]{DAEEF3} 
+Disadvantages & High fraud risk; System crashes; Poor brand image; Labor intensive. & High long-term costs (commissions); Lack of ``Offline Mode'' customization; Brand dilution. & High upfront cost (1.5B VNĐ); Requires 5 months to build; Needs internal maintenance. \\ \hline
+
+\rowcolor[HTML]{FFFFFF} 
+Timescale & Immediate (but declining efficiency). & 2 - 4 weeks for setup. & \textbf{5 months development (Scrum).} \\ \hline
+
+\rowcolor[HTML]{DAEEF3} 
+Costs & High ``hidden'' costs (lost revenue, fraud, labor). & $\sim$5-10\% commission per ticket (approx. 250M - 500M VNĐ/year at scale). & \textbf{1.5 Billion VNĐ (Fixed CapEx).} \\ \hline
+
+\rowcolor[HTML]{FFFFFF} 
+Major Risks & \textbf{Critical:} Brand bankruptcy due to major event failure or fraud. & \textbf{Medium:} Vendor lock-in; Data privacy concerns; System limitations. & \textbf{Low-Medium:} Project delay; Technical complexity of high-load simulation. \\ \hline
+\end{tabularx}
+\caption{Comparison of Options for Project ITPJ2602}
+\end{table}
