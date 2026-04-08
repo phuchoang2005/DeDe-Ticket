@@ -57,18 +57,166 @@ The benefits are calculated based on Dề Dê’s current scale of \textbf{20 ev
     \item \textbf{Savings:} Reduction of seasonal staff costs by approximately \textbf{200 Million VNĐ/year}.
 \end{itemize}
 
-\section{ROI and Payback Period}
-To evaluate the financial viability, we use the Return on Investment (ROI) formula for the first year of operation:
+\section{Financial Evaluation: NPV, ROI and Payback Analysis}
+
+To evaluate the financial feasibility of the project, a discounted cash flow analysis is performed including Net Present Value (NPV), Return on Investment (ROI), and Payback Period. This approach follows standard project financial evaluation practices recommended in project management frameworks such as PMBOK.
+
+\subsection{Assumptions}
+
+\begin{itemize}
+    \item Initial Project Investment: \textbf{1.5 Billion VNĐ}
+    \item Expected Annual Benefits:
+        \begin{itemize}
+            \item Increased ticket revenue from better capacity utilization: \textbf{10 Billion VNĐ}
+            \item Fraud prevention (fake ticket reduction): \textbf{1 Billion VNĐ}
+            \item Operational cost savings (automation): \textbf{0.2 Billion VNĐ}
+        \end{itemize}
+    \item Total Annual Benefit: \textbf{11.2 Billion VNĐ}
+    \item Discount Rate (Cost of Capital): \textbf{10\%}
+    \item Project Evaluation Horizon: \textbf{3 years}
+\end{itemize}
+
+\subsection{Net Present Value (NPV)}
+
+The Net Present Value is calculated using the discounted cash flow formula:
 
 \begin{center}
     {\Large
-    \[ ROI = \frac{TotalBenefits - TotalCosts}{TotalCosts} \times 100 \]
+    \[
+    NPV = \sum_{t=1}^{n} \frac{B_t - C_t}{(1+r)^t}
+    \]
     }
 \end{center}
+
+Where:
+
 \begin{itemize}
-    \item \textbf{Total Benefits (Year 1):} 10B (Growth) + 1B (Fraud Prevention) + 0.2B (Ops Savings) = \textbf{11.2 Billion VNĐ}.
-    \item \textbf{Total Investment:} 1.5 Billion VNĐ.
-    \item \textbf{ROI (Year 1):} $\approx$ \textbf{646\%}
+    \item $B_t$ = Benefit in year $t$
+    \item $C_t$ = Cost in year $t$
+    \item $r$ = Discount rate
+    \item $n$ = Project evaluation period
 \end{itemize}
 
-\textbf{Conclusion:} The project is highly lucrative. The ``Payback Period'' is estimated to be less than \textbf{2 months} after the official launch, considering the high volume of tickets processed per event (50,000 tickets).
+Assuming constant annual benefits of \textbf{11.2 Billion VNĐ}:
+
+\begin{itemize}
+    \item Year 1 PV = $\frac{11.2}{1.1}$ = 10.18 Billion VNĐ
+    \item Year 2 PV = $\frac{11.2}{1.1^2}$ = 9.25 Billion VNĐ
+    \item Year 3 PV = $\frac{11.2}{1.1^3}$ = 8.41 Billion VNĐ
+\end{itemize}
+
+\textbf{Total Present Value of Benefits}
+
+\[
+PV = 10.18 + 9.25 + 8.41 = 27.84 \text{ Billion VNĐ}
+\]
+
+\[
+NPV = 27.84 - 1.5 = 26.34 \text{ Billion VNĐ}
+\]
+
+\textbf{Result:} The project produces a strongly positive NPV, indicating high financial attractiveness.
+
+\subsection{Return on Investment (ROI)}
+
+OI is calculated based on discounted benefits and discounted costs.
+
+\begin{center}
+{\Large
+\[
+ROI = \frac{Total\ Discounted\ Benefits - Total\ Discounted\ Costs}{Total\ Discounted\ Costs}
+\]
+}
+\end{center}
+
+\textbf{Assumptions}
+
+\begin{itemize}
+\item Initial investment cost: \textbf{1.5 Billion VNĐ}
+\item Annual benefit: \textbf{11.2 Billion VNĐ}
+\item Discount rate: \textbf{10\%}
+\item Project evaluation period: \textbf{3 years}
+\end{itemize}
+
+\textbf{Present Value of Benefits}
+
+\begin{itemize}
+\item Year 1: $ \frac{11.2}{1.1} = 10.18$ Billion VNĐ
+\item Year 2: $ \frac{11.2}{1.1^2} = 9.25$ Billion VNĐ
+\item Year 3: $ \frac{11.2}{1.1^3} = 8.41$ Billion VNĐ
+\end{itemize}
+
+\[
+Total\ Discounted\ Benefits = 27.84 \text{ Billion VNĐ}
+\]
+
+\[
+Total\ Discounted\ Costs = 1.5 \text{ Billion VNĐ}
+\]
+
+\[
+ROI = \frac{27.84 - 1.5}{1.5} = 17.56
+\]
+
+\[
+ROI = 1756\%
+\]
+
+\textbf{Interpretation}
+
+\begin{itemize}
+\item ROI is positive and significantly greater than zero.
+\item The project generates a return far exceeding the initial investment.
+\item Therefore, the project is financially attractive.
+\end{itemize}
+
+\subsection{Discounted Payback Period}
+
+The Discounted Payback Period measures the time required for the project to recover its initial investment considering discounted cash flows.
+
+\textbf{Step 1: Calculate discounted cash flow}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Year & Cash Flow (Billion VNĐ) & Discounted Cash Flow & Cumulative DCF \\
+\hline
+0 & -1.5 & -1.5 & -1.5 \\
+1 & 11.2 & 10.18 & 8.68 \\
+2 & 11.2 & 9.25 & 17.93 \\
+3 & 11.2 & 8.41 & 26.34 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Step 2: Identify payback year}
+
+The investment becomes positive during the first year.
+
+\textbf{Step 3: Apply DPP formula}
+
+\[
+DPP = Year\ before\ recovery +
+\frac{Remaining\ Investment}{Discounted\ Cash\ Flow\ of\ Recovery\ Year}
+\]
+
+\[
+DPP = 0 + \frac{1.5}{10.18}
+\]
+
+\[
+DPP \approx 0.147\ years
+\]
+
+\[
+DPP \approx 1.76\ months
+\]
+
+\textbf{Conclusion}
+
+\begin{itemize}
+\item Discounted ROI: \textbf{1756\%}
+\item Discounted Payback Period: \textbf{≈ 1.8 months}
+\end{itemize}
+
+This indicates that the project can recover its investment very quickly and generate substantial financial value.
