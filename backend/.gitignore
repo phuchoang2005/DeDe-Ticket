@@ -55,7 +55,8 @@ Thumbs.db
 # 🚫 Environment & Secrets
 ############################################
 .env
-*.env
+.env.*
+!.env.example
 
 # Application secret configs
 application-local.yml
