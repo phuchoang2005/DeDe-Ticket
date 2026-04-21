@@ -4,18 +4,18 @@
 
 Đây là backend cho hệ thống **Quản lý sự kiện & bán vé trực tuyến**, được xây dựng bằng:
 
-* **Spring Boot**
-* **Maven**
-* **MySQL**
-* **Docker**
+- **Spring Boot**
+- **Maven**
+- **MySQL**
+- **Docker**
 
 Hệ thống phục vụ các nhu cầu:
 
-* Quản lý sự kiện
-* Bán vé online
-* Tạo & xác thực QR code
-* Báo cáo doanh thu
-* Hỗ trợ scale lên đến **10.000 users đồng thời (mô phỏng)**
+- Quản lý sự kiện
+- Bán vé online
+- Tạo & xác thực QR code
+- Báo cáo doanh thu
+- Hỗ trợ scale lên đến **10.000 users đồng thời (mô phỏng)**
 
 ---
 
@@ -54,10 +54,10 @@ src/
 
 ## ⚙️ Yêu cầu hệ thống
 
-* Java 17+
-* Maven 3.9+
-* Docker & Docker Compose
-* MySQL 8
+- Java 21
+- Maven 3.9+
+- Docker & Docker Compose
+- MySQL 8
 
 ---
 
@@ -73,9 +73,9 @@ docker-compose -f docker-compose.dev.yml up
 
 ✅ Tính năng:
 
-* Hot reload (tự động reload khi sửa code)
-* Mount source code vào container
-* Không cần build lại image
+- Hot reload (tự động reload khi sửa code)
+- Mount source code vào container
+- Không cần build lại image
 
 ---
 
@@ -105,67 +105,66 @@ docker-compose up --build
 | POST   | /api/payment | Thanh toán            |
 | GET    | /api/reports | Báo cáo               |
 
-*(Sẽ cập nhật thêm trong quá trình phát triển)*
+_(Sẽ cập nhật thêm trong quá trình phát triển)_
 
 ---
 
 ## 🛠️ Công nghệ sử dụng
 
-* Spring Boot (Web, JPA, Security)
-* MySQL
-* Docker
-* Maven
-* Lombok
+- Spring Boot (Web, JPA, Security)
+- MySQL
+- Docker
+- Maven
+- Lombok
 
 ---
 
 ## 🔥 Tính năng chính
 
-* 🎫 Quản lý sự kiện & vé
-* 💳 Thanh toán online (giả lập)
-* 🔐 QR Code chống vé giả
-* 📊 Báo cáo doanh thu
-* ⚡ Tối ưu hiệu năng (hướng tới 10k concurrent users)
-* 🔄 Retry khi thanh toán thất bại
+- 🎫 Quản lý sự kiện & vé
+- 💳 Thanh toán online (giả lập)
+- 🔐 QR Code chống vé giả
+- 📊 Báo cáo doanh thu
+- ⚡ Tối ưu hiệu năng (hướng tới 10k concurrent users)
+- 🔄 Retry khi thanh toán thất bại
 
 ---
 
 ## ⚠️ Các vấn đề cần xử lý (Important)
 
-* Chống **double booking**
-* Chống **bot mua vé**
-* Đảm bảo **không trùng QR code**
-* Xử lý **quá tải giờ mở bán**
+- Chống **double booking**
+- Chống **bot mua vé**
+- Đảm bảo **không trùng QR code**
+- Xử lý **quá tải giờ mở bán**
 
 ---
 
 ## 🧠 Hướng phát triển tiếp
 
-* Redis (lock ghế)
-* Queue (Kafka/RabbitMQ)
-* Rate limiting
-* Caching
-* Microservices (future)
+- Redis (lock ghế)
+- Queue (Kafka/RabbitMQ)
+- Rate limiting
+- Caching
+- Microservices (future)
 
 ---
 
 ## 👨‍💻 Team & Phát triển
 
-* Phương pháp: **Scrum**
-* Mô hình: **Iterative / Incremental**
-* Timeline: 5 tháng
+- Phương pháp: **Scrum**
+- Mô hình: **Iterative / Incremental**
+- Timeline: 5 tháng
 
 ---
 
 ## 📌 Ghi chú
 
-* Không commit file `.env` hoặc config chứa mật khẩu thật
-* Sử dụng `application-dev.yml` cho môi trường local
-* Sử dụng `application-prod.yml` cho production
+- Không commit file `.env` hoặc config chứa mật khẩu thật
+- Sử dụng `application-dev.yml` cho môi trường local
+- Sử dụng `application-prod.yml` cho production
 
 ---
 
 ## 📞 Liên hệ
 
 Nếu có vấn đề, vui lòng tạo issue hoặc liên hệ team phát triển.
-
