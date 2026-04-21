@@ -1,63 +1,55 @@
-# 🎟️ Event Ticketing System - Backend
+# 🎨 Event Ticketing System - Frontend
 
 ## 📌 Giới thiệu
 
-Đây là backend cho hệ thống **Quản lý sự kiện & bán vé trực tuyến**, được xây dựng bằng:
+Đây là frontend của hệ thống **Quản lý sự kiện & bán vé trực tuyến**, được xây dựng với:
 
-* **Spring Boot**
-* **Maven**
-* **MySQL**
-* **Docker**
+- ⚛️ React (Vite)
+- 🎨 TailwindCSS
+- 🐳 Docker (Dev & Production)
 
-Hệ thống phục vụ các nhu cầu:
+Frontend cung cấp giao diện cho người dùng:
 
-* Quản lý sự kiện
-* Bán vé online
-* Tạo & xác thực QR code
-* Báo cáo doanh thu
-* Hỗ trợ scale lên đến **10.000 users đồng thời (mô phỏng)**
+- Xem danh sách sự kiện
+- Đặt vé
+- Thanh toán
+- Quản lý vé cá nhân
 
 ---
 
-## 🏗️ Kiến trúc hệ thống
+## 🏗️ Kiến trúc Frontend
 
-Backend được thiết kế theo mô hình **Monolithic (Layered Architecture)**:
+Dự án sử dụng kiến trúc **Component-Based + Service Layer**, giúp dễ mở rộng và maintain.
 
+```text
+UI (Components) → Services (API) → Backend (Spring Boot)
 ```
-controller → service → repository → database
-```
 
-### 📂 Cấu trúc thư mục
+---
 
-```
+## 📂 Cấu trúc thư mục
+
+```text
 src/
- ├── main/
- │   ├── java/com/dede/ticketing/
- │   │   ├── controller/     # API endpoints (REST)
- │   │   ├── service/        # Business logic
- │   │   ├── repository/     # Data access (JPA)
- │   │   ├── domain/         # Entity (Database models)
- │   │   ├── dto/            # Data Transfer Objects
- │   │   ├── config/         # Configurations (Security, CORS, etc.)
- │   │   ├── security/       # Authentication & Authorization
- │   │   ├── exception/      # Exception handling
- │   │   └── util/           # Utility classes
- │   │
- │   └── resources/
- │       ├── application.yml
- │       └── ...
- │
- └── test/
+ ├── assets/            # Hình ảnh, icon
+ ├── components/        # Reusable UI components
+ ├── pages/             # Page-level components
+ ├── services/          # API calls (fetch/axios)
+ ├── hooks/             # Custom React hooks
+ ├── layouts/           # Layout (header, footer)
+ ├── utils/             # Helper functions
+ ├── App.jsx            # Root component
+ ├── main.jsx           # Entry point
+ └── index.css          # TailwindCSS
 ```
 
 ---
 
 ## ⚙️ Yêu cầu hệ thống
 
-* Java 17+
-* Maven 3.9+
-* Docker & Docker Compose
-* MySQL 8
+- Node.js 18+
+- npm / yarn
+- Docker & Docker Compose
 
 ---
 
@@ -65,7 +57,7 @@ src/
 
 ---
 
-### 🧪 1. Chạy ở chế độ Development (Hot Reload)
+### 🧪 1. Development (Hot Reload)
 
 ```bash
 docker-compose -f docker-compose.dev.yml up
@@ -73,99 +65,111 @@ docker-compose -f docker-compose.dev.yml up
 
 ✅ Tính năng:
 
-* Hot reload (tự động reload khi sửa code)
-* Mount source code vào container
-* Không cần build lại image
+- Hot reload (tự động reload khi sửa code)
+- Không cần build lại container
+- Kết nối backend qua API
+
+👉 Truy cập:
+
+- http://localhost:5173
 
 ---
 
-### 🚀 2. Chạy ở chế độ Production
-
-#### Build project
-
-```bash
-mvn clean package
-```
-
-#### Run bằng Docker
+### 🚀 2. Production
 
 ```bash
 docker-compose up --build
 ```
 
+👉 Truy cập:
+
+- http://localhost:3000
+
 ---
 
-## 🌐 API Endpoint
+## 🔗 Kết nối Backend
 
-| Method | Endpoint     | Mô tả                 |
-| ------ | ------------ | --------------------- |
-| GET    | /api/events  | Lấy danh sách sự kiện |
-| POST   | /api/events  | Tạo sự kiện           |
-| POST   | /api/tickets | Đặt vé                |
-| POST   | /api/payment | Thanh toán            |
-| GET    | /api/reports | Báo cáo               |
+Frontend sử dụng biến môi trường:
 
-*(Sẽ cập nhật thêm trong quá trình phát triển)*
+```env
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+### 📌 Lưu ý
+
+- Trong Docker:
+
+  ```env
+  VITE_API_BASE_URL=http://backend:8080
+  ```
+
+- Không hardcode URL trong code
 
 ---
 
 ## 🛠️ Công nghệ sử dụng
 
-* Spring Boot (Web, JPA, Security)
-* MySQL
-* Docker
-* Maven
-* Lombok
+- React (Hooks)
+- Vite
+- TailwindCSS
+- Fetch API / Axios
+- Docker + Nginx
 
 ---
 
-## 🔥 Tính năng chính
+## 🎯 Tính năng chính
 
-* 🎫 Quản lý sự kiện & vé
-* 💳 Thanh toán online (giả lập)
-* 🔐 QR Code chống vé giả
-* 📊 Báo cáo doanh thu
-* ⚡ Tối ưu hiệu năng (hướng tới 10k concurrent users)
-* 🔄 Retry khi thanh toán thất bại
-
----
-
-## ⚠️ Các vấn đề cần xử lý (Important)
-
-* Chống **double booking**
-* Chống **bot mua vé**
-* Đảm bảo **không trùng QR code**
-* Xử lý **quá tải giờ mở bán**
+- 🎟️ Hiển thị danh sách sự kiện
+- 🔍 Tìm kiếm & lọc sự kiện
+- 🛒 Đặt vé
+- 💳 Thanh toán
+- 📱 Responsive UI
 
 ---
 
-## 🧠 Hướng phát triển tiếp
+## ⚠️ Các vấn đề cần xử lý
 
-* Redis (lock ghế)
-* Queue (Kafka/RabbitMQ)
-* Rate limiting
-* Caching
-* Microservices (future)
+- Gọi API tối ưu (debounce, caching)
+- Xử lý loading & error state
+- Bảo mật (XSS, token storage)
+- Tránh gọi API thừa
 
 ---
 
-## 👨‍💻 Team & Phát triển
+## 🧠 Best Practices
 
-* Phương pháp: **Scrum**
-* Mô hình: **Iterative / Incremental**
-* Timeline: 5 tháng
+- Tách logic API vào `services/`
+- Tái sử dụng component
+- Sử dụng custom hooks
+- Không gọi API trực tiếp trong UI lớn
+
+---
+
+## 🔥 Hướng phát triển tiếp
+
+- State management (Redux / Zustand)
+- UI library (MUI / Headless UI)
+- Code splitting (lazy loading)
+- SEO (SSR / Next.js – future)
 
 ---
 
 ## 📌 Ghi chú
 
-* Không commit file `.env` hoặc config chứa mật khẩu thật
-* Sử dụng `application-dev.yml` cho môi trường local
-* Sử dụng `application-prod.yml` cho production
+- Không commit `.env`
+- Sử dụng `.env.example` để hướng dẫn team
+- Luôn dùng biến môi trường cho API URL
+
+---
+
+## 👨‍💻 Phát triển
+
+- Methodology: Scrum
+- Timeline: 5 tháng
+- Mô hình: Iterative / Incremental
 
 ---
 
 ## 📞 Liên hệ
 
 Nếu có vấn đề, vui lòng tạo issue hoặc liên hệ team phát triển.
-
