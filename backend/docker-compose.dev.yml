@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -9,17 +9,18 @@ services:
       - .:/app
       - ~/.m2:/root/.m2
     ports:
-      - "8080:8080"
+      - "${SPRING_PORT}:8080"
     depends_on:
       - db
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
 
   db:
     image: mysql:8
-    restart: always
+    restart: no
     environment:
-      MYSQL_DATABASE: ticketing
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:3306"

@@ -55,7 +55,6 @@ Thumbs.db
 # 🚫 Environment & Secrets
 ############################################
 .env
-.env.*
 *.env
 
 # Application secret configs
