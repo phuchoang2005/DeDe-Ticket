@@ -1,4 +1,4 @@
-Dựa trên toàn bộ yêu cầu bạn đưa ra (user + admin + mở rộng), mình sẽ mô hình hóa **database schema ở mức production-ready cơ bản** bằng Mermaid ERD, đảm bảo:
+**Note** Install `bierner.markdown-mermaid` required
 
 - Tách rõ **User / Role / Permission**
 - Event + Ticket + Seat mapping
@@ -254,33 +254,3 @@ erDiagram
 ### 📬 Notification
 
 - `NOTIFICATIONS` → email / SMS (async sau này)
-
----
-
-## 🚀 Gợi ý nâng cấp tiếp theo (nếu bạn build thật)
-
-Nếu bạn muốn đi xa hơn production:
-
-- Add:
-  - `LOYALTY_POINTS`
-  - `USER_BEHAVIOR_EVENTS` (tracking AI)
-  - `RECOMMENDATION_CACHE`
-
-- Tách microservice:
-  - auth-service
-  - event-service
-  - payment-service
-  - checkin-service
-
----
-
-## 👉 Nếu bạn muốn tiếp
-
-Mình có thể giúp bạn:
-
-- Vẽ tiếp **System Design (High-level architecture)**
-- Viết **SQL schema chi tiết (PostgreSQL/MySQL)**
-- Generate **Spring Boot Entity + JPA**
-- Hoặc **API contract (REST/GraphQL)**
-
-Chỉ cần nói: _"tiếp phần X"_ 👍
