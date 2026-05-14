@@ -1,0 +1,11 @@
+AnalyticsReport:
+  type: object
+  properties:
+    totalRevenue:
+      type: number
+    ticketsSold:
+      type: integer
+    checkinCount:
+      type: integer
+    conversionRate:
+      type: number

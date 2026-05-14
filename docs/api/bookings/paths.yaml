@@ -1,0 +1,70 @@
+bookings:
+  post:
+    tags:
+      - Bookings
+    summary: Initiate a ticket booking
+    description: Enqueues a booking request to handle golden hour concurrency (up to 10k users).
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../bookings/schemas.yaml#/BookingRequest'
+    responses:
+      '202':
+        description: Booking request queued. Client must poll or wait for webhook/socket event.
+        content:
+          application/json:
+            schema:
+              $ref: '../bookings/schemas.yaml#/BookingQueuedResponse'
+      '400':
+        description: Invalid request parameters
+bookingById:
+  get:
+    tags:
+      - Bookings
+    summary: Check booking status
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: bookingId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '200':
+        description: Current status of the booking (e.g., pending, reserved, failed)
+        content:
+          application/json:
+            schema:
+              $ref: '../bookings/schemas.yaml#/BookingStatusResponse'
+bookingPay:
+  post:
+    tags:
+      - Bookings
+    summary: Process simulated payment
+    description: Allows retry mechanism for failed payments.
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: bookingId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../bookings/schemas.yaml#/PaymentRequest'
+    responses:
+      '200':
+        description: Payment successful, tickets issued
+      '402':
+        description: Payment required / failed

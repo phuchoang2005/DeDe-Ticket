@@ -1,0 +1,66 @@
+register:
+  post:
+    tags:
+      - Authentication
+    summary: Register a new user
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../auth/schemas.yaml#/RegisterRequest'
+    responses:
+      '201':
+        description: Registration successful, temporary user created and OTP sent
+      '400':
+        description: Validation error
+login:
+  post:
+    tags:
+      - Authentication
+    summary: User login
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../auth/schemas.yaml#/LoginRequest'
+    responses:
+      '200':
+        description: Credentials valid, requires OTP verification
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                requireOtp:
+                  type: boolean
+      '401':
+        description: Invalid credentials
+verifyOtp:
+  post:
+    tags:
+      - Authentication
+    summary: Verify OTP
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../auth/schemas.yaml#/VerifyOTPRequest'
+    responses:
+      '200':
+        description: OTP verified successfully, returns session token
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                refreshToken:
+                  type: string
+      '400':
+        description: Invalid or expired OTP

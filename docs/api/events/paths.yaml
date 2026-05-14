@@ -1,0 +1,85 @@
+events:
+  get:
+    tags:
+      - Events
+    summary: List all upcoming events
+    parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 20
+    responses:
+      '200':
+        description: A paginated list of events
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '../events/schemas.yaml#/Event'
+                total:
+                  type: integer
+  post:
+    tags:
+      - Events
+    summary: Create a new event (Organizer)
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../events/schemas.yaml#/EventCreateRequest'
+    responses:
+      '201':
+        description: Event created successfully
+eventById:
+  get:
+    tags:
+      - Events
+    summary: Get event details
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '200':
+        description: Event details retrieved successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../events/schemas.yaml#/Event'
+      '404':
+        description: Event not found
+eventSeating:
+  get:
+    tags:
+      - Events
+    summary: Get dynamic seating chart
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '200':
+        description: Seating chart layout and availability
+        content:
+          application/json:
+            schema:
+              $ref: '../events/schemas.yaml#/SeatingChart'

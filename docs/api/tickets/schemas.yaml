@@ -1,0 +1,45 @@
+Ticket:
+  type: object
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+    eventId:
+      type: string
+      format: uuid
+    zoneName:
+      type: string
+    qrCodePayload:
+      type: string
+      description: Encrypted payload for anti-fraud
+    status:
+      type: string
+      enum: [VALID, SCANNED, REVOKED]
+CheckinRequest:
+  type: object
+  required:
+    - qrCodePayload
+    - eventId
+  properties:
+    qrCodePayload:
+      type: string
+    eventId:
+      type: string
+      format: uuid
+OfflineSyncRequest:
+  type: object
+  required:
+    - records
+  properties:
+    records:
+      type: array
+      items:
+        type: object
+        properties:
+          qrCodePayload:
+            type: string
+          scannedAt:
+            type: string
+            format: date-time
+          deviceId:
+            type: string

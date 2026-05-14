@@ -1,0 +1,20 @@
+analytics:
+  get:
+    tags:
+      - Analytics
+    summary: Retrieve business analytics
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: eventId
+        in: query
+        schema:
+          type: string
+          format: uuid
+    responses:
+      '200':
+        description: Sales, revenue, and attendance analytics
+        content:
+          application/json:
+            schema:
+              $ref: '../analytics/schemas.yaml#/AnalyticsReport'

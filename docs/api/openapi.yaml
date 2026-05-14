@@ -1,0 +1,54 @@
+openapi: 3.0.3
+info:
+  title: Dề Dê Event Management & Ticketing System API
+  description: API contract for the Dề Dê Event Management and Ticketing System. Designed to support 10,000 concurrent users, high-performance ticket booking, and rapid check-in validation.
+  version: 1.0.0
+servers:
+  - url: https://api.dede-events.com/v1
+    description: Production Server
+  - url: http://localhost:8080/v1
+    description: Local Development Server
+tags:
+  - name: Authentication
+    description: User registration, login, and OTP verification flows
+  - name: Events
+    description: Event management and dynamic seating charts
+  - name: Bookings
+    description: High-concurrency ticket booking and simulated payment with retry mechanisms
+  - name: Tickets
+    description: QR code generation and mobile check-in
+  - name: Analytics
+    description: Sales, revenue, and attendance reporting
+paths:
+  /auth/register:
+    $ref: './auth/paths.yaml#/register'
+  /auth/login:
+    $ref: './auth/paths.yaml#/login'
+  /auth/verify-otp:
+    $ref: './auth/paths.yaml#/verifyOtp'
+  /events:
+    $ref: './events/paths.yaml#/events'
+  /events/{eventId}:
+    $ref: './events/paths.yaml#/eventById'
+  /events/{eventId}/seating:
+    $ref: './events/paths.yaml#/eventSeating'
+  /bookings:
+    $ref: './bookings/paths.yaml#/bookings'
+  /bookings/{bookingId}:
+    $ref: './bookings/paths.yaml#/bookingById'
+  /bookings/{bookingId}/pay:
+    $ref: './bookings/paths.yaml#/bookingPay'
+  /tickets/my-tickets:
+    $ref: './tickets/paths.yaml#/myTickets'
+  /tickets/checkin:
+    $ref: './tickets/paths.yaml#/checkin'
+  /tickets/sync-offline:
+    $ref: './tickets/paths.yaml#/syncOffline'
+  /reports/analytics:
+    $ref: './analytics/paths.yaml#/analytics'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

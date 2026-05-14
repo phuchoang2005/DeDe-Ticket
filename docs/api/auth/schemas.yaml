@@ -1,0 +1,39 @@
+RegisterRequest:
+  type: object
+  required:
+    - username
+    - email
+    - phone
+    - password
+  properties:
+    username:
+      type: string
+    email:
+      type: string
+      format: email
+    phone:
+      type: string
+    password:
+      type: string
+      format: password
+LoginRequest:
+  type: object
+  required:
+    - username
+    - password
+  properties:
+    username:
+      type: string
+    password:
+      type: string
+      format: password
+VerifyOTPRequest:
+  type: object
+  required:
+    - userId
+    - otpCode
+  properties:
+    userId:
+      type: string
+    otpCode:
+      type: string
