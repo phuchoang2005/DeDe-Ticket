@@ -1,0 +1,193 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="1024" fill="#FAFAFA"/>
+
+  <!-- Navbar -->
+  <rect width="1440" height="64" fill="white"/>
+  <rect y="64" width="1440" height="1" fill="#E3E3E3"/>
+  <rect x="40" y="18" width="32" height="32" rx="8" fill="#157F19"/>
+  <text x="80" y="40" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1B3120">Dề Dê</text>
+  <text x="280" y="40" font-family="sans-serif" font-size="14" fill="#989393">Trang chủ</text>
+  <text x="370" y="40" font-family="sans-serif" font-size="14" fill="#989393">Sự kiện</text>
+  <text x="440" y="40" font-family="sans-serif" font-size="14" fill="#989393">Vé của tôi</text>
+  <text x="530" y="40" font-family="sans-serif" font-size="14" fill="#157F19" font-weight="bold">Thông báo</text>
+  <circle cx="1378" cy="32" r="9" fill="#C53030"/>
+  <text x="1378" y="36" font-family="sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">3</text>
+  <circle cx="1400" cy="32" r="20" fill="#B6E8BC"/>
+  <text x="1393" y="37" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">ND</text>
+
+  <text x="40" y="106" font-family="sans-serif" font-size="24" font-weight="bold" fill="#1B3120">Hộp thông báo</text>
+  <text x="40" y="128" font-family="sans-serif" font-size="12" fill="#989393">NOTIFICATIONS · sắp xếp theo sent_at DESC</text>
+
+  <!-- ============ LEFT: type filter rail ============ -->
+  <rect x="40" y="160" width="260" height="800" rx="12" fill="white" stroke="#E3E3E3"/>
+  <text x="60" y="188" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Loại thông báo</text>
+  <text x="60" y="206" font-family="sans-serif" font-size="11" fill="#989393">NOTIFICATIONS.type</text>
+
+  <!-- All -->
+  <rect x="56" y="222" width="228" height="40" rx="8" fill="#E8F5E9"/>
+  <text x="72" y="246" font-family="sans-serif" font-size="13" font-weight="bold" fill="#157F19">📥 Tất cả</text>
+  <text x="268" y="246" font-family="sans-serif" font-size="12" fill="#157F19" text-anchor="end">28</text>
+
+  <text x="72" y="288" font-family="sans-serif" font-size="13" fill="#525252">🎫 Vé phát hành</text>
+  <text x="268" y="288" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">8</text>
+  <text x="80" y="304" font-family="sans-serif" font-size="10" fill="#989393">TICKETS_ISSUED</text>
+
+  <text x="72" y="334" font-family="sans-serif" font-size="13" fill="#525252">⏰ Nhắc nhở sự kiện</text>
+  <text x="268" y="334" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">6</text>
+  <text x="80" y="350" font-family="sans-serif" font-size="10" fill="#989393">EVENT_REMINDER</text>
+
+  <text x="72" y="380" font-family="sans-serif" font-size="13" fill="#525252">💰 Hoàn tiền</text>
+  <text x="268" y="380" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">2</text>
+  <text x="80" y="396" font-family="sans-serif" font-size="10" fill="#989393">REFUND_ISSUED</text>
+
+  <text x="72" y="426" font-family="sans-serif" font-size="13" fill="#525252">🪑 Ghế đã giải phóng</text>
+  <text x="268" y="426" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">3</text>
+  <text x="80" y="442" font-family="sans-serif" font-size="10" fill="#989393">SEAT_RELEASED</text>
+
+  <text x="72" y="472" font-family="sans-serif" font-size="13" fill="#525252">✅ Xác nhận check-in</text>
+  <text x="268" y="472" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">8</text>
+  <text x="80" y="488" font-family="sans-serif" font-size="10" fill="#989393">CHECKIN_CONFIRMATION</text>
+
+  <text x="72" y="518" font-family="sans-serif" font-size="13" fill="#525252">🔐 Mã OTP</text>
+  <text x="268" y="518" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">1</text>
+  <text x="80" y="534" font-family="sans-serif" font-size="10" fill="#989393">OTP</text>
+
+  <line x1="56" y1="568" x2="284" y2="568" stroke="#E3E3E3"/>
+
+  <text x="60" y="594" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Trạng thái gửi</text>
+  <text x="60" y="612" font-family="sans-serif" font-size="11" fill="#989393">NOTIFICATIONS.status</text>
+
+  <rect x="56" y="628" width="228" height="32" rx="6" fill="#F8F8F8"/>
+  <circle cx="74" cy="644" r="5" fill="#FFB800"/>
+  <text x="88" y="648" font-family="sans-serif" font-size="12" fill="#525252">PENDING</text>
+  <text x="268" y="648" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">2</text>
+
+  <rect x="56" y="666" width="228" height="32" rx="6" fill="#F8F8F8"/>
+  <circle cx="74" cy="682" r="5" fill="#157F19"/>
+  <text x="88" y="686" font-family="sans-serif" font-size="12" fill="#525252">SENT</text>
+  <text x="268" y="686" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">25</text>
+
+  <rect x="56" y="704" width="228" height="32" rx="6" fill="#F8F8F8"/>
+  <circle cx="74" cy="720" r="5" fill="#C53030"/>
+  <text x="88" y="724" font-family="sans-serif" font-size="12" fill="#525252">FAILED</text>
+  <text x="268" y="724" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">1</text>
+
+  <line x1="56" y1="760" x2="284" y2="760" stroke="#E3E3E3"/>
+
+  <rect x="56" y="780" width="228" height="40" rx="8" fill="white" stroke="#157F19"/>
+  <text x="170" y="804" font-family="sans-serif" font-size="13" font-weight="bold" fill="#157F19" text-anchor="middle">⚙ Cài đặt kênh nhận</text>
+
+  <text x="60" y="850" font-family="sans-serif" font-size="11" fill="#989393">Kênh đang bật:</text>
+  <rect x="56" y="862" width="64" height="22" rx="11" fill="#E8F5E9"/>
+  <text x="88" y="877" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">Email</text>
+  <rect x="124" y="862" width="56" height="22" rx="11" fill="#E8F5E9"/>
+  <text x="152" y="877" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">SMS</text>
+  <rect x="184" y="862" width="60" height="22" rx="11" fill="#F0F0F0"/>
+  <text x="214" y="877" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="middle">Push ✕</text>
+
+  <text x="60" y="934" font-family="sans-serif" font-size="11" fill="#989393">design-supplement.md §8</text>
+
+  <!-- ============ RIGHT: list ============ -->
+  <rect x="320" y="160" width="1080" height="800" rx="12" fill="white" stroke="#E3E3E3"/>
+
+  <!-- toolbar -->
+  <rect x="340" y="180" width="172" height="32" rx="16" fill="#157F19"/>
+  <text x="426" y="200" font-family="sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Đánh dấu đã đọc tất cả</text>
+  <rect x="524" y="180" width="116" height="32" rx="16" fill="white" stroke="#E3E3E3"/>
+  <text x="582" y="200" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">Lọc nâng cao ▾</text>
+  <text x="1380" y="200" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">Cập nhật cuối: 21:14 (poll mỗi 30s)</text>
+
+  <line x1="340" y1="228" x2="1380" y2="228" stroke="#E3E3E3"/>
+
+  <!-- ============ TODAY ============ -->
+  <text x="340" y="252" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">HÔM NAY · 14/05/2026</text>
+
+  <!-- Item 1: unread, TICKETS_ISSUED -->
+  <rect x="340" y="264" width="1040" height="78" rx="10" fill="#F0F8F1" stroke="#B6E8BC"/>
+  <circle cx="360" cy="296" r="6" fill="#157F19"/>
+  <rect x="376" y="278" width="36" height="36" rx="10" fill="#E8F5E9"/>
+  <text x="394" y="302" font-family="sans-serif" font-size="16" text-anchor="middle">🎫</text>
+  <text x="424" y="294" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Vé của bạn đã được phát hành</text>
+  <rect x="638" y="280" width="120" height="20" rx="10" fill="#E8F5E9"/>
+  <text x="698" y="294" font-family="sans-serif" font-size="10" font-weight="bold" fill="#157F19" text-anchor="middle">TICKETS_ISSUED</text>
+  <text x="424" y="314" font-family="sans-serif" font-size="11" fill="#525252">2 vé VIP (A7, A8) cho "Đại nhạc hội Mùa Hè 2026" · ORDERS.id=ORD-2026-0408192</text>
+  <text x="424" y="330" font-family="sans-serif" font-size="11" fill="#989393">Gửi qua Email + SMS · 21:14:32 · status=SENT</text>
+  <text x="1364" y="296" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">vài giây trước</text>
+  <text x="1364" y="330" font-family="sans-serif" font-size="11" fill="#157F19" text-anchor="end">Xem vé →</text>
+
+  <!-- Item 2: unread, EVENT_REMINDER -->
+  <rect x="340" y="354" width="1040" height="78" rx="10" fill="#F0F8F1" stroke="#B6E8BC"/>
+  <circle cx="360" cy="386" r="6" fill="#157F19"/>
+  <rect x="376" y="368" width="36" height="36" rx="10" fill="#FFF8E1"/>
+  <text x="394" y="392" font-family="sans-serif" font-size="16" text-anchor="middle">⏰</text>
+  <text x="424" y="384" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Sự kiện sắp diễn ra trong 2 giờ</text>
+  <rect x="630" y="370" width="124" height="20" rx="10" fill="#FFF8E1"/>
+  <text x="692" y="384" font-family="sans-serif" font-size="10" font-weight="bold" fill="#B45309" text-anchor="middle">EVENT_REMINDER</text>
+  <text x="424" y="404" font-family="sans-serif" font-size="11" fill="#525252">"Workshop nhiếp ảnh chân dung" bắt đầu 14:00 tại Hub Hub, Q1</text>
+  <text x="424" y="420" font-family="sans-serif" font-size="11" fill="#989393">Email · 19:00:00 · status=SENT</text>
+  <text x="1364" y="386" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">2 giờ trước</text>
+  <text x="1364" y="420" font-family="sans-serif" font-size="11" fill="#157F19" text-anchor="end">Mở vé →</text>
+
+  <!-- Item 3: unread, SEAT_RELEASED (notification from lock-expiry sweeper) -->
+  <rect x="340" y="444" width="1040" height="78" rx="10" fill="#F0F8F1" stroke="#B6E8BC"/>
+  <circle cx="360" cy="476" r="6" fill="#157F19"/>
+  <rect x="376" y="458" width="36" height="36" rx="10" fill="#FFF8E1"/>
+  <text x="394" y="482" font-family="sans-serif" font-size="16" text-anchor="middle">🪑</text>
+  <text x="424" y="474" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Ghế bạn giữ đã được giải phóng</text>
+  <rect x="640" y="460" width="116" height="20" rx="10" fill="#FFF8E1"/>
+  <text x="698" y="474" font-family="sans-serif" font-size="10" font-weight="bold" fill="#B45309" text-anchor="middle">SEAT_RELEASED</text>
+  <text x="424" y="494" font-family="sans-serif" font-size="11" fill="#525252">Ghế C12 hết thời gian giữ (locked_until đã qua) — bạn có thể chọn lại nếu còn trống</text>
+  <text x="424" y="510" font-family="sans-serif" font-size="11" fill="#989393">In-app · 18:42:11 · status=SENT · từ sweeper job</text>
+  <text x="1364" y="476" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">3 giờ trước</text>
+
+  <!-- ============ YESTERDAY ============ -->
+  <text x="340" y="552" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">HÔM QUA · 13/05/2026</text>
+
+  <!-- Item 4: read, OTP -->
+  <rect x="340" y="564" width="1040" height="62" rx="10" fill="white" stroke="#E3E3E3"/>
+  <rect x="368" y="578" width="32" height="32" rx="10" fill="#F8F8F8"/>
+  <text x="384" y="600" font-family="sans-serif" font-size="14" text-anchor="middle">🔐</text>
+  <text x="412" y="588" font-family="sans-serif" font-size="13" fill="#525252">Mã xác thực: 482917</text>
+  <rect x="600" y="576" width="56" height="20" rx="10" fill="#F8F8F8"/>
+  <text x="628" y="590" font-family="sans-serif" font-size="10" font-weight="bold" fill="#525252" text-anchor="middle">OTP</text>
+  <text x="412" y="606" font-family="sans-serif" font-size="11" fill="#989393">SMS · hết hạn sau 5 phút · status=SENT</text>
+  <text x="1364" y="600" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">hôm qua 20:18</text>
+
+  <!-- Item 5: read, CHECKIN_CONFIRMATION -->
+  <rect x="340" y="638" width="1040" height="62" rx="10" fill="white" stroke="#E3E3E3"/>
+  <rect x="368" y="652" width="32" height="32" rx="10" fill="#F8F8F8"/>
+  <text x="384" y="674" font-family="sans-serif" font-size="14" text-anchor="middle">✅</text>
+  <text x="412" y="662" font-family="sans-serif" font-size="13" fill="#525252">Bạn đã check-in thành công</text>
+  <rect x="588" y="650" width="156" height="20" rx="10" fill="#F8F8F8"/>
+  <text x="666" y="664" font-family="sans-serif" font-size="10" font-weight="bold" fill="#525252" text-anchor="middle">CHECKIN_CONFIRMATION</text>
+  <text x="412" y="680" font-family="sans-serif" font-size="11" fill="#989393">Workshop tài chính cá nhân · 14:02 · cổng B · status=SENT</text>
+  <text x="1364" y="674" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">hôm qua 14:02</text>
+
+  <!-- ============ EARLIER ============ -->
+  <text x="340" y="730" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">TUẦN TRƯỚC</text>
+
+  <!-- Item 6: read, REFUND_ISSUED -->
+  <rect x="340" y="742" width="1040" height="62" rx="10" fill="white" stroke="#E3E3E3"/>
+  <rect x="368" y="756" width="32" height="32" rx="10" fill="#FDECEC"/>
+  <text x="384" y="778" font-family="sans-serif" font-size="14" text-anchor="middle">💰</text>
+  <text x="412" y="766" font-family="sans-serif" font-size="13" fill="#525252">Đã hoàn 1.000.000đ về ví VNPay</text>
+  <rect x="630" y="754" width="116" height="20" rx="10" fill="#FDECEC"/>
+  <text x="688" y="768" font-family="sans-serif" font-size="10" font-weight="bold" fill="#C53030" text-anchor="middle">REFUND_ISSUED</text>
+  <text x="412" y="784" font-family="sans-serif" font-size="11" fill="#989393">Festival Mùa Đông bị BTC hủy · ORDERS.status → REFUNDED · giao dịch VNP-RFD-883201</text>
+  <text x="1364" y="778" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">03/03/2026</text>
+
+  <!-- Item 7: FAILED notification -->
+  <rect x="340" y="816" width="1040" height="62" rx="10" fill="white" stroke="#FAC0C0"/>
+  <rect x="368" y="830" width="32" height="32" rx="10" fill="#FDECEC"/>
+  <text x="384" y="852" font-family="sans-serif" font-size="14" text-anchor="middle">⚠</text>
+  <text x="412" y="840" font-family="sans-serif" font-size="13" fill="#C53030">Không gửi được thông báo qua SMS</text>
+  <rect x="650" y="828" width="60" height="20" rx="10" fill="#FDECEC"/>
+  <text x="680" y="842" font-family="sans-serif" font-size="10" font-weight="bold" fill="#C53030" text-anchor="middle">FAILED</text>
+  <text x="412" y="858" font-family="sans-serif" font-size="11" fill="#989393">EVENT_REMINDER · provider trả lỗi · sẽ thử lại lần 2 trong 5 phút</text>
+  <text x="1364" y="852" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">28/04/2026</text>
+
+  <!-- Pagination / load more -->
+  <text x="860" y="922" font-family="sans-serif" font-size="13" font-weight="bold" fill="#157F19" text-anchor="middle">Tải thêm 21 thông báo cũ →</text>
+
+  <text x="340" y="996" font-family="sans-serif" font-size="11" fill="#989393">Schema: NOTIFICATIONS (id, user_id, type, content, status, sent_at) · dispatcher worker pull PENDING — design-supplement.md §8</text>
+</svg>

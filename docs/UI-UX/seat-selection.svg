@@ -1,0 +1,393 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="1024" fill="white"/>
+
+  <!-- ============ NAVBAR ============ -->
+  <rect width="1440" height="64" fill="white"/>
+  <rect y="64" width="1440" height="1" fill="#E3E3E3"/>
+  <rect x="40" y="18" width="32" height="32" rx="8" fill="#157F19"/>
+  <text x="80" y="40" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1B3120">Dề Dê</text>
+  <text x="280" y="40" font-family="sans-serif" font-size="14" fill="#989393">Trang chủ</text>
+  <text x="370" y="40" font-family="sans-serif" font-size="14" fill="#157F19" font-weight="bold">Sự kiện</text>
+  <text x="440" y="40" font-family="sans-serif" font-size="14" fill="#989393">Vé của tôi</text>
+  <circle cx="1400" cy="32" r="20" fill="#B6E8BC"/>
+  <text x="1393" y="37" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">ND</text>
+
+  <!-- ============ EVENT INFO BANNER ============ -->
+  <rect x="40" y="84" width="1100" height="100" rx="12" fill="#E8F5E9" stroke="#B6E8BC" stroke-width="1"/>
+  <text x="70" y="120" font-family="sans-serif" font-size="20" font-weight="bold" fill="#1B3120">Đại nhạc hội Mùa Hè 2026</text>
+  <text x="70" y="145" font-family="sans-serif" font-size="14" fill="#989393">26/10/2026 · 19:30 · SVĐ Mỹ Đình, Hà Nội</text>
+  <text x="70" y="168" font-family="sans-serif" font-size="13" fill="#525252">Bước 2 / 3: Chọn ghế ngồi</text>
+  <rect x="980" y="110" width="140" height="40" rx="8" fill="white" stroke="#E3E3E3" stroke-width="1"/>
+  <text x="1050" y="135" font-family="sans-serif" font-size="13" fill="#525252" text-anchor="middle">⏱ 09:45 còn lại</text>
+
+  <!-- ============ SEATING MAP AREA ============ -->
+  <rect x="40" y="200" width="1100" height="780" rx="12" fill="#FAFFFE" stroke="#E3E3E3" stroke-width="1"/>
+
+  <!-- Stage -->
+  <path d="M 360 265 Q 590 235 820 265 L 820 250 Q 590 220 360 250 Z" fill="#157F19" opacity="0.15"/>
+  <rect x="430" y="225" width="320" height="44" rx="22" fill="#157F19"/>
+  <text x="590" y="253" font-family="sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="2">SÂN KHẤU</text>
+
+  <!-- Section divider lines (subtle aisles) -->
+  <line x1="60" y1="400" x2="1120" y2="400" stroke="#EFEFEF" stroke-width="1" stroke-dasharray="2 4"/>
+  <line x1="60" y1="590" x2="1120" y2="590" stroke="#EFEFEF" stroke-width="1" stroke-dasharray="2 4"/>
+
+  <!-- =================== VIP SECTION (TICKET_TYPES.name='VIP', 2.500.000đ) =================== -->
+  <text x="70" y="310" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" letter-spacing="1.5">KHU VIP</text>
+  <text x="1110" y="310" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="end">2.500.000đ</text>
+
+  <!-- Row A label -->
+  <text x="375" y="340" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold" text-anchor="end">A</text>
+  <text x="805" y="340" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold">A</text>
+  <!-- Row A: 14 VIP seats — A7, A8 SELECTED -->
+  <circle cx="408" cy="335" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="436" cy="333" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="464" cy="331" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="492" cy="329" r="10" fill="#E0E0E0" stroke="#9E9E9E" stroke-width="1.2"/>
+  <circle cx="520" cy="328" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="548" cy="327" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="576" cy="327" r="11" fill="#FFB800" stroke="#D97706" stroke-width="2"/>
+  <text x="576" y="331" font-family="sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">7</text>
+  <circle cx="604" cy="327" r="11" fill="#FFB800" stroke="#D97706" stroke-width="2"/>
+  <text x="604" y="331" font-family="sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">8</text>
+  <circle cx="632" cy="327" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="660" cy="328" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="688" cy="329" r="10" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="716" cy="331" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="744" cy="333" r="10" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="772" cy="335" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+
+  <!-- Row B label -->
+  <text x="347" y="393" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold" text-anchor="end">B</text>
+  <text x="833" y="393" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold">B</text>
+  <!-- Row B: 16 VIP seats -->
+  <circle cx="380" cy="388" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="408" cy="386" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="436" cy="384" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="464" cy="382" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="492" cy="381" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="520" cy="380" r="10" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="548" cy="379" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="576" cy="379" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="604" cy="379" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="632" cy="379" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="660" cy="380" r="10" fill="#E0E0E0" stroke="#9E9E9E" stroke-width="1.2"/>
+  <circle cx="688" cy="381" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="716" cy="382" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="744" cy="384" r="10" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="772" cy="386" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <circle cx="800" cy="388" r="10" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+
+  <!-- =================== REGULAR SECTION (TICKET_TYPES.name='Regular', 1.000.000đ) =================== -->
+  <text x="70" y="425" font-family="sans-serif" font-size="11" font-weight="bold" fill="#198111" letter-spacing="1.5">KHU REGULAR</text>
+  <text x="1110" y="425" font-family="sans-serif" font-size="11" font-weight="bold" fill="#198111" text-anchor="end">1.000.000đ</text>
+
+  <!-- Row C label -->
+  <text x="319" y="460" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold" text-anchor="end">C</text>
+  <text x="861" y="460" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold">C</text>
+  <!-- Row C: 18 Regular seats -->
+  <circle cx="352" cy="455" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="380" cy="453" r="9" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="408" cy="451" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="436" cy="449" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="464" cy="448" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="492" cy="447" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="520" cy="446" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="548" cy="445" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="576" cy="445" r="9" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="604" cy="445" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="632" cy="445" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="660" cy="446" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="688" cy="447" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="716" cy="448" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="744" cy="449" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="772" cy="451" r="9" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="800" cy="453" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="828" cy="455" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+
+  <!-- Row D label -->
+  <text x="291" y="515" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold" text-anchor="end">D</text>
+  <text x="889" y="515" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold">D</text>
+  <!-- Row D: 20 Regular seats -->
+  <circle cx="324" cy="510" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="352" cy="508" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="380" cy="506" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="408" cy="504" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="436" cy="503" r="9" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="464" cy="502" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="492" cy="501" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="520" cy="500" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="548" cy="499" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="576" cy="499" r="9" fill="#E0E0E0" stroke="#9E9E9E" stroke-width="1.2"/>
+  <circle cx="604" cy="499" r="9" fill="#E0E0E0" stroke="#9E9E9E" stroke-width="1.2"/>
+  <circle cx="632" cy="499" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="660" cy="500" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="688" cy="501" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="716" cy="502" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="744" cy="503" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="772" cy="504" r="9" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="800" cy="506" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="828" cy="508" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="856" cy="510" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+
+  <!-- Row E label -->
+  <text x="263" y="570" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold" text-anchor="end">E</text>
+  <text x="917" y="570" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold">E</text>
+  <!-- Row E: 22 Regular seats -->
+  <circle cx="296" cy="565" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="324" cy="563" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="352" cy="561" r="9" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="380" cy="559" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="408" cy="558" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="436" cy="556" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="464" cy="555" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="492" cy="554" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="520" cy="554" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="548" cy="553" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="576" cy="553" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="604" cy="553" r="9" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="632" cy="553" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="660" cy="553" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="688" cy="554" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="716" cy="554" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="744" cy="555" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="772" cy="556" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="800" cy="558" r="9" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <circle cx="828" cy="559" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="856" cy="561" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <circle cx="884" cy="563" r="9" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+
+  <!-- =================== ECONOMY SECTION (TICKET_TYPES.name='Economy', 500.000đ) =================== -->
+  <text x="70" y="615" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" letter-spacing="1.5">KHU ECONOMY</text>
+  <text x="1110" y="615" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="end">500.000đ</text>
+
+  <!-- Row F label -->
+  <text x="235" y="630" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold" text-anchor="end">F</text>
+  <text x="945" y="630" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold">F</text>
+  <!-- Row F: 24 Economy seats -->
+  <circle cx="268" cy="625" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="296" cy="623" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="324" cy="621" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="352" cy="619" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="380" cy="618" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="408" cy="616" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="436" cy="615" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="464" cy="614" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="492" cy="613" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="520" cy="613" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="548" cy="612" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="576" cy="612" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="604" cy="612" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="632" cy="612" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="660" cy="613" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="688" cy="613" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="716" cy="614" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="744" cy="615" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="772" cy="616" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="800" cy="618" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="828" cy="619" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="856" cy="621" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="884" cy="623" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="912" cy="625" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+
+  <!-- Row G label -->
+  <text x="207" y="685" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold" text-anchor="end">G</text>
+  <text x="973" y="685" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold">G</text>
+  <!-- Row G: 26 Economy seats -->
+  <circle cx="240" cy="680" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="268" cy="678" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="296" cy="676" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="324" cy="674" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="352" cy="672" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="380" cy="671" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="408" cy="670" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="436" cy="669" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="464" cy="668" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="492" cy="667" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="520" cy="667" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="548" cy="666" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="576" cy="666" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="604" cy="666" r="8" fill="#E0E0E0" stroke="#9E9E9E" stroke-width="1"/>
+  <circle cx="632" cy="666" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="660" cy="667" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="688" cy="667" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="716" cy="668" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="744" cy="669" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="772" cy="670" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="800" cy="671" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="828" cy="672" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="856" cy="674" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="884" cy="676" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="912" cy="678" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="940" cy="680" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+
+  <!-- Row H label -->
+  <text x="179" y="740" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold" text-anchor="end">H</text>
+  <text x="1001" y="740" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">H</text>
+  <!-- Row H: 28 Economy seats -->
+  <circle cx="212" cy="735" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="240" cy="733" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="268" cy="731" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="296" cy="729" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="324" cy="727" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="352" cy="726" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="380" cy="725" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="408" cy="723" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="436" cy="722" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="464" cy="722" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="492" cy="721" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="520" cy="721" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="548" cy="720" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="576" cy="720" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="604" cy="720" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="632" cy="720" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="660" cy="721" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="688" cy="721" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="716" cy="722" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="744" cy="722" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="772" cy="723" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="800" cy="725" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="828" cy="726" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="856" cy="727" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="884" cy="729" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="912" cy="731" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="940" cy="733" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="968" cy="735" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+
+  <!-- Row I label -->
+  <text x="151" y="795" font-family="sans-serif" font-size="11" fill="#989393" font-weight="bold" text-anchor="end">I</text>
+  <text x="1029" y="795" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">I</text>
+  <!-- Row I: 30 Economy seats -->
+  <circle cx="184" cy="790" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="212" cy="788" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="240" cy="786" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="268" cy="784" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="296" cy="782" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="324" cy="781" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="352" cy="780" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="380" cy="778" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="408" cy="777" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="436" cy="776" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="464" cy="776" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="492" cy="775" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="520" cy="774" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="548" cy="774" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="576" cy="774" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="604" cy="774" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="632" cy="774" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="660" cy="774" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="688" cy="775" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="716" cy="776" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="744" cy="776" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="772" cy="777" r="8" fill="#E0E0E0" stroke="#9E9E9E" stroke-width="1"/>
+  <circle cx="800" cy="778" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="828" cy="780" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="856" cy="781" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="884" cy="782" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="912" cy="784" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="940" cy="786" r="8" fill="#616161" stroke="#424242" stroke-width="1"/>
+  <circle cx="968" cy="788" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <circle cx="996" cy="790" r="8" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+
+  <!-- ============ MAP CONTROLS (zoom / reset) ============ -->
+  <rect x="60" y="845" width="36" height="36" rx="6" fill="white" stroke="#E3E3E3"/>
+  <text x="78" y="868" font-family="sans-serif" font-size="18" fill="#525252" text-anchor="middle">+</text>
+  <rect x="60" y="885" width="36" height="36" rx="6" fill="white" stroke="#E3E3E3"/>
+  <text x="78" y="908" font-family="sans-serif" font-size="18" fill="#525252" text-anchor="middle">−</text>
+
+  <!-- ============ LEGEND (mapped to EVENT_SEATS.status enum + selected) ============ -->
+  <rect x="60" y="930" width="1060" height="38" rx="8" fill="white" stroke="#E3E3E3" stroke-width="1"/>
+  <circle cx="90" cy="949" r="7" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <text x="104" y="954" font-family="sans-serif" font-size="12" fill="#525252">VIP</text>
+  <circle cx="160" cy="949" r="7" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <text x="174" y="954" font-family="sans-serif" font-size="12" fill="#525252">Regular</text>
+  <circle cx="246" cy="949" r="7" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <text x="260" y="954" font-family="sans-serif" font-size="12" fill="#525252">Economy</text>
+  <line x1="335" y1="938" x2="335" y2="960" stroke="#E3E3E3" stroke-width="1"/>
+  <circle cx="358" cy="949" r="7" fill="#FFB800" stroke="#D97706" stroke-width="2"/>
+  <text x="372" y="954" font-family="sans-serif" font-size="12" fill="#525252">Đang chọn</text>
+  <circle cx="470" cy="949" r="7" fill="#E0E0E0" stroke="#9E9E9E" stroke-width="1.2"/>
+  <text x="484" y="954" font-family="sans-serif" font-size="12" fill="#525252">Đang giữ (locked)</text>
+  <circle cx="630" cy="949" r="7" fill="#616161" stroke="#424242" stroke-width="1.2"/>
+  <text x="644" y="954" font-family="sans-serif" font-size="12" fill="#525252">Đã bán (booked)</text>
+  <text x="1100" y="954" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">Trạng thái từ EVENT_SEATS.status</text>
+
+  <!-- =================================================================== -->
+  <!-- ============ CART SIDEBAR (ORDERS + ORDER_ITEMS preview) ============ -->
+  <!-- =================================================================== -->
+  <rect x="1160" y="84" width="260" height="896" rx="12" fill="#F8F8F8" stroke="#E3E3E3" stroke-width="1"/>
+
+  <!-- Header -->
+  <text x="1180" y="118" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1B3120">Giỏ hàng</text>
+  <text x="1180" y="138" font-family="sans-serif" font-size="13" fill="#989393">2 ghế đã chọn</text>
+  <rect x="1180" y="152" width="220" height="1" fill="#E3E3E3"/>
+
+  <!-- Order item 1: A7 -->
+  <rect x="1180" y="166" width="220" height="64" rx="8" fill="white" stroke="#E3E3E3" stroke-width="1"/>
+  <rect x="1192" y="178" width="40" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="1212" y="203" font-family="sans-serif" font-size="13" font-weight="bold" fill="#157F19" text-anchor="middle">A7</text>
+  <text x="1244" y="190" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">VIP</text>
+  <text x="1244" y="206" font-family="sans-serif" font-size="11" fill="#989393">Hàng A · Khu VIP</text>
+  <text x="1244" y="220" font-family="sans-serif" font-size="11" fill="#989393">2.500.000đ</text>
+  <text x="1390" y="220" font-family="sans-serif" font-size="14" fill="#989393" text-anchor="end">×</text>
+
+  <!-- Order item 2: A8 -->
+  <rect x="1180" y="240" width="220" height="64" rx="8" fill="white" stroke="#E3E3E3" stroke-width="1"/>
+  <rect x="1192" y="252" width="40" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="1212" y="277" font-family="sans-serif" font-size="13" font-weight="bold" fill="#157F19" text-anchor="middle">A8</text>
+  <text x="1244" y="264" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">VIP</text>
+  <text x="1244" y="280" font-family="sans-serif" font-size="11" fill="#989393">Hàng A · Khu VIP</text>
+  <text x="1244" y="294" font-family="sans-serif" font-size="11" fill="#989393">2.500.000đ</text>
+  <text x="1390" y="294" font-family="sans-serif" font-size="14" fill="#989393" text-anchor="end">×</text>
+
+  <rect x="1180" y="320" width="220" height="1" fill="#E3E3E3"/>
+
+  <!-- Totals -->
+  <text x="1180" y="346" font-family="sans-serif" font-size="13" fill="#525252">Tạm tính (2 vé)</text>
+  <text x="1400" y="346" font-family="sans-serif" font-size="13" fill="#1B3120" text-anchor="end">5.000.000đ</text>
+  <text x="1180" y="370" font-family="sans-serif" font-size="13" fill="#525252">Phí dịch vụ</text>
+  <text x="1400" y="370" font-family="sans-serif" font-size="13" fill="#1B3120" text-anchor="end">100.000đ</text>
+
+  <rect x="1180" y="384" width="220" height="1" fill="#E3E3E3"/>
+  <text x="1180" y="412" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1B3120">Tổng cộng</text>
+  <text x="1400" y="412" font-family="sans-serif" font-size="16" font-weight="bold" fill="#157F19" text-anchor="end">5.100.000đ</text>
+
+  <!-- CTA -->
+  <rect x="1180" y="430" width="220" height="48" rx="8" fill="#157F19"/>
+  <text x="1290" y="460" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Tiến hành thanh toán</text>
+
+  <!-- Lock timer notice -->
+  <rect x="1180" y="490" width="220" height="46" rx="8" fill="#FFF8E1" stroke="#FFE0A3" stroke-width="1"/>
+  <text x="1192" y="510" font-family="sans-serif" font-size="11" font-weight="bold" fill="#B45309">⏱ Ghế được giữ trong 09:45</text>
+  <text x="1192" y="526" font-family="sans-serif" font-size="10" fill="#A16207">Sau thời gian này, ghế sẽ tự động mở lại</text>
+
+  <rect x="1180" y="552" width="220" height="1" fill="#E3E3E3"/>
+
+  <!-- Price reference (TICKET_TYPES preview) -->
+  <text x="1180" y="578" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Bảng giá vé</text>
+
+  <circle cx="1192" cy="602" r="6" fill="#157F19" stroke="#0a5c0d" stroke-width="1.2"/>
+  <text x="1206" y="606" font-family="sans-serif" font-size="12" fill="#525252">VIP</text>
+  <text x="1400" y="606" font-family="sans-serif" font-size="12" font-weight="bold" fill="#157F19" text-anchor="end">2.500.000đ</text>
+
+  <circle cx="1192" cy="624" r="6" fill="#29D52F" stroke="#198111" stroke-width="1.2"/>
+  <text x="1206" y="628" font-family="sans-serif" font-size="12" fill="#525252">Regular</text>
+  <text x="1400" y="628" font-family="sans-serif" font-size="12" font-weight="bold" fill="#198111" text-anchor="end">1.000.000đ</text>
+
+  <circle cx="1192" cy="646" r="6" fill="#B6E8BC" stroke="#157F19" stroke-width="1"/>
+  <text x="1206" y="650" font-family="sans-serif" font-size="12" fill="#525252">Economy</text>
+  <text x="1400" y="650" font-family="sans-serif" font-size="12" font-weight="bold" fill="#157F19" text-anchor="end">500.000đ</text>
+
+  <rect x="1180" y="672" width="220" height="1" fill="#E3E3E3"/>
+
+  <!-- Help / availability summary -->
+  <text x="1180" y="698" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Còn trống</text>
+  <text x="1180" y="720" font-family="sans-serif" font-size="12" fill="#525252">VIP</text>
+  <text x="1400" y="720" font-family="sans-serif" font-size="12" fill="#1B3120" text-anchor="end">24 / 30</text>
+  <text x="1180" y="740" font-family="sans-serif" font-size="12" fill="#525252">Regular</text>
+  <text x="1400" y="740" font-family="sans-serif" font-size="12" fill="#1B3120" text-anchor="end">53 / 60</text>
+  <text x="1180" y="760" font-family="sans-serif" font-size="12" fill="#525252">Economy</text>
+  <text x="1400" y="760" font-family="sans-serif" font-size="12" fill="#1B3120" text-anchor="end">98 / 108</text>
+
+  <text x="1180" y="958" font-family="sans-serif" font-size="10" fill="#C0BDBD">Mẫu UI · Dề Dê Events</text>
+</svg>

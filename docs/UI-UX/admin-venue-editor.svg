@@ -1,0 +1,170 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="1024" fill="#FAFAFA"/>
+
+  <!-- Navbar -->
+  <rect width="1440" height="64" fill="white"/>
+  <rect y="64" width="1440" height="1" fill="#E3E3E3"/>
+  <rect x="40" y="18" width="32" height="32" rx="8" fill="#157F19"/>
+  <text x="80" y="40" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1B3120">Dề Dê</text>
+  <rect x="120" y="20" width="100" height="28" rx="14" fill="#FFF8E1"/>
+  <text x="170" y="38" font-family="sans-serif" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">ORGANIZER MODE</text>
+  <text x="290" y="40" font-family="sans-serif" font-size="14" fill="#989393">Bảng điều khiển</text>
+  <text x="406" y="40" font-family="sans-serif" font-size="14" fill="#989393">Sự kiện</text>
+  <text x="476" y="40" font-family="sans-serif" font-size="14" fill="#157F19" font-weight="bold">Địa điểm</text>
+  <text x="566" y="40" font-family="sans-serif" font-size="14" fill="#989393">Báo cáo</text>
+  <circle cx="1400" cy="32" r="20" fill="#B6E8BC"/>
+  <text x="1393" y="37" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">ND</text>
+
+  <text x="40" y="96" font-family="sans-serif" font-size="12" fill="#989393">Địa điểm › <tspan fill="#1B3120">SVĐ Mỹ Đình</tspan></text>
+  <text x="40" y="130" font-family="sans-serif" font-size="22" font-weight="bold" fill="#1B3120">SVĐ Mỹ Đình</text>
+  <text x="40" y="152" font-family="sans-serif" font-size="12" fill="#989393">VENUES.id = 12 · 1 Lê Đức Thọ, Nam Từ Liêm, Hà Nội · 40.000 ghế</text>
+
+  <rect x="1268" y="100" width="132" height="40" rx="8" fill="#157F19"/>
+  <text x="1334" y="124" font-family="sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">Lưu thay đổi</text>
+
+  <!-- ============ LEFT: SECTION tree ============ -->
+  <rect x="40" y="180" width="340" height="800" rx="12" fill="white" stroke="#E3E3E3"/>
+  <text x="60" y="210" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1B3120">Cây khu vực</text>
+  <text x="360" y="210" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">SECTIONS</text>
+  <line x1="60" y1="222" x2="360" y2="222" stroke="#E3E3E3"/>
+
+  <!-- Section: VIP -->
+  <rect x="60" y="240" width="300" height="48" rx="8" fill="#E8F5E9" stroke="#157F19"/>
+  <rect x="68" y="252" width="8" height="24" fill="#157F19"/>
+  <text x="84" y="262" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Khu VIP</text>
+  <text x="84" y="278" font-family="sans-serif" font-size="11" fill="#525252">2 hàng · 30 ghế · id=44</text>
+  <text x="344" y="270" font-family="sans-serif" font-size="13" fill="#157F19" text-anchor="end">✎</text>
+
+  <text x="76" y="312" font-family="sans-serif" font-size="11" fill="#989393">Hàng</text>
+  <rect x="72" y="320" width="284" height="32" rx="6" fill="#F8F8F8"/>
+  <text x="88" y="340" font-family="sans-serif" font-size="12" fill="#1B3120">A · 14 ghế (A1 – A14)</text>
+  <rect x="72" y="356" width="284" height="32" rx="6" fill="#F8F8F8"/>
+  <text x="88" y="376" font-family="sans-serif" font-size="12" fill="#1B3120">B · 16 ghế (B1 – B16)</text>
+
+  <!-- Section: Regular -->
+  <rect x="60" y="404" width="300" height="48" rx="8" fill="white" stroke="#E3E3E3"/>
+  <rect x="68" y="416" width="8" height="24" fill="#29D52F"/>
+  <text x="84" y="426" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Khu Regular</text>
+  <text x="84" y="442" font-family="sans-serif" font-size="11" fill="#525252">3 hàng · 60 ghế · id=45</text>
+  <text x="344" y="434" font-family="sans-serif" font-size="13" fill="#989393" text-anchor="end">›</text>
+
+  <!-- Section: Economy -->
+  <rect x="60" y="464" width="300" height="48" rx="8" fill="white" stroke="#E3E3E3"/>
+  <rect x="68" y="476" width="8" height="24" fill="#B6E8BC"/>
+  <text x="84" y="486" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Khu Economy</text>
+  <text x="84" y="502" font-family="sans-serif" font-size="11" fill="#525252">4 hàng · 108 ghế · id=46</text>
+  <text x="344" y="494" font-family="sans-serif" font-size="13" fill="#989393" text-anchor="end">›</text>
+
+  <!-- Add section -->
+  <rect x="60" y="528" width="300" height="44" rx="8" fill="#F8F8F8" stroke="#E3E3E3" stroke-dasharray="4 4"/>
+  <text x="210" y="555" font-family="sans-serif" font-size="13" font-weight="bold" fill="#157F19" text-anchor="middle">+ Thêm khu vực</text>
+
+  <!-- Bulk actions -->
+  <line x1="60" y1="608" x2="360" y2="608" stroke="#E3E3E3"/>
+  <text x="60" y="634" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Thao tác hàng loạt</text>
+  <rect x="60" y="652" width="300" height="40" rx="8" fill="white" stroke="#E3E3E3"/>
+  <text x="210" y="676" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">📥 Nhập CSV (row_label,seat_number)</text>
+  <rect x="60" y="700" width="300" height="40" rx="8" fill="white" stroke="#E3E3E3"/>
+  <text x="210" y="724" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">📋 Sao chép cấu trúc từ địa điểm khác</text>
+
+  <line x1="60" y1="772" x2="360" y2="772" stroke="#E3E3E3"/>
+  <text x="60" y="800" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Sử dụng cho EVENTS</text>
+  <text x="60" y="824" font-family="sans-serif" font-size="11" fill="#989393">5 sự kiện đã/đang dùng địa điểm này</text>
+  <rect x="60" y="840" width="300" height="32" rx="6" fill="#F8F8F8"/>
+  <text x="76" y="860" font-family="sans-serif" font-size="11" fill="#525252">• Đại nhạc hội Mùa Hè 2026 — DRAFT</text>
+  <rect x="60" y="876" width="300" height="32" rx="6" fill="#F8F8F8"/>
+  <text x="76" y="896" font-family="sans-serif" font-size="11" fill="#525252">• Acoustic Night HAT — PUBLISHED</text>
+
+  <text x="60" y="942" font-family="sans-serif" font-size="11" fill="#989393">Schema: VENUES → SECTIONS → SEATS</text>
+  <text x="60" y="960" font-family="sans-serif" font-size="11" fill="#989393">Mỗi event lấy snapshot vào EVENT_SEATS</text>
+
+  <!-- ============ RIGHT: seat grid editor for selected section "Khu VIP" ============ -->
+  <rect x="400" y="180" width="1000" height="800" rx="12" fill="white" stroke="#E3E3E3"/>
+  <text x="420" y="210" font-family="sans-serif" font-size="15" font-weight="bold" fill="#1B3120">Khu VIP · sơ đồ ghế</text>
+  <text x="1380" y="210" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">SEATS WHERE section_id=44</text>
+  <line x1="420" y1="222" x2="1380" y2="222" stroke="#E3E3E3"/>
+
+  <!-- Section metadata edit row -->
+  <text x="420" y="248" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">TÊN KHU</text>
+  <rect x="420" y="256" width="240" height="36" rx="8" fill="#F8F8F8" stroke="#E3E3E3"/>
+  <text x="436" y="280" font-family="sans-serif" font-size="13" fill="#1B3120">Khu VIP</text>
+  <text x="680" y="248" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">TỔNG SỐ HÀNG</text>
+  <rect x="680" y="256" width="100" height="36" rx="8" fill="#F8F8F8" stroke="#E3E3E3"/>
+  <text x="696" y="280" font-family="sans-serif" font-size="13" fill="#1B3120">2</text>
+  <text x="800" y="248" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">TỔNG SỐ GHẾ</text>
+  <rect x="800" y="256" width="100" height="36" rx="8" fill="#F8F8F8" stroke="#E3E3E3"/>
+  <text x="816" y="280" font-family="sans-serif" font-size="13" fill="#1B3120">30</text>
+
+  <rect x="1280" y="256" width="100" height="36" rx="8" fill="#FDECEC" stroke="#FAC0C0"/>
+  <text x="1330" y="280" font-family="sans-serif" font-size="12" fill="#C53030" text-anchor="middle">Xóa khu</text>
+
+  <!-- Stage marker -->
+  <rect x="690" y="324" width="320" height="40" rx="20" fill="#157F19"/>
+  <text x="850" y="350" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">SÂN KHẤU</text>
+
+  <!-- Row A label + seats -->
+  <text x="448" y="426" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">A</text>
+  <text x="448" y="444" font-family="sans-serif" font-size="10" fill="#989393">14 ghế</text>
+
+  <g transform="translate(500,396)">
+    <!-- 14 seats in row A -->
+    <g fill="#157F19" stroke="#0a5c0d">
+      <circle cx="0" cy="38" r="12"/><circle cx="60" cy="34" r="12"/><circle cx="120" cy="30" r="12"/><circle cx="180" cy="26" r="12"/>
+      <circle cx="240" cy="24" r="12"/><circle cx="300" cy="22" r="12"/><circle cx="360" cy="22" r="12"/><circle cx="420" cy="22" r="12"/>
+      <circle cx="480" cy="22" r="12"/><circle cx="540" cy="24" r="12"/><circle cx="600" cy="26" r="12"/><circle cx="660" cy="30" r="12"/>
+      <circle cx="720" cy="34" r="12"/><circle cx="780" cy="38" r="12"/>
+    </g>
+    <g font-family="sans-serif" font-size="9" font-weight="bold" fill="white" text-anchor="middle">
+      <text x="0" y="42">A1</text><text x="60" y="38">A2</text><text x="120" y="34">A3</text><text x="180" y="30">A4</text>
+      <text x="240" y="28">A5</text><text x="300" y="26">A6</text><text x="360" y="26">A7</text><text x="420" y="26">A8</text>
+      <text x="480" y="26">A9</text><text x="540" y="28">A10</text><text x="600" y="30">A11</text><text x="660" y="34">A12</text>
+      <text x="720" y="38">A13</text><text x="780" y="42">A14</text>
+    </g>
+  </g>
+
+  <!-- Row B label + seats -->
+  <text x="448" y="516" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">B</text>
+  <text x="448" y="534" font-family="sans-serif" font-size="10" fill="#989393">16 ghế</text>
+
+  <g transform="translate(470,486)">
+    <g fill="#157F19" stroke="#0a5c0d">
+      <circle cx="0" cy="38" r="12"/><circle cx="56" cy="34" r="12"/><circle cx="112" cy="30" r="12"/><circle cx="168" cy="26" r="12"/>
+      <circle cx="224" cy="22" r="12"/><circle cx="280" cy="20" r="12"/><circle cx="336" cy="18" r="12"/><circle cx="392" cy="18" r="12"/>
+      <circle cx="448" cy="18" r="12"/><circle cx="504" cy="18" r="12"/><circle cx="560" cy="20" r="12"/><circle cx="616" cy="22" r="12"/>
+      <circle cx="672" cy="26" r="12"/><circle cx="728" cy="30" r="12"/><circle cx="784" cy="34" r="12"/><circle cx="840" cy="38" r="12"/>
+    </g>
+  </g>
+
+  <!-- Row controls -->
+  <rect x="430" y="586" width="940" height="64" rx="10" fill="#F8F8F8" stroke="#E3E3E3"/>
+  <text x="448" y="610" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Thêm hàng mới</text>
+  <text x="448" y="628" font-family="sans-serif" font-size="11" fill="#989393">row_label tự sinh từ chữ kế tiếp · seat_number bắt đầu từ 1</text>
+  <rect x="1220" y="600" width="138" height="36" rx="8" fill="#157F19"/>
+  <text x="1289" y="622" font-family="sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">+ Thêm hàng C</text>
+
+  <!-- Constraint reminders -->
+  <line x1="420" y1="670" x2="1380" y2="670" stroke="#E3E3E3"/>
+  <text x="420" y="694" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Ràng buộc</text>
+  <text x="420" y="716" font-family="sans-serif" font-size="11" fill="#525252">• SEATS.UNIQUE(section_id, row_label, seat_number) — không cho phép trùng trong cùng khu</text>
+  <text x="420" y="734" font-family="sans-serif" font-size="11" fill="#525252">• Sửa cấu trúc sau khi đã PUBLISHED không ảnh hưởng EVENT_SEATS đã materialize — bắt buộc tạo event mới</text>
+  <text x="420" y="752" font-family="sans-serif" font-size="11" fill="#525252">• Xóa SECTION đang được tham chiếu bởi EVENT_SEATS sẽ bị từ chối (FOREIGN KEY)</text>
+
+  <!-- Stats -->
+  <rect x="420" y="780" width="300" height="80" rx="10" fill="#F8F8F8"/>
+  <text x="436" y="804" font-family="sans-serif" font-size="11" fill="#989393">TỔNG GHẾ TRONG VENUE</text>
+  <text x="436" y="836" font-family="sans-serif" font-size="22" font-weight="bold" fill="#1B3120">198</text>
+  <text x="704" y="836" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">trên tối đa 40.000</text>
+
+  <rect x="740" y="780" width="300" height="80" rx="10" fill="#F8F8F8"/>
+  <text x="756" y="804" font-family="sans-serif" font-size="11" fill="#989393">SẼ TẠO EVENT_SEATS</text>
+  <text x="756" y="836" font-family="sans-serif" font-size="22" font-weight="bold" fill="#157F19">198</text>
+  <text x="1024" y="836" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">rows khi event PUBLISHED</text>
+
+  <rect x="1060" y="780" width="320" height="80" rx="10" fill="#FFF8E1" stroke="#FFE0A3"/>
+  <text x="1076" y="804" font-family="sans-serif" font-size="11" font-weight="bold" fill="#B45309">LƯU Ý CONCURRENCY</text>
+  <text x="1076" y="822" font-family="sans-serif" font-size="11" fill="#A16207">Mỗi EVENT_SEATS row có cột version để</text>
+  <text x="1076" y="840" font-family="sans-serif" font-size="11" fill="#A16207">optimistic-lock khi lock ghế song song</text>
+  <text x="1076" y="856" font-family="sans-serif" font-size="11" fill="#A16207">(design-supplement.md §1).</text>
+
+  <text x="420" y="942" font-family="sans-serif" font-size="11" fill="#989393">Schema: VENUES · SECTIONS · SEATS · materialize → EVENT_SEATS</text>
+</svg>

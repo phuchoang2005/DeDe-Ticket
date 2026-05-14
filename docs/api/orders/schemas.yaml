@@ -1,0 +1,54 @@
+OrderItemRequest:
+  type: object
+  required:
+    - ticket_type_id
+  properties:
+    ticket_type_id:
+      type: integer
+    event_seat_id:
+      type: integer
+      description: Required if the ticket type is for assigned seating
+OrderRequest:
+  type: object
+  required:
+    - event_id
+    - items
+  properties:
+    event_id:
+      type: integer
+    items:
+      type: array
+      items:
+        $ref: '#/OrderItemRequest'
+OrderQueuedResponse:
+  type: object
+  properties:
+    order_id:
+      type: integer
+    status:
+      type: string
+      example: QUEUED
+OrderStatusResponse:
+  type: object
+  properties:
+    id:
+      type: integer
+    total_amount:
+      type: number
+    status:
+      type: string
+      enum: [QUEUED, PENDING_PAYMENT, EXPIRED, COMPLETED]
+    created_at:
+      type: string
+      format: date-time
+PaymentRequest:
+  type: object
+  required:
+    - provider
+    - amount
+  properties:
+    provider:
+      type: string
+      example: MoMo
+    amount:
+      type: number

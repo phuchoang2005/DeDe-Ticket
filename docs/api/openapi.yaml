@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Dề Dê Event Management & Ticketing System API
-  description: API contract for the Dề Dê Event Management and Ticketing System. Designed to support 10,000 concurrent users, high-performance ticket booking, and rapid check-in validation.
+  description: API contract for the Dề Dê Event Management and Ticketing System, directly mapping to the database schema.
   version: 1.0.0
 servers:
   - url: https://api.dede-events.com/v1
@@ -11,10 +11,12 @@ servers:
 tags:
   - name: Authentication
     description: User registration, login, and OTP verification flows
+  - name: Users
+    description: User profile management
   - name: Events
     description: Event management and dynamic seating charts
-  - name: Bookings
-    description: High-concurrency ticket booking and simulated payment with retry mechanisms
+  - name: Orders
+    description: High-concurrency ticket ordering and simulated payment with retry mechanisms
   - name: Tickets
     description: QR code generation and mobile check-in
   - name: Analytics
@@ -26,18 +28,24 @@ paths:
     $ref: './auth/paths.yaml#/login'
   /auth/verify-otp:
     $ref: './auth/paths.yaml#/verifyOtp'
+  /auth/logout:
+    $ref: './auth/paths.yaml#/logout'
+  /users/me:
+    $ref: './users/paths.yaml#/me'
   /events:
     $ref: './events/paths.yaml#/events'
   /events/{eventId}:
     $ref: './events/paths.yaml#/eventById'
+  /events/{eventId}/ticket-types:
+    $ref: './events/paths.yaml#/eventTicketTypes'
   /events/{eventId}/seating:
     $ref: './events/paths.yaml#/eventSeating'
-  /bookings:
-    $ref: './bookings/paths.yaml#/bookings'
-  /bookings/{bookingId}:
-    $ref: './bookings/paths.yaml#/bookingById'
-  /bookings/{bookingId}/pay:
-    $ref: './bookings/paths.yaml#/bookingPay'
+  /orders:
+    $ref: './orders/paths.yaml#/orders'
+  /orders/{orderId}:
+    $ref: './orders/paths.yaml#/orderById'
+  /orders/{orderId}/pay:
+    $ref: './orders/paths.yaml#/orderPay'
   /tickets/my-tickets:
     $ref: './tickets/paths.yaml#/myTickets'
   /tickets/checkin:

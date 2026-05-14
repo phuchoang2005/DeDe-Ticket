@@ -1,0 +1,174 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="1024" fill="#FAFAFA"/>
+
+  <!-- Navbar (organizer mode) -->
+  <rect width="1440" height="64" fill="white"/>
+  <rect y="64" width="1440" height="1" fill="#E3E3E3"/>
+  <rect x="40" y="18" width="32" height="32" rx="8" fill="#157F19"/>
+  <text x="80" y="40" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1B3120">Dề Dê</text>
+  <rect x="120" y="20" width="100" height="28" rx="14" fill="#FFF8E1"/>
+  <text x="170" y="38" font-family="sans-serif" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">ORGANIZER MODE</text>
+  <text x="290" y="40" font-family="sans-serif" font-size="14" fill="#989393">Bảng điều khiển</text>
+  <text x="406" y="40" font-family="sans-serif" font-size="14" fill="#157F19" font-weight="bold">Sự kiện</text>
+  <text x="476" y="40" font-family="sans-serif" font-size="14" fill="#989393">Địa điểm</text>
+  <text x="566" y="40" font-family="sans-serif" font-size="14" fill="#989393">Báo cáo</text>
+  <circle cx="1400" cy="32" r="20" fill="#B6E8BC"/>
+  <text x="1393" y="37" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">ND</text>
+
+  <!-- Breadcrumb + status -->
+  <text x="40" y="96" font-family="sans-serif" font-size="12" fill="#989393">Sự kiện › <tspan fill="#1B3120">Tạo / chỉnh sửa</tspan></text>
+
+  <text x="40" y="130" font-family="sans-serif" font-size="22" font-weight="bold" fill="#1B3120">Đại nhạc hội Mùa Hè 2026</text>
+  <rect x="430" y="112" width="92" height="24" rx="12" fill="#FFF8E1"/>
+  <circle cx="446" cy="124" r="4" fill="#FFB800"/>
+  <text x="486" y="129" font-family="sans-serif" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">DRAFT</text>
+  <text x="40" y="152" font-family="sans-serif" font-size="12" fill="#989393">EVENTS.id = 218 · created_by = me · updated 14/05/2026 20:51</text>
+
+  <!-- Action buttons -->
+  <rect x="1140" y="100" width="120" height="40" rx="8" fill="white" stroke="#E3E3E3"/>
+  <text x="1200" y="124" font-family="sans-serif" font-size="13" fill="#525252" text-anchor="middle">Xem trước</text>
+  <rect x="1268" y="100" width="132" height="40" rx="8" fill="#157F19"/>
+  <text x="1334" y="124" font-family="sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">Xuất bản (PUBLISH)</text>
+
+  <!-- Step tabs -->
+  <rect x="40" y="178" width="1360" height="44" rx="10" fill="white" stroke="#E3E3E3"/>
+  <rect x="48" y="184" width="320" height="32" rx="16" fill="#E8F5E9"/>
+  <text x="208" y="204" font-family="sans-serif" font-size="12" font-weight="bold" fill="#157F19" text-anchor="middle">1 · Thông tin (EVENTS + EVENT_CATEGORY_MAP)</text>
+  <text x="416" y="204" font-family="sans-serif" font-size="12" fill="#525252">2 · Địa điểm &amp; sơ đồ ghế</text>
+  <text x="616" y="204" font-family="sans-serif" font-size="12" fill="#525252">3 · Loại vé (TICKET_TYPES)</text>
+  <text x="816" y="204" font-family="sans-serif" font-size="12" fill="#525252">4 · Xem trước &amp; xuất bản</text>
+
+  <!-- ============ LEFT: form ============ -->
+  <rect x="40" y="240" width="900" height="720" rx="12" fill="white" stroke="#E3E3E3"/>
+  <text x="60" y="270" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1B3120">Thông tin sự kiện</text>
+  <text x="920" y="270" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">EVENTS</text>
+  <line x1="60" y1="284" x2="920" y2="284" stroke="#E3E3E3"/>
+
+  <!-- title -->
+  <text x="60" y="312" font-family="sans-serif" font-size="12" font-weight="bold" fill="#525252">Tiêu đề · EVENTS.title</text>
+  <rect x="60" y="320" width="860" height="44" rx="8" fill="#F8F8F8" stroke="#E3E3E3"/>
+  <text x="76" y="346" font-family="sans-serif" font-size="13" fill="#1B3120">Đại nhạc hội Mùa Hè 2026</text>
+
+  <!-- description -->
+  <text x="60" y="390" font-family="sans-serif" font-size="12" font-weight="bold" fill="#525252">Mô tả · EVENTS.description</text>
+  <rect x="60" y="398" width="860" height="120" rx="8" fill="#F8F8F8" stroke="#E3E3E3"/>
+  <text x="76" y="424" font-family="sans-serif" font-size="12" fill="#525252">Đại nhạc hội Mùa Hè 2026 quy tụ hơn 20 nghệ sĩ hàng đầu Việt Nam và quốc tế.</text>
+  <text x="76" y="442" font-family="sans-serif" font-size="12" fill="#525252">Sân khấu ngoài trời lớn nhất từ trước đến nay…</text>
+  <text x="908" y="510" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">312 / 4000 ký tự</text>
+
+  <!-- location text -->
+  <text x="60" y="546" font-family="sans-serif" font-size="12" font-weight="bold" fill="#525252">Địa điểm hiển thị · EVENTS.location</text>
+  <rect x="60" y="554" width="860" height="44" rx="8" fill="#F8F8F8" stroke="#E3E3E3"/>
+  <text x="76" y="580" font-family="sans-serif" font-size="13" fill="#1B3120">SVĐ Mỹ Đình · 1 Lê Đức Thọ, Nam Từ Liêm, Hà Nội</text>
+
+  <!-- Start / End time -->
+  <text x="60" y="624" font-family="sans-serif" font-size="12" font-weight="bold" fill="#525252">Bắt đầu · start_time</text>
+  <rect x="60" y="632" width="416" height="44" rx="8" fill="#F8F8F8" stroke="#E3E3E3"/>
+  <text x="76" y="658" font-family="sans-serif" font-size="13" fill="#1B3120">📅 26/10/2026 · 19:30</text>
+
+  <text x="500" y="624" font-family="sans-serif" font-size="12" font-weight="bold" fill="#525252">Kết thúc · end_time</text>
+  <rect x="500" y="632" width="420" height="44" rx="8" fill="#F8F8F8" stroke="#E3E3E3"/>
+  <text x="516" y="658" font-family="sans-serif" font-size="13" fill="#1B3120">📅 26/10/2026 · 23:00</text>
+
+  <!-- Status -->
+  <text x="60" y="702" font-family="sans-serif" font-size="12" font-weight="bold" fill="#525252">Trạng thái · EVENTS.status (enum đề xuất)</text>
+  <rect x="60" y="710" width="100" height="36" rx="18" fill="#FFF8E1" stroke="#FFB800"/>
+  <text x="110" y="732" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B45309" text-anchor="middle">DRAFT</text>
+  <rect x="168" y="710" width="120" height="36" rx="18" fill="white" stroke="#E3E3E3"/>
+  <text x="228" y="732" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">PUBLISHED</text>
+  <rect x="296" y="710" width="120" height="36" rx="18" fill="white" stroke="#E3E3E3"/>
+  <text x="356" y="732" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">CANCELLED</text>
+  <rect x="424" y="710" width="124" height="36" rx="18" fill="white" stroke="#E3E3E3"/>
+  <text x="486" y="732" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">COMPLETED</text>
+
+  <!-- Categories (EVENT_CATEGORY_MAP) -->
+  <line x1="60" y1="772" x2="920" y2="772" stroke="#E3E3E3"/>
+  <text x="60" y="798" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Danh mục · EVENT_CATEGORIES + EVENT_CATEGORY_MAP</text>
+  <text x="60" y="816" font-family="sans-serif" font-size="11" fill="#989393">Chọn 1–3 danh mục mô tả sự kiện của bạn</text>
+
+  <rect x="60" y="832" width="100" height="34" rx="17" fill="#157F19"/>
+  <text x="110" y="854" font-family="sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">🎵 Concert ✓</text>
+  <rect x="168" y="832" width="110" height="34" rx="17" fill="#157F19"/>
+  <text x="223" y="854" font-family="sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">🎬 Festival ✓</text>
+  <rect x="286" y="832" width="110" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="341" y="854" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🎓 Seminar</text>
+  <rect x="404" y="832" width="116" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="462" y="854" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🛠 Workshop</text>
+  <rect x="528" y="832" width="120" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="588" y="854" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🏆 Thể thao</text>
+  <rect x="656" y="832" width="120" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="716" y="854" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🎭 Nghệ thuật</text>
+
+  <line x1="60" y1="894" x2="920" y2="894" stroke="#E3E3E3"/>
+  <text x="60" y="918" font-family="sans-serif" font-size="11" fill="#989393">Lưu nháp tự động lúc 20:51:34 · audit ghi AUDIT_LOGS.action='EVENT_DRAFT_SAVED'</text>
+  <rect x="780" y="906" width="140" height="36" rx="8" fill="#157F19"/>
+  <text x="850" y="928" font-family="sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">Lưu &amp; tiếp tục →</text>
+
+  <!-- ============ RIGHT: TICKET TYPES editor (step 3 preview always visible) ============ -->
+  <rect x="960" y="240" width="440" height="720" rx="12" fill="white" stroke="#E3E3E3"/>
+  <text x="980" y="270" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1B3120">Loại vé</text>
+  <text x="1380" y="270" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">TICKET_TYPES (3)</text>
+  <line x1="980" y1="284" x2="1380" y2="284" stroke="#E3E3E3"/>
+
+  <!-- VIP -->
+  <rect x="980" y="298" width="400" height="124" rx="10" fill="white" stroke="#E3E3E3"/>
+  <rect x="980" y="298" width="6" height="124" fill="#157F19"/>
+  <text x="998" y="322" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">VIP</text>
+  <text x="1366" y="322" font-family="sans-serif" font-size="13" fill="#989393" text-anchor="end">✎ ✕</text>
+  <text x="998" y="346" font-family="sans-serif" font-size="11" fill="#989393">Giá · price</text>
+  <text x="1370" y="346" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120" text-anchor="end">2.500.000đ</text>
+  <text x="998" y="368" font-family="sans-serif" font-size="11" fill="#989393">Số lượng · quantity</text>
+  <text x="1370" y="368" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120" text-anchor="end">500</text>
+  <text x="998" y="390" font-family="sans-serif" font-size="11" fill="#989393">Đã bán · sold_quantity</text>
+  <text x="1370" y="390" font-family="sans-serif" font-size="13" fill="#525252" text-anchor="end">0 (chưa xuất bản)</text>
+  <text x="998" y="412" font-family="sans-serif" font-size="11" fill="#989393">Áp dụng cho SECTIONS</text>
+  <text x="1370" y="412" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="end">Khu VIP (A–B) · 500 ghế</text>
+
+  <!-- Regular -->
+  <rect x="980" y="436" width="400" height="124" rx="10" fill="white" stroke="#E3E3E3"/>
+  <rect x="980" y="436" width="6" height="124" fill="#29D52F"/>
+  <text x="998" y="460" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Regular</text>
+  <text x="1366" y="460" font-family="sans-serif" font-size="13" fill="#989393" text-anchor="end">✎ ✕</text>
+  <text x="998" y="484" font-family="sans-serif" font-size="11" fill="#989393">Giá</text>
+  <text x="1370" y="484" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120" text-anchor="end">1.000.000đ</text>
+  <text x="998" y="506" font-family="sans-serif" font-size="11" fill="#989393">Số lượng</text>
+  <text x="1370" y="506" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120" text-anchor="end">1.500</text>
+  <text x="998" y="528" font-family="sans-serif" font-size="11" fill="#989393">Đã bán</text>
+  <text x="1370" y="528" font-family="sans-serif" font-size="13" fill="#525252" text-anchor="end">0</text>
+  <text x="998" y="550" font-family="sans-serif" font-size="11" fill="#989393">Áp dụng cho SECTIONS</text>
+  <text x="1370" y="550" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="end">Khu Regular (C–E) · 1.500 ghế</text>
+
+  <!-- Economy -->
+  <rect x="980" y="574" width="400" height="124" rx="10" fill="white" stroke="#E3E3E3"/>
+  <rect x="980" y="574" width="6" height="124" fill="#B6E8BC"/>
+  <text x="998" y="598" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Economy</text>
+  <text x="1366" y="598" font-family="sans-serif" font-size="13" fill="#989393" text-anchor="end">✎ ✕</text>
+  <text x="998" y="622" font-family="sans-serif" font-size="11" fill="#989393">Giá</text>
+  <text x="1370" y="622" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120" text-anchor="end">500.000đ</text>
+  <text x="998" y="644" font-family="sans-serif" font-size="11" fill="#989393">Số lượng</text>
+  <text x="1370" y="644" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120" text-anchor="end">4.000</text>
+  <text x="998" y="666" font-family="sans-serif" font-size="11" fill="#989393">Đã bán</text>
+  <text x="1370" y="666" font-family="sans-serif" font-size="13" fill="#525252" text-anchor="end">0</text>
+  <text x="998" y="688" font-family="sans-serif" font-size="11" fill="#989393">Áp dụng cho SECTIONS</text>
+  <text x="1370" y="688" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="end">Khu Economy (F–I) · 4.000 ghế</text>
+
+  <!-- Add type -->
+  <rect x="980" y="712" width="400" height="48" rx="10" fill="#F8F8F8" stroke="#E3E3E3" stroke-dasharray="4 4"/>
+  <text x="1180" y="742" font-family="sans-serif" font-size="13" font-weight="bold" fill="#157F19" text-anchor="middle">+ Thêm loại vé</text>
+
+  <!-- Totals -->
+  <line x1="980" y1="784" x2="1380" y2="784" stroke="#E3E3E3"/>
+  <text x="980" y="810" font-family="sans-serif" font-size="13" fill="#525252">Tổng sức chứa</text>
+  <text x="1370" y="810" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120" text-anchor="end">6.000 vé</text>
+  <text x="980" y="832" font-family="sans-serif" font-size="13" fill="#525252">Doanh thu mục tiêu</text>
+  <text x="1370" y="832" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19" text-anchor="end">3.250.000.000đ</text>
+
+  <!-- Materialization warning -->
+  <rect x="980" y="858" width="400" height="86" rx="10" fill="#FFF8E1" stroke="#FFE0A3"/>
+  <text x="994" y="880" font-family="sans-serif" font-size="12" font-weight="bold" fill="#B45309">⚠ Khi xuất bản</text>
+  <text x="994" y="898" font-family="sans-serif" font-size="11" fill="#A16207">Hệ thống sẽ materialize toàn bộ SEATS của VENUE</text>
+  <text x="994" y="914" font-family="sans-serif" font-size="11" fill="#A16207">thành EVENT_SEATS (status='AVAILABLE', version=0).</text>
+  <text x="994" y="930" font-family="sans-serif" font-size="11" fill="#A16207">Sau khi xuất bản, sửa SECTIONS sẽ tạo bản nháp mới.</text>
+
+  <text x="40" y="996" font-family="sans-serif" font-size="11" fill="#989393">Schema: EVENTS · EVENT_CATEGORIES · EVENT_CATEGORY_MAP · TICKET_TYPES · EVENT_SEATS materialization — design-supplement.md §6</text>
+</svg>

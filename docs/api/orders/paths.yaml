@@ -1,0 +1,62 @@
+orders:
+  post:
+    tags:
+      - Orders
+    summary: Initiate a ticket order
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../orders/schemas.yaml#/OrderRequest'
+    responses:
+      '202':
+        description: Order request queued.
+        content:
+          application/json:
+            schema:
+              $ref: '../orders/schemas.yaml#/OrderQueuedResponse'
+orderById:
+  get:
+    tags:
+      - Orders
+    summary: Check order status
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Current status of the order
+        content:
+          application/json:
+            schema:
+              $ref: '../orders/schemas.yaml#/OrderStatusResponse'
+orderPay:
+  post:
+    tags:
+      - Orders
+    summary: Process payment for an order
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../orders/schemas.yaml#/PaymentRequest'
+    responses:
+      '200':
+        description: Payment successful, tickets generated

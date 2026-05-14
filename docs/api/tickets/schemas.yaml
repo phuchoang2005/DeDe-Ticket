@@ -1,31 +1,22 @@
 Ticket:
   type: object
   properties:
-    ticketId:
+    id:
+      type: integer
+    order_item_id:
+      type: integer
+    qr_code:
       type: string
-      format: uuid
-    eventId:
-      type: string
-      format: uuid
-    zoneName:
-      type: string
-    qrCodePayload:
-      type: string
-      description: Encrypted payload for anti-fraud
     status:
       type: string
-      enum: [VALID, SCANNED, REVOKED]
+      enum: [VALID, USED, REVOKED]
 CheckinRequest:
   type: object
   required:
-    - qrCodePayload
-    - eventId
+    - qr_code
   properties:
-    qrCodePayload:
+    qr_code:
       type: string
-    eventId:
-      type: string
-      format: uuid
 OfflineSyncRequest:
   type: object
   required:
@@ -36,10 +27,8 @@ OfflineSyncRequest:
       items:
         type: object
         properties:
-          qrCodePayload:
+          qr_code:
             type: string
-          scannedAt:
+          scanned_at:
             type: string
             format: date-time
-          deviceId:
-            type: string

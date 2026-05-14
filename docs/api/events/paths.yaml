@@ -53,29 +53,45 @@ eventById:
         in: path
         required: true
         schema:
-          type: string
-          format: uuid
+          type: integer
     responses:
       '200':
-        description: Event details retrieved successfully
+        description: Event details
         content:
           application/json:
             schema:
               $ref: '../events/schemas.yaml#/Event'
-      '404':
-        description: Event not found
-eventSeating:
+eventTicketTypes:
   get:
     tags:
       - Events
-    summary: Get dynamic seating chart
+    summary: Get ticket types for an event
     parameters:
       - name: eventId
         in: path
         required: true
         schema:
-          type: string
-          format: uuid
+          type: integer
+    responses:
+      '200':
+        description: List of ticket types
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../events/schemas.yaml#/TicketType'
+eventSeating:
+  get:
+    tags:
+      - Events
+    summary: Get event seating chart mapped to venue
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: integer
     responses:
       '200':
         description: Seating chart layout and availability

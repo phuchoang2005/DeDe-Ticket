@@ -1,0 +1,224 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="1024" fill="#FAFAFA"/>
+
+  <!-- Navbar -->
+  <rect width="1440" height="64" fill="white"/>
+  <rect y="64" width="1440" height="1" fill="#E3E3E3"/>
+  <rect x="40" y="18" width="32" height="32" rx="8" fill="#157F19"/>
+  <text x="80" y="40" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1B3120">Dề Dê</text>
+  <text x="280" y="40" font-family="sans-serif" font-size="14" fill="#989393">Trang chủ</text>
+  <text x="370" y="40" font-family="sans-serif" font-size="14" fill="#157F19" font-weight="bold">Sự kiện</text>
+  <text x="440" y="40" font-family="sans-serif" font-size="14" fill="#989393">Vé của tôi</text>
+  <circle cx="1400" cy="32" r="20" fill="#B6E8BC"/>
+  <text x="1393" y="37" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">ND</text>
+
+  <!-- Page title + search -->
+  <text x="40" y="110" font-family="sans-serif" font-size="24" font-weight="bold" fill="#1B3120">Khám phá sự kiện</text>
+  <text x="40" y="132" font-family="sans-serif" font-size="13" fill="#989393">Chỉ hiển thị EVENTS.status = PUBLISHED · sắp xếp theo start_time</text>
+
+  <rect x="780" y="92" width="620" height="44" rx="22" fill="white" stroke="#E3E3E3"/>
+  <text x="808" y="120" font-family="sans-serif" font-size="14" fill="#C0BDBD">🔍</text>
+  <text x="836" y="120" font-family="sans-serif" font-size="13" fill="#989393">Tìm theo tên sự kiện, nghệ sĩ, địa điểm…</text>
+  <rect x="1340" y="100" width="52" height="28" rx="14" fill="#157F19"/>
+  <text x="1366" y="118" font-family="sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Tìm</text>
+
+  <!-- ============ CATEGORY CHIPS (EVENT_CATEGORIES) ============ -->
+  <text x="40" y="170" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">DANH MỤC · EVENT_CATEGORIES</text>
+
+  <rect x="40" y="182" width="92" height="34" rx="17" fill="#157F19"/>
+  <text x="86" y="204" font-family="sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Tất cả</text>
+
+  <rect x="140" y="182" width="100" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="190" y="204" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🎵 Concert</text>
+
+  <rect x="248" y="182" width="112" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="304" y="204" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🎓 Seminar</text>
+
+  <rect x="368" y="182" width="116" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="426" y="204" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🛠 Workshop</text>
+
+  <rect x="492" y="182" width="116" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="550" y="204" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🎬 Festival</text>
+
+  <rect x="616" y="182" width="120" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="676" y="204" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🏆 Thể thao</text>
+
+  <rect x="744" y="182" width="120" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="804" y="204" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">🎭 Nghệ thuật</text>
+
+  <rect x="872" y="182" width="80" height="34" rx="17" fill="white" stroke="#E3E3E3"/>
+  <text x="912" y="204" font-family="sans-serif" font-size="12" fill="#525252" text-anchor="middle">+ 6</text>
+
+  <!-- ============ SECONDARY FILTERS ============ -->
+  <rect x="40" y="236" width="1360" height="60" rx="10" fill="white" stroke="#E3E3E3"/>
+
+  <text x="60" y="258" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">KHOẢNG NGÀY</text>
+  <rect x="60" y="266" width="220" height="20" rx="4" fill="#F8F8F8"/>
+  <text x="70" y="280" font-family="sans-serif" font-size="11" fill="#1B3120">14/05/2026 → 14/11/2026 ▾</text>
+
+  <text x="300" y="258" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">ĐỊA ĐIỂM</text>
+  <rect x="300" y="266" width="180" height="20" rx="4" fill="#F8F8F8"/>
+  <text x="310" y="280" font-family="sans-serif" font-size="11" fill="#1B3120">Toàn quốc ▾</text>
+
+  <text x="500" y="258" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">GIÁ</text>
+  <rect x="500" y="266" width="180" height="20" rx="4" fill="#F8F8F8"/>
+  <text x="510" y="280" font-family="sans-serif" font-size="11" fill="#1B3120">0đ – 5.000.000đ ▾</text>
+
+  <text x="700" y="258" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393">CÒN VÉ</text>
+  <rect x="700" y="266" width="20" height="20" rx="4" fill="#157F19"/>
+  <text x="710" y="281" font-family="sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">✓</text>
+  <text x="728" y="280" font-family="sans-serif" font-size="11" fill="#525252">Chỉ hiển thị sự kiện còn vé (SUM available &gt; 0)</text>
+
+  <text x="1080" y="258" font-family="sans-serif" font-size="11" font-weight="bold" fill="#989393" text-anchor="end">SẮP XẾP</text>
+  <rect x="1090" y="262" width="290" height="28" rx="14" fill="#F8F8F8"/>
+  <text x="1106" y="280" font-family="sans-serif" font-size="11" fill="#1B3120">Sớm nhất trước (start_time ASC) ▾</text>
+
+  <!-- Results count -->
+  <text x="40" y="328" font-family="sans-serif" font-size="13" fill="#1B3120"><tspan font-weight="bold">142</tspan> sự kiện phù hợp · cập nhật lúc 21:14</text>
+  <text x="1392" y="328" font-family="sans-serif" font-size="12" fill="#157F19" text-anchor="end">⟳ Tự refresh mỗi 30s (cache TTL)</text>
+
+  <!-- ============ EVENT CARD GRID (4 cols × 2 rows) ============ -->
+  <!-- Card 1 -->
+  <rect x="40" y="348" width="320" height="296" rx="12" fill="white" stroke="#E3E3E3"/>
+  <rect x="40" y="348" width="320" height="160" rx="12" fill="#E8F5E9"/>
+  <circle cx="100" cy="420" r="50" fill="#157F19" opacity="0.18"/>
+  <circle cx="240" cy="440" r="40" fill="#157F19" opacity="0.14"/>
+  <text x="200" y="438" font-family="sans-serif" font-size="22" font-weight="bold" fill="#157F19" text-anchor="middle">CONCERT</text>
+  <rect x="56" y="364" width="68" height="24" rx="12" fill="white"/>
+  <text x="90" y="380" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">🎵 Concert</text>
+  <rect x="56" y="476" width="84" height="22" rx="11" fill="white"/>
+  <circle cx="66" cy="487" r="3" fill="#157F19"/>
+  <text x="76" y="491" font-family="sans-serif" font-size="10" font-weight="bold" fill="#157F19">CÒN VÉ</text>
+
+  <text x="56" y="534" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Đại nhạc hội Mùa Hè 2026</text>
+  <text x="56" y="554" font-family="sans-serif" font-size="11" fill="#525252">📅 26/10/2026 · 19:30</text>
+  <text x="56" y="572" font-family="sans-serif" font-size="11" fill="#525252">📍 SVĐ Mỹ Đình · Hà Nội</text>
+  <text x="56" y="590" font-family="sans-serif" font-size="11" fill="#989393">Tổ chức: DV Entertainment</text>
+
+  <line x1="56" y1="604" x2="344" y2="604" stroke="#F0F0F0"/>
+  <text x="56" y="624" font-family="sans-serif" font-size="11" fill="#989393">Từ</text>
+  <text x="86" y="624" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">500.000đ</text>
+  <text x="344" y="624" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="end">Còn 4.326 / 6.000</text>
+
+  <!-- Card 2 -->
+  <rect x="380" y="348" width="320" height="296" rx="12" fill="white" stroke="#E3E3E3"/>
+  <rect x="380" y="348" width="320" height="160" rx="12" fill="#FFF8E1"/>
+  <circle cx="500" cy="420" r="60" fill="#FFB800" opacity="0.25"/>
+  <text x="540" y="436" font-family="sans-serif" font-size="22" font-weight="bold" fill="#B45309" text-anchor="middle">SEMINAR</text>
+  <rect x="396" y="364" width="80" height="24" rx="12" fill="white"/>
+  <text x="436" y="380" font-family="sans-serif" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">🎓 Seminar</text>
+  <rect x="396" y="476" width="100" height="22" rx="11" fill="white"/>
+  <circle cx="406" cy="487" r="3" fill="#FFB800"/>
+  <text x="416" y="491" font-family="sans-serif" font-size="10" font-weight="bold" fill="#B45309">SẮP HẾT</text>
+
+  <text x="396" y="534" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">AI &amp; Tương lai Công nghệ</text>
+  <text x="396" y="554" font-family="sans-serif" font-size="11" fill="#525252">📅 02/06/2026 · 09:00</text>
+  <text x="396" y="572" font-family="sans-serif" font-size="11" fill="#525252">📍 Trung tâm HN Convention</text>
+  <text x="396" y="590" font-family="sans-serif" font-size="11" fill="#989393">Tổ chức: TechHub VN</text>
+
+  <line x1="396" y1="604" x2="684" y2="604" stroke="#F0F0F0"/>
+  <text x="396" y="624" font-family="sans-serif" font-size="11" fill="#989393">Từ</text>
+  <text x="426" y="624" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">300.000đ</text>
+  <text x="684" y="624" font-family="sans-serif" font-size="11" fill="#B45309" font-weight="bold" text-anchor="end">Còn 8 / 200</text>
+
+  <!-- Card 3 -->
+  <rect x="720" y="348" width="320" height="296" rx="12" fill="white" stroke="#E3E3E3"/>
+  <rect x="720" y="348" width="320" height="160" rx="12" fill="#E8F5E9"/>
+  <circle cx="840" cy="408" r="50" fill="#29D52F" opacity="0.3"/>
+  <circle cx="920" cy="460" r="40" fill="#157F19" opacity="0.18"/>
+  <text x="880" y="438" font-family="sans-serif" font-size="22" font-weight="bold" fill="#157F19" text-anchor="middle">FESTIVAL</text>
+  <rect x="736" y="364" width="84" height="24" rx="12" fill="white"/>
+  <text x="778" y="380" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">🎬 Festival</text>
+  <rect x="736" y="476" width="84" height="22" rx="11" fill="white"/>
+  <circle cx="746" cy="487" r="3" fill="#157F19"/>
+  <text x="756" y="491" font-family="sans-serif" font-size="10" font-weight="bold" fill="#157F19">CÒN VÉ</text>
+
+  <text x="736" y="534" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Liên hoan Ẩm thực Đường phố</text>
+  <text x="736" y="554" font-family="sans-serif" font-size="11" fill="#525252">📅 12/09/2026 · 17:00</text>
+  <text x="736" y="572" font-family="sans-serif" font-size="11" fill="#525252">📍 Phố đi bộ Nguyễn Huệ · TP.HCM</text>
+  <text x="736" y="590" font-family="sans-serif" font-size="11" fill="#989393">Tổ chức: Saigon Foodie Co.</text>
+
+  <line x1="736" y1="604" x2="1024" y2="604" stroke="#F0F0F0"/>
+  <text x="736" y="624" font-family="sans-serif" font-size="11" fill="#989393">Từ</text>
+  <text x="766" y="624" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">150.000đ</text>
+  <text x="1024" y="624" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="end">Còn 12.000 / 15.000</text>
+
+  <!-- Card 4 -->
+  <rect x="1060" y="348" width="340" height="296" rx="12" fill="white" stroke="#E3E3E3"/>
+  <rect x="1060" y="348" width="340" height="160" rx="12" fill="#F0F4F1"/>
+  <circle cx="1180" cy="410" r="50" fill="#157F19" opacity="0.18"/>
+  <text x="1230" y="438" font-family="sans-serif" font-size="22" font-weight="bold" fill="#157F19" text-anchor="middle">WORKSHOP</text>
+  <rect x="1076" y="364" width="92" height="24" rx="12" fill="white"/>
+  <text x="1122" y="380" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">🛠 Workshop</text>
+
+  <text x="1076" y="534" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Nhiếp ảnh chân dung cơ bản</text>
+  <text x="1076" y="554" font-family="sans-serif" font-size="11" fill="#525252">📅 22/06/2026 · 14:00</text>
+  <text x="1076" y="572" font-family="sans-serif" font-size="11" fill="#525252">📍 Hub Hub · Quận 1, TP.HCM</text>
+  <text x="1076" y="590" font-family="sans-serif" font-size="11" fill="#989393">Tổ chức: Chụp Đi Studio</text>
+
+  <line x1="1076" y1="604" x2="1384" y2="604" stroke="#F0F0F0"/>
+  <text x="1076" y="624" font-family="sans-serif" font-size="11" fill="#989393">Từ</text>
+  <text x="1106" y="624" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">800.000đ</text>
+  <text x="1384" y="624" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="end">Còn 18 / 30</text>
+
+  <!-- Row 2 -->
+  <rect x="40" y="660" width="320" height="240" rx="12" fill="white" stroke="#E3E3E3"/>
+  <rect x="40" y="660" width="320" height="120" rx="12" fill="#FFF8E1"/>
+  <text x="200" y="730" font-family="sans-serif" font-size="20" font-weight="bold" fill="#B45309" text-anchor="middle">SPORTS</text>
+  <rect x="56" y="676" width="100" height="24" rx="12" fill="white"/>
+  <text x="106" y="692" font-family="sans-serif" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">🏆 Thể thao</text>
+  <text x="56" y="808" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Giao hữu V-League · CAHN vs Hà Nội FC</text>
+  <text x="56" y="826" font-family="sans-serif" font-size="11" fill="#525252">📅 28/05/2026 · 18:00 · SVĐ Hàng Đẫy</text>
+  <text x="56" y="864" font-family="sans-serif" font-size="11" fill="#989393">Từ</text>
+  <text x="86" y="864" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">200.000đ</text>
+  <text x="344" y="864" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="end">Còn 5.420 / 20.000</text>
+
+  <rect x="380" y="660" width="320" height="240" rx="12" fill="white" stroke="#E3E3E3"/>
+  <rect x="380" y="660" width="320" height="120" rx="12" fill="#E8F5E9"/>
+  <text x="540" y="730" font-family="sans-serif" font-size="20" font-weight="bold" fill="#157F19" text-anchor="middle">ART</text>
+  <rect x="396" y="676" width="116" height="24" rx="12" fill="white"/>
+  <text x="454" y="692" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">🎭 Nghệ thuật</text>
+  <text x="396" y="808" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Vở nhạc kịch "Tiên Tri"</text>
+  <text x="396" y="826" font-family="sans-serif" font-size="11" fill="#525252">📅 14/07/2026 · 20:00 · Nhà hát Lớn HN</text>
+  <text x="396" y="864" font-family="sans-serif" font-size="11" fill="#989393">Từ</text>
+  <text x="426" y="864" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">450.000đ</text>
+  <text x="684" y="864" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="end">Còn 84 / 600</text>
+
+  <rect x="720" y="660" width="320" height="240" rx="12" fill="white" stroke="#E3E3E3"/>
+  <rect x="720" y="660" width="320" height="120" rx="12" fill="#E8F5E9"/>
+  <text x="880" y="730" font-family="sans-serif" font-size="20" font-weight="bold" fill="#157F19" text-anchor="middle">CONCERT</text>
+  <rect x="736" y="676" width="84" height="24" rx="12" fill="white"/>
+  <text x="778" y="692" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">🎵 Concert</text>
+  <rect x="990" y="676" width="34" height="24" rx="12" fill="#FDECEC"/>
+  <text x="1007" y="692" font-family="sans-serif" font-size="10" font-weight="bold" fill="#C53030" text-anchor="middle">HOT</text>
+  <text x="736" y="808" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Acoustic Night · Hà Anh Tuấn</text>
+  <text x="736" y="826" font-family="sans-serif" font-size="11" fill="#525252">📅 03/08/2026 · 19:30 · Nhà hát Bến Thành</text>
+  <text x="736" y="864" font-family="sans-serif" font-size="11" fill="#989393">Từ</text>
+  <text x="766" y="864" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">1.200.000đ</text>
+  <text x="1024" y="864" font-family="sans-serif" font-size="11" fill="#C53030" font-weight="bold" text-anchor="end">Còn 12 / 1.200</text>
+
+  <rect x="1060" y="660" width="340" height="240" rx="12" fill="white" stroke="#E3E3E3"/>
+  <rect x="1060" y="660" width="340" height="120" rx="12" fill="#F0F4F1"/>
+  <text x="1230" y="730" font-family="sans-serif" font-size="20" font-weight="bold" fill="#157F19" text-anchor="middle">SEMINAR</text>
+  <rect x="1076" y="676" width="80" height="24" rx="12" fill="white"/>
+  <text x="1116" y="692" font-family="sans-serif" font-size="11" font-weight="bold" fill="#525252" text-anchor="middle">🎓 Seminar</text>
+  <text x="1076" y="808" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Khởi nghiệp 0 đồng — thực tế hay ảo?</text>
+  <text x="1076" y="826" font-family="sans-serif" font-size="11" fill="#525252">📅 19/06/2026 · 09:00 · ĐH FPT TP.HCM</text>
+  <text x="1076" y="864" font-family="sans-serif" font-size="11" fill="#989393">Miễn phí</text>
+  <text x="1384" y="864" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="end">Còn 240 / 500</text>
+
+  <!-- Pagination -->
+  <text x="40" y="952" font-family="sans-serif" font-size="12" fill="#989393">Hiển thị 1–8 trong 142 sự kiện</text>
+  <rect x="1180" y="936" width="40" height="32" rx="6" fill="white" stroke="#E3E3E3"/>
+  <text x="1200" y="956" font-family="sans-serif" font-size="13" fill="#525252" text-anchor="middle">‹</text>
+  <rect x="1224" y="936" width="40" height="32" rx="6" fill="#157F19"/>
+  <text x="1244" y="956" font-family="sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">1</text>
+  <rect x="1268" y="936" width="40" height="32" rx="6" fill="white" stroke="#E3E3E3"/>
+  <text x="1288" y="956" font-family="sans-serif" font-size="13" fill="#525252" text-anchor="middle">2</text>
+  <rect x="1312" y="936" width="40" height="32" rx="6" fill="white" stroke="#E3E3E3"/>
+  <text x="1332" y="956" font-family="sans-serif" font-size="13" fill="#525252" text-anchor="middle">…</text>
+  <rect x="1356" y="936" width="40" height="32" rx="6" fill="white" stroke="#E3E3E3"/>
+  <text x="1376" y="956" font-family="sans-serif" font-size="13" fill="#525252" text-anchor="middle">›</text>
+
+  <text x="40" y="996" font-family="sans-serif" font-size="11" fill="#989393">Schema: EVENTS · EVENT_CATEGORY_MAP · EVENT_CATEGORIES · TICKET_TYPES (SUM availability) · cache TTL 30s — design-supplement.md §7</text>
+</svg>

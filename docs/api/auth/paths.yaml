@@ -11,9 +11,7 @@ register:
             $ref: '../auth/schemas.yaml#/RegisterRequest'
     responses:
       '201':
-        description: Registration successful, temporary user created and OTP sent
-      '400':
-        description: Validation error
+        description: Registration successful, OTP sent
 login:
   post:
     tags:
@@ -37,8 +35,6 @@ login:
                   type: string
                 requireOtp:
                   type: boolean
-      '401':
-        description: Invalid credentials
 verifyOtp:
   post:
     tags:
@@ -62,5 +58,13 @@ verifyOtp:
                   type: string
                 refreshToken:
                   type: string
-      '400':
-        description: Invalid or expired OTP
+logout:
+  post:
+    tags:
+      - Authentication
+    summary: Logout user
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Logged out successfully

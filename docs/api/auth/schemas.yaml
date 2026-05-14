@@ -1,12 +1,12 @@
 RegisterRequest:
   type: object
   required:
-    - username
+    - full_name
     - email
     - phone
     - password
   properties:
-    username:
+    full_name:
       type: string
     email:
       type: string
@@ -19,11 +19,12 @@ RegisterRequest:
 LoginRequest:
   type: object
   required:
-    - username
+    - email
     - password
   properties:
-    username:
+    email:
       type: string
+      format: email
     password:
       type: string
       format: password

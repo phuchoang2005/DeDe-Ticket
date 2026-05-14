@@ -1,0 +1,163 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="1024" fill="#FAFAFA"/>
+
+  <!-- Navbar -->
+  <rect width="1440" height="64" fill="white"/>
+  <rect y="64" width="1440" height="1" fill="#E3E3E3"/>
+  <rect x="40" y="18" width="32" height="32" rx="8" fill="#157F19"/>
+  <text x="80" y="40" font-family="sans-serif" font-size="16" font-weight="bold" fill="#1B3120">Dề Dê</text>
+  <text x="280" y="40" font-family="sans-serif" font-size="14" fill="#989393">Trang chủ</text>
+  <text x="370" y="40" font-family="sans-serif" font-size="14" fill="#157F19" font-weight="bold">Sự kiện</text>
+  <text x="440" y="40" font-family="sans-serif" font-size="14" fill="#989393">Vé của tôi</text>
+  <circle cx="1400" cy="32" r="20" fill="#B6E8BC"/>
+  <text x="1393" y="37" font-family="sans-serif" font-size="14" font-weight="bold" fill="#157F19">ND</text>
+
+  <!-- Breadcrumb -->
+  <text x="40" y="96" font-family="sans-serif" font-size="12" fill="#989393">Sự kiện › Concert › <tspan fill="#1B3120">Đại nhạc hội Mùa Hè 2026</tspan></text>
+
+  <!-- Hero -->
+  <rect x="40" y="112" width="900" height="320" rx="12" fill="#E8F5E9"/>
+  <path d="M 40 432 L 940 432 L 940 112 L 40 112 Z" fill="url(#heroGrad)" opacity="0.0"/>
+  <defs>
+    <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#157F19" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#157F19" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+  <!-- Hero decorative shapes -->
+  <circle cx="200" cy="220" r="80" fill="#157F19" opacity="0.15"/>
+  <circle cx="320" cy="340" r="100" fill="#157F19" opacity="0.1"/>
+  <circle cx="780" cy="180" r="60" fill="#157F19" opacity="0.18"/>
+  <circle cx="680" cy="380" r="120" fill="#157F19" opacity="0.08"/>
+  <text x="490" y="240" font-family="sans-serif" font-size="48" font-weight="bold" fill="#157F19" text-anchor="middle">ĐẠI NHẠC HỘI</text>
+  <text x="490" y="288" font-family="sans-serif" font-size="48" font-weight="bold" fill="#1B3120" text-anchor="middle">MÙA HÈ 2026</text>
+
+  <!-- Status badge on hero -->
+  <rect x="60" y="132" width="100" height="28" rx="14" fill="white"/>
+  <circle cx="78" cy="146" r="4" fill="#157F19"/>
+  <text x="92" y="151" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19">PUBLISHED</text>
+  <rect x="172" y="132" width="84" height="28" rx="14" fill="white"/>
+  <text x="214" y="151" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="middle">Concert</text>
+  <rect x="268" y="132" width="76" height="28" rx="14" fill="white"/>
+  <text x="306" y="151" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="middle">Outdoor</text>
+
+  <!-- Title + meta -->
+  <text x="40" y="468" font-family="sans-serif" font-size="28" font-weight="bold" fill="#1B3120">Đại nhạc hội Mùa Hè 2026</text>
+
+  <g transform="translate(40,488)">
+    <text font-family="sans-serif" font-size="13" fill="#525252">📅 26/10/2026 · 19:30 – 23:00 (kết thúc)</text>
+    <text y="22" font-family="sans-serif" font-size="13" fill="#525252">📍 SVĐ Mỹ Đình · 1 Lê Đức Thọ, Mỹ Đình, Nam Từ Liêm, Hà Nội</text>
+    <text y="44" font-family="sans-serif" font-size="13" fill="#525252">👥 Sức chứa: 40.000 ghế · 1.200 đã bán</text>
+  </g>
+
+  <!-- Organizer card (EVENTS.created_by) -->
+  <rect x="40" y="564" width="900" height="80" rx="12" fill="white" stroke="#E3E3E3"/>
+  <circle cx="80" cy="604" r="24" fill="#157F19"/>
+  <text x="80" y="610" font-family="sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">DV</text>
+  <text x="118" y="594" font-family="sans-serif" font-size="11" fill="#989393">Tổ chức bởi</text>
+  <text x="118" y="612" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">DV Entertainment</text>
+  <text x="118" y="628" font-family="sans-serif" font-size="11" fill="#525252">12 sự kiện đã tổ chức · 4.8 ★ từ 2.341 đánh giá · USERS.id = 1042</text>
+  <rect x="788" y="586" width="132" height="36" rx="8" fill="white" stroke="#157F19"/>
+  <text x="854" y="608" font-family="sans-serif" font-size="12" font-weight="bold" fill="#157F19" text-anchor="middle">Theo dõi BTC</text>
+
+  <!-- About section -->
+  <text x="40" y="688" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1B3120">Giới thiệu sự kiện</text>
+  <text x="40" y="714" font-family="sans-serif" font-size="13" fill="#525252">Đại nhạc hội Mùa Hè 2026 quy tụ hơn 20 nghệ sĩ hàng đầu Việt Nam và quốc tế. Với sân khấu</text>
+  <text x="40" y="732" font-family="sans-serif" font-size="13" fill="#525252">ngoài trời lớn nhất từ trước đến nay, đêm diễn hứa hẹn mang đến trải nghiệm âm nhạc</text>
+  <text x="40" y="750" font-family="sans-serif" font-size="13" fill="#525252">và hình ảnh đỉnh cao. (EVENTS.description, rút gọn 2 dòng đầu — xem thêm bên dưới)</text>
+
+  <!-- Lineup tags -->
+  <rect x="40" y="772" width="80" height="26" rx="13" fill="#E8F5E9"/>
+  <text x="80" y="789" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">Sơn Tùng</text>
+  <rect x="128" y="772" width="100" height="26" rx="13" fill="#E8F5E9"/>
+  <text x="178" y="789" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">Hà Anh Tuấn</text>
+  <rect x="236" y="772" width="92" height="26" rx="13" fill="#E8F5E9"/>
+  <text x="282" y="789" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">Mỹ Tâm</text>
+  <rect x="336" y="772" width="88" height="26" rx="13" fill="#E8F5E9"/>
+  <text x="380" y="789" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="middle">DJ Mike</text>
+  <rect x="432" y="772" width="76" height="26" rx="13" fill="#F0F0F0"/>
+  <text x="470" y="789" font-family="sans-serif" font-size="11" fill="#525252" text-anchor="middle">+ 16 nữa</text>
+
+  <!-- Venue map placeholder -->
+  <rect x="40" y="820" width="900" height="160" rx="12" fill="#F0F4F1" stroke="#E3E3E3"/>
+  <text x="490" y="900" font-family="sans-serif" font-size="13" fill="#989393" text-anchor="middle">Bản đồ địa điểm — VENUES.address</text>
+  <text x="490" y="918" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="middle">SECTIONS được hiển thị tương tác ở bước chọn ghế</text>
+
+  <!-- ============ TICKET TYPE SIDEBAR ============ -->
+  <rect x="960" y="112" width="440" height="868" rx="12" fill="white" stroke="#E3E3E3"/>
+
+  <text x="980" y="144" font-family="sans-serif" font-size="18" font-weight="bold" fill="#1B3120">Chọn loại vé</text>
+  <text x="1380" y="144" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="end">TICKET_TYPES</text>
+
+  <text x="980" y="166" font-family="sans-serif" font-size="12" fill="#525252">Mở bán từ 14/05/2026 09:00</text>
+  <line x1="980" y1="184" x2="1380" y2="184" stroke="#E3E3E3"/>
+
+  <!-- VIP ticket type -->
+  <rect x="980" y="200" width="400" height="120" rx="10" fill="white" stroke="#157F19" stroke-width="2"/>
+  <rect x="980" y="200" width="6" height="120" fill="#157F19"/>
+  <text x="998" y="226" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">VIP</text>
+  <rect x="1030" y="212" width="62" height="20" rx="10" fill="#FFE0A3"/>
+  <text x="1061" y="226" font-family="sans-serif" font-size="10" font-weight="bold" fill="#B45309" text-anchor="middle">SẮP HẾT</text>
+  <text x="1370" y="226" font-family="sans-serif" font-size="16" font-weight="bold" fill="#157F19" text-anchor="end">2.500.000đ</text>
+  <text x="998" y="248" font-family="sans-serif" font-size="11" fill="#525252">Hàng A–B, gần sân khấu · Welcome drink · Quà lưu niệm</text>
+
+  <!-- Availability bar (quantity − sold_quantity) -->
+  <text x="998" y="276" font-family="sans-serif" font-size="11" fill="#989393">Còn 24/500 vé</text>
+  <text x="1370" y="276" font-family="sans-serif" font-size="11" font-weight="bold" fill="#B45309" text-anchor="end">95% đã bán</text>
+  <rect x="998" y="282" width="372" height="6" rx="3" fill="#F0F0F0"/>
+  <rect x="998" y="282" width="353" height="6" rx="3" fill="#FFB800"/>
+  <text x="998" y="308" font-family="monospace" font-size="10" fill="#989393">quantity=500 · sold_quantity=476</text>
+
+  <!-- Regular ticket type -->
+  <rect x="980" y="336" width="400" height="120" rx="10" fill="white" stroke="#E3E3E3"/>
+  <rect x="980" y="336" width="6" height="120" fill="#29D52F"/>
+  <text x="998" y="362" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Regular</text>
+  <text x="1370" y="362" font-family="sans-serif" font-size="16" font-weight="bold" fill="#198111" text-anchor="end">1.000.000đ</text>
+  <text x="998" y="384" font-family="sans-serif" font-size="11" fill="#525252">Hàng C–E, tầm nhìn tốt · Đồ uống có sẵn</text>
+
+  <text x="998" y="412" font-family="sans-serif" font-size="11" fill="#989393">Còn 412/1.500 vé</text>
+  <text x="1370" y="412" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="end">72% đã bán</text>
+  <rect x="998" y="418" width="372" height="6" rx="3" fill="#F0F0F0"/>
+  <rect x="998" y="418" width="268" height="6" rx="3" fill="#29D52F"/>
+  <text x="998" y="444" font-family="monospace" font-size="10" fill="#989393">quantity=1500 · sold_quantity=1088</text>
+
+  <!-- Economy ticket type -->
+  <rect x="980" y="472" width="400" height="120" rx="10" fill="white" stroke="#E3E3E3"/>
+  <rect x="980" y="472" width="6" height="120" fill="#B6E8BC"/>
+  <text x="998" y="498" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">Economy</text>
+  <text x="1370" y="498" font-family="sans-serif" font-size="16" font-weight="bold" fill="#157F19" text-anchor="end">500.000đ</text>
+  <text x="998" y="520" font-family="sans-serif" font-size="11" fill="#525252">Hàng F–I, khu vực đứng</text>
+
+  <text x="998" y="548" font-family="sans-serif" font-size="11" fill="#989393">Còn 3.890/4.000 vé</text>
+  <text x="1370" y="548" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="end">3% đã bán</text>
+  <rect x="998" y="554" width="372" height="6" rx="3" fill="#F0F0F0"/>
+  <rect x="998" y="554" width="10" height="6" rx="3" fill="#B6E8BC"/>
+  <text x="998" y="580" font-family="monospace" font-size="10" fill="#989393">quantity=4000 · sold_quantity=110</text>
+
+  <!-- Total availability -->
+  <rect x="980" y="612" width="400" height="60" rx="10" fill="#F8F8F8"/>
+  <text x="996" y="634" font-family="sans-serif" font-size="11" fill="#989393">Tổng sức chứa</text>
+  <text x="996" y="652" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1B3120">4.326 / 6.000 vé còn trống</text>
+  <text x="1370" y="652" font-family="sans-serif" font-size="11" font-weight="bold" fill="#157F19" text-anchor="end">SUM(quantity − sold_quantity)</text>
+
+  <!-- Status-aware CTA -->
+  <rect x="980" y="690" width="400" height="56" rx="10" fill="#157F19"/>
+  <text x="1180" y="724" font-family="sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Chọn ghế →</text>
+
+  <text x="1180" y="768" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="middle">CTA bị ẩn khi EVENTS.status ∈ {DRAFT, CANCELLED, COMPLETED}</text>
+
+  <line x1="980" y1="790" x2="1380" y2="790" stroke="#E3E3E3"/>
+
+  <!-- Safety notes -->
+  <text x="980" y="816" font-family="sans-serif" font-size="13" font-weight="bold" fill="#1B3120">Cam kết</text>
+  <circle cx="990" cy="838" r="3" fill="#157F19"/>
+  <text x="1000" y="842" font-family="sans-serif" font-size="11" fill="#525252">Mỗi QR code là duy nhất (TICKETS.qr_code UNIQUE)</text>
+  <circle cx="990" cy="858" r="3" fill="#157F19"/>
+  <text x="1000" y="862" font-family="sans-serif" font-size="11" fill="#525252">Tự động hoàn tiền nếu hệ thống lỗi (ORDERS → REFUND_PENDING)</text>
+  <circle cx="990" cy="878" r="3" fill="#157F19"/>
+  <text x="1000" y="882" font-family="sans-serif" font-size="11" fill="#525252">Giữ ghế 15 phút trong lúc thanh toán (EVENT_SEATS.locked_until)</text>
+  <circle cx="990" cy="898" r="3" fill="#157F19"/>
+  <text x="1000" y="902" font-family="sans-serif" font-size="11" fill="#525252">Hỗ trợ MoMo / VNPay / Visa-Master (PAYMENTS.provider)</text>
+
+  <text x="1180" y="952" font-family="sans-serif" font-size="11" fill="#989393" text-anchor="middle">Schema: EVENTS · TICKET_TYPES · EVENT_CATEGORY_MAP · VENUES</text>
+</svg>
