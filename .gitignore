@@ -3,5 +3,7 @@
 .env.*
 ! .env.example
 
+.DS_Store
+
 CLAUDE.md
 GE-REQUIREMENT.md
