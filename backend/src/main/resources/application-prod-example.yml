@@ -1,21 +1,22 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
-
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-  devtools:
-    restart:
-      enabled: true
+    show-sql: false
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      timeout: 2s
+      connect-timeout: 1s
 
 logging:
   level:
-    org.springframework: INFO
+    com.odoomaster.ticketing: INFO
+    org.springframework: WARN

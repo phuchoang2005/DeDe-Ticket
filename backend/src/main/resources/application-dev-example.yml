@@ -1,9 +1,8 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
-
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,11 +10,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-  devtools:
-    restart:
-      enabled: true
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
 
 logging:
   level:
+    com.odoomaster.ticketing: DEBUG
     org.springframework: INFO

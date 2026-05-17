@@ -1,0 +1,40 @@
+package com.odoomaster.ticketing.domain;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+
+@Entity
+@Table(name = "payments", indexes = @Index(name = "idx_payments_order", columnList = "order_id"))
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Payment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "order_id", nullable = false)
+    private Long orderId;
+
+    @Column(nullable = false, length = 20)
+    private String provider;
+
+    @Column(name = "transaction_id", length = 64)
+    private String transactionId;
+
+    @Column(nullable = false, precision = 14, scale = 0)
+    private BigDecimal amount;
+
+    @Column(nullable = false, length = 20)
+    private String status;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @PrePersist
+    void prePersist() {
+        if (createdAt == null) createdAt = Instant.now();
+    }
+}
