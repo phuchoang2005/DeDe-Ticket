@@ -1,0 +1,45 @@
+package com.odoomaster.ticketing.controller;
+
+import com.odoomaster.ticketing.domain.User;
+import com.odoomaster.ticketing.dto.AuthDtos.UserResponse;
+import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.repository.UserRepository;
+import com.odoomaster.ticketing.security.CurrentUser;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v1/users")
+public class UserController {
+
+    private final UserRepository users;
+    private final CurrentUser current;
+
+    public UserController(UserRepository users, CurrentUser current) {
+        this.users = users;
+        this.current = current;
+    }
+
+    @GetMapping("/me")
+    public UserResponse me() {
+        Long uid = current.require().userId();
+        User u = users.findById(uid).orElseThrow(() ->
+                new AppException("USER_NOT_FOUND", "User not found.", HttpStatus.NOT_FOUND));
+        return new UserResponse(u.getId(), u.getEmail(), u.getFullName(), u.getPhone(), u.getRole());
+    }
+
+    @PutMapping("/me")
+    public UserResponse update(@Valid @RequestBody UpdateProfileRequest req) {
+        Long uid = current.require().userId();
+        User u = users.findById(uid).orElseThrow(() ->
+                new AppException("USER_NOT_FOUND", "User not found.", HttpStatus.NOT_FOUND));
+        if (req.fullName() != null) u.setFullName(req.fullName());
+        if (req.phone() != null) u.setPhone(req.phone());
+        users.save(u);
+        return new UserResponse(u.getId(), u.getEmail(), u.getFullName(), u.getPhone(), u.getRole());
+    }
+
+    public record UpdateProfileRequest(@Size(max = 255) String fullName, @Size(max = 50) String phone) {}
+}
