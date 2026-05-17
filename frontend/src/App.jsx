@@ -1,25 +1,39 @@
-import { useEffect, useState } from "react";
-import { fetchEvents } from "./services/api";
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { AuthProvider } from './store/AuthContext';
+import AppLayout from './layouts/AppLayout';
+import RequireAuth from './components/RequireAuth';
 
-function App() {
-  const [events, setEvents] = useState([]);
+import HomePage from './pages/HomePage';
+import EventListPage from './pages/EventListPage';
+import EventDetailPage from './pages/EventDetailPage';
+import CheckoutPage from './pages/CheckoutPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
+import MyTicketsPage from './pages/MyTicketsPage';
+import TicketDetailPage from './pages/TicketDetailPage';
+import NotificationsPage from './pages/NotificationsPage';
 
-  useEffect(() => {
-    fetchEvents().then(setEvents).catch(console.error);
-  }, []);
-
+export default function App() {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">🎟️ Event List</h1>
-      <ul>
-        {events.map((e, i) => (
-          <li key={i} className="border p-2 mb-2 rounded">
-            {e.name}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="events" element={<EventListPage />} />
+            <Route path="events/:id" element={<EventDetailPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="checkout/:id" element={<RequireAuth><CheckoutPage /></RequireAuth>} />
+            <Route path="profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
+            <Route path="tickets" element={<RequireAuth><MyTicketsPage /></RequireAuth>} />
+            <Route path="tickets/:id" element={<RequireAuth><TicketDetailPage /></RequireAuth>} />
+            <Route path="notifications" element={<RequireAuth><NotificationsPage /></RequireAuth>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
-
-export default App;
