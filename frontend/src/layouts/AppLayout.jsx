@@ -78,11 +78,20 @@ export default function AppLayout() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex gap-1">
+          <nav className="hidden md:flex gap-1 items-center">
             <NavLink to="/" end className={desktopNavLink}>Trang chủ</NavLink>
             <NavLink to="/events" className={desktopNavLink}>Sự kiện</NavLink>
             {user && <NavLink to="/tickets" className={desktopNavLink}>Vé của tôi</NavLink>}
             {user && <NavLink to="/notifications" className={desktopNavLink}>Thông báo</NavLink>}
+            {user && (user.role === 'ADMIN' || user.role === 'ORGANIZER') && (
+              <>
+                <NavLink to="/admin/events" className={desktopNavLink}>Quản trị sự kiện</NavLink>
+                <NavLink to="/admin/analytics" className={desktopNavLink}>Báo cáo</NavLink>
+                <span className="ml-1 px-2 py-0.5 rounded-full bg-warn-50 text-warn-700 text-[10px] font-bold">
+                  {user.role}
+                </span>
+              </>
+            )}
           </nav>
 
           <div className="ml-auto flex items-center gap-1 sm:gap-3">
@@ -171,6 +180,12 @@ export default function AppLayout() {
                 </NavLink>
               )}
               {user && <NavLink to="/profile" className={drawerNavLink}>👤 Hồ sơ</NavLink>}
+              {user && (user.role === 'ADMIN' || user.role === 'ORGANIZER') && (
+                <>
+                  <NavLink to="/admin/events" className={drawerNavLink}>🛠 Quản trị sự kiện</NavLink>
+                  <NavLink to="/admin/analytics" className={drawerNavLink}>📊 Báo cáo</NavLink>
+                </>
+              )}
             </nav>
             <div className="mt-auto pt-4 border-t border-line">
               {user ? (
