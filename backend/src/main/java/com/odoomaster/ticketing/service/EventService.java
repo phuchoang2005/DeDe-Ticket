@@ -8,6 +8,8 @@ import com.odoomaster.ticketing.exception.AppException;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,17 +30,31 @@ public class EventService {
         this.seats = seats;
     }
 
+    public EventPage listPaged(int page, int limit, String category, String q) {
+        int safePage = Math.max(1, page);
+        int safeLimit = Math.min(100, Math.max(1, limit));
+        String nCat = (category == null || category.isBlank()) ? null : category;
+        String nQ = (q == null || q.isBlank()) ? null : q.trim();
+        Page<Event> result = events.findPublished("PUBLISHED", nCat, nQ,
+                PageRequest.of(safePage - 1, safeLimit));
+        List<EventSummary> items = result.getContent().stream().map(this::toSummary).toList();
+        boolean hasMore = result.hasNext();
+        return new EventPage(items, new PageMeta(safePage, safeLimit, result.getTotalElements(), hasMore));
+    }
+
+    private EventSummary toSummary(Event e) {
+        var s = seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(e.getId());
+        BigDecimal min = s.stream().map(EventSeat::getPrice).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
+        int avail = (int) s.stream().filter(x -> "AVAILABLE".equals(x.getStatus())).count();
+        return new EventSummary(e.getId(), e.getTitle(), e.getLocation(), e.getImageUrl(),
+                e.getCategory(), e.getOrganizer(),
+                e.getStartTime(), e.getEndTime(), e.getStatus(), min, avail, s.size());
+    }
+
     @Cacheable(CacheConfig.EVENTS_LIST)
     public List<EventSummary> list() {
         return events.findAllByStatusOrderByStartTimeAsc("PUBLISHED").stream()
-                .map(e -> {
-                    var s = seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(e.getId());
-                    BigDecimal min = s.stream().map(EventSeat::getPrice).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
-                    int avail = (int) s.stream().filter(x -> "AVAILABLE".equals(x.getStatus())).count();
-                    return new EventSummary(e.getId(), e.getTitle(), e.getLocation(), e.getImageUrl(),
-                            e.getCategory(), e.getOrganizer(),
-                            e.getStartTime(), e.getEndTime(), e.getStatus(), min, avail, s.size());
-                })
+                .map(this::toSummary)
                 .toList();
     }
 

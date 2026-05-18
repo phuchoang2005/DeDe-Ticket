@@ -11,7 +11,7 @@ export const userApi = {
 };
 
 export const eventApi = {
-  list: () => apiClient.get('/v1/events'),
+  list: (params = {}) => apiClient.get('/v1/events', { params }),
   detail: (id) => apiClient.get(`/v1/events/${id}`),
   seats: (id) => apiClient.get(`/v1/events/${id}/seats`),
 };
