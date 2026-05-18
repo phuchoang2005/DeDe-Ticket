@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     long countByStatus(String status);
+    java.util.List<Payment> findByOrderId(Long orderId);
 }

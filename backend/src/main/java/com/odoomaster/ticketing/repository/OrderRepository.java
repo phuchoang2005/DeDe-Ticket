@@ -32,4 +32,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     long countByStatus(String status);
 
     long countByEventIdAndStatusNotIn(Long eventId, java.util.Collection<String> excludedStatuses);
+
+    List<Order> findByEventId(Long eventId);
 }

@@ -52,6 +52,10 @@ public class OrderService {
     public OrderView create(Long userId, CreateOrderRequest req) {
         Event event = events.findById(req.eventId())
                 .orElseThrow(() -> new AppException("EVENT_NOT_FOUND", "Event not found.", HttpStatus.NOT_FOUND));
+        if (!"PUBLISHED".equals(event.getStatus())) {
+            throw new AppException("EVENT_NOT_PUBLISHED",
+                    "Event is not currently on sale.", HttpStatus.CONFLICT);
+        }
         if (req.seatIds() == null || req.seatIds().isEmpty()) {
             throw new AppException("VALIDATION_FAILED", "At least one seat is required.", HttpStatus.BAD_REQUEST);
         }

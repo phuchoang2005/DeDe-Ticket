@@ -7,8 +7,11 @@ import com.odoomaster.ticketing.dto.AdminDtos.*;
 import com.odoomaster.ticketing.exception.AppException;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
+import com.odoomaster.ticketing.repository.OrderItemRepository;
 import com.odoomaster.ticketing.repository.OrderRepository;
+import com.odoomaster.ticketing.repository.PaymentRepository;
 import com.odoomaster.ticketing.repository.TicketRepository;
+import com.odoomaster.ticketing.domain.Order;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
@@ -26,13 +29,18 @@ public class AdminEventService {
     private final EventRepository events;
     private final EventSeatRepository seats;
     private final OrderRepository orders;
+    private final OrderItemRepository orderItems;
+    private final PaymentRepository payments;
     private final TicketRepository tickets;
 
     public AdminEventService(EventRepository events, EventSeatRepository seats,
-                             OrderRepository orders, TicketRepository tickets) {
+                             OrderRepository orders, OrderItemRepository orderItems,
+                             PaymentRepository payments, TicketRepository tickets) {
         this.events = events;
         this.seats = seats;
         this.orders = orders;
+        this.orderItems = orderItems;
+        this.payments = payments;
         this.tickets = tickets;
     }
 
@@ -116,6 +124,10 @@ public class AdminEventService {
             throw new AppException("EVENT_HAS_NO_SEATS",
                     "Cannot publish an event with no seats.", HttpStatus.CONFLICT);
         }
+        if ("DRAFT".equals(status) && tickets.countByEventId(id) > 0) {
+            throw new AppException("EVENT_HAS_TICKETS",
+                    "Cannot revert to DRAFT: event already has issued tickets.", HttpStatus.CONFLICT);
+        }
         e.setStatus(status);
         events.save(e);
         return detail(e.getId());
@@ -185,20 +197,33 @@ public class AdminEventService {
     public void delete(Long id) {
         Event e = events.findById(id)
                 .orElseThrow(() -> new AppException("EVENT_NOT_FOUND", "Event not found.", HttpStatus.NOT_FOUND));
-        long ticketCount = tickets.countByEventId(id);
-        if (ticketCount > 0) {
-            throw new AppException("EVENT_HAS_TICKETS",
-                    "Cannot delete: event has " + ticketCount + " issued tickets. Cancel it instead.",
-                    HttpStatus.CONFLICT);
+        boolean force = "COMPLETED".equals(e.getStatus());
+        if (!force) {
+            long ticketCount = tickets.countByEventId(id);
+            if (ticketCount > 0) {
+                throw new AppException("EVENT_HAS_TICKETS",
+                        "Cannot delete: event has " + ticketCount + " issued tickets. Mark it COMPLETED first.",
+                        HttpStatus.CONFLICT);
+            }
+            long activeOrders = orders.countByEventIdAndStatusNotIn(id, List.of("CANCELLED", "EXPIRED"));
+            if (activeOrders > 0) {
+                throw new AppException("EVENT_HAS_ORDERS",
+                        "Cannot delete: event has active orders. Mark it COMPLETED first or cancel them.",
+                        HttpStatus.CONFLICT);
+            }
         }
-        long activeOrders = orders.countByEventIdAndStatusNotIn(id, List.of("CANCELLED", "EXPIRED"));
-        if (activeOrders > 0) {
-            throw new AppException("EVENT_HAS_ORDERS",
-                    "Cannot delete: event has active orders. Cancel it instead.",
-                    HttpStatus.CONFLICT);
-        }
-        seats.deleteAll(seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(id));
+        cascadeDeleteEvent(id);
         events.delete(e);
+    }
+
+    private void cascadeDeleteEvent(Long eventId) {
+        tickets.deleteAll(tickets.findByEventId(eventId));
+        for (Order o : orders.findByEventId(eventId)) {
+            orderItems.deleteAll(orderItems.findByOrderId(o.getId()));
+            payments.deleteAll(payments.findByOrderId(o.getId()));
+            orders.delete(o);
+        }
+        seats.deleteAll(seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(eventId));
     }
 
     @Transactional
