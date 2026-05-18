@@ -30,9 +30,17 @@ public class AnalyticsDtos {
             Long refundPending,
             Long refunded) {}
 
+    public record CategoryBreakdownRow(
+            String category, Long eventCount, Long ticketsSold, BigDecimal revenue) {}
+
+    public record SecuritySignal(
+            String code, String label, Long count, String severity) {}
+
     public record AnalyticsReport(
             KpiSummary kpis,
             List<RevenuePoint> revenueByDay,
             List<EventLeaderboardRow> topEvents,
-            PaymentFunnel paymentFunnel) {}
+            PaymentFunnel paymentFunnel,
+            List<CategoryBreakdownRow> categoryBreakdown,
+            List<SecuritySignal> securitySignals) {}
 }

@@ -1,6 +1,7 @@
 package com.odoomaster.ticketing.service;
 
 import com.odoomaster.ticketing.domain.Event;
+import com.odoomaster.ticketing.domain.Event;
 import com.odoomaster.ticketing.dto.AnalyticsDtos.*;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
@@ -46,7 +47,46 @@ public class AnalyticsService {
                 kpis(),
                 revenueByDay(from, days),
                 topEvents(8),
-                paymentFunnel());
+                paymentFunnel(),
+                categoryBreakdown(),
+                securitySignals());
+    }
+
+    private List<CategoryBreakdownRow> categoryBreakdown() {
+        List<Event> all = events.findAllForAdmin();
+        Map<String, long[]> buckets = new LinkedHashMap<>();
+        Map<String, BigDecimal> rev = new HashMap<>();
+        for (Event e : all) {
+            String cat = e.getCategory() == null ? "Khác" : e.getCategory();
+            buckets.computeIfAbsent(cat, k -> new long[]{0L, 0L});
+            buckets.get(cat)[0] += 1;
+            buckets.get(cat)[1] += tickets.countByEventId(e.getId());
+            rev.merge(cat, orders.sumPaidRevenueForEvent(e.getId()), BigDecimal::add);
+        }
+        return buckets.entrySet().stream()
+                .map(en -> new CategoryBreakdownRow(en.getKey(), en.getValue()[0], en.getValue()[1],
+                        rev.getOrDefault(en.getKey(), BigDecimal.ZERO)))
+                .sorted(Comparator.comparing(CategoryBreakdownRow::eventCount).reversed())
+                .toList();
+    }
+
+    private List<SecuritySignal> securitySignals() {
+        long paymentFailed = payments.countByStatus("FAILED");
+        long ordersExpired = orders.countByStatus("EXPIRED");
+        long ordersCancelled = orders.countByStatus("CANCELLED");
+        long refundPending = orders.countByStatus("REFUND_PENDING");
+        long ticketsCancelled = tickets.countByStatus("CANCELLED");
+        return List.of(
+                new SecuritySignal("PAYMENT_FAILED", "Thanh toán thất bại", paymentFailed,
+                        paymentFailed > 0 ? "warn" : "ok"),
+                new SecuritySignal("SEAT_LOCK_EXPIRED", "Khoá ghế hết hạn", ordersExpired,
+                        ordersExpired > 50 ? "warn" : "ok"),
+                new SecuritySignal("ORDER_CANCELLED", "Đơn huỷ", ordersCancelled,
+                        ordersCancelled > 20 ? "warn" : "ok"),
+                new SecuritySignal("REFUND_PENDING", "Đang chờ hoàn tiền", refundPending,
+                        refundPending > 0 ? "danger" : "ok"),
+                new SecuritySignal("TICKET_INVALIDATED", "Vé bị vô hiệu", ticketsCancelled,
+                        ticketsCancelled > 0 ? "danger" : "ok"));
     }
 
     private KpiSummary kpis() {

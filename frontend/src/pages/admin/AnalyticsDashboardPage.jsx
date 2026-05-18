@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import { analyticsApi } from '../../services/api';
 import { formatVND } from '../../utils/format';
 
+const DONUT_COLORS = ['#157F19', '#29D52F', '#B6E8BC', '#0E6313', '#FFB800', '#B45309', '#525252', '#989393'];
+const SEVERITY = {
+  ok: { dot: '#29D52F', bar: '#29D52F', tag: 'bg-brand-100 text-brand-700' },
+  warn: { dot: '#FFB800', bar: '#FFB800', tag: 'bg-warn-50 text-warn-700' },
+  danger: { dot: '#C53030', bar: '#C53030', tag: 'bg-danger-50 text-danger-600' },
+};
+
 export default function AnalyticsDashboardPage() {
   const [days, setDays] = useState(14);
   const [report, setReport] = useState(null);
@@ -17,7 +24,6 @@ export default function AnalyticsDashboardPage() {
   if (!report) return <div className="text-center py-12 text-ink-subtle">Đang tải…</div>;
 
   const kpi = report.kpis;
-  const maxRev = Math.max(1, ...report.revenueByDay.map((p) => Number(p.revenue)));
 
   return (
     <div className="space-y-6">
@@ -35,27 +41,14 @@ export default function AnalyticsDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard
-          caption={`Doanh thu ${days} ngày`}
-          value={formatVND(kpi.totalRevenue)}
-          accent="brand"
-        />
-        <KpiCard
-          caption="Vé đã bán"
-          value={kpi.ticketsSold.toLocaleString('vi-VN')}
-          sub={`${(kpi.capacityFillRate * 100).toFixed(1)}% sức chứa`}
-        />
-        <KpiCard
-          caption="Tỉ lệ thanh toán thành công"
-          value={`${(kpi.paymentSuccessRate * 100).toFixed(1)}%`}
-          sub="Mục tiêu 98%"
-          accent={kpi.paymentSuccessRate >= 0.98 ? 'brand' : 'warn'}
-        />
-        <KpiCard
-          caption="Tỉ lệ check-in"
-          value={`${(kpi.checkinRate * 100).toFixed(1)}%`}
-          sub={`${kpi.checkinCount}/${kpi.ticketsSold} vé`}
-        />
+        <KpiCard caption={`Doanh thu ${days} ngày`} value={formatVND(kpi.totalRevenue)} accent="brand" />
+        <KpiCard caption="Vé đã bán" value={kpi.ticketsSold.toLocaleString('vi-VN')}
+                 sub={`${(kpi.capacityFillRate * 100).toFixed(1)}% sức chứa`} />
+        <KpiCard caption="Tỉ lệ thanh toán thành công" value={`${(kpi.paymentSuccessRate * 100).toFixed(1)}%`}
+                 sub="Mục tiêu 98%"
+                 accent={kpi.paymentSuccessRate >= 0.98 ? 'brand' : 'warn'} />
+        <KpiCard caption="Tỉ lệ check-in" value={`${(kpi.checkinRate * 100).toFixed(1)}%`}
+                 sub={`${kpi.checkinCount}/${kpi.ticketsSold} vé`} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -64,22 +57,7 @@ export default function AnalyticsDashboardPage() {
             <h2 className="font-bold text-ink">Doanh thu theo ngày</h2>
             <span className="text-xs text-ink-subtle">{days} ngày gần đây</span>
           </div>
-          <div className="flex items-end gap-2 h-48">
-            {report.revenueByDay.map((p) => {
-              const h = (Number(p.revenue) / maxRev) * 100;
-              return (
-                <div key={p.date} className="flex-1 flex flex-col items-center gap-1 min-w-0">
-                  <div className="text-[10px] text-ink-subtle truncate w-full text-center">
-                    {Number(p.revenue) > 0 ? Math.round(Number(p.revenue) / 1_000_000) + 'M' : ''}
-                  </div>
-                  <div className="w-full bg-brand-100 rounded-t" style={{ height: `${Math.max(2, h)}%` }}>
-                    <div className="w-full bg-brand-600 rounded-t" style={{ height: '100%' }} />
-                  </div>
-                  <div className="text-[10px] text-ink-subtle">{shortDay(p.date)}</div>
-                </div>
-              );
-            })}
-          </div>
+          <RevenueLineChart points={report.revenueByDay} />
         </div>
 
         <div className="card p-6">
@@ -95,6 +73,23 @@ export default function AnalyticsDashboardPage() {
             <Pill label="Chờ hoàn tiền" value={report.paymentFunnel.refundPending} cls="bg-warn-50 text-warn-700" />
             <Pill label="Đã hoàn tiền" value={report.paymentFunnel.refunded} cls="bg-brand-100 text-brand-700" />
           </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="card p-6">
+          <div className="flex justify-between border-b border-line pb-3 mb-4">
+            <h2 className="font-bold text-ink">Phân bổ theo danh mục</h2>
+            <span className="text-xs text-ink-subtle">{(report.categoryBreakdown || []).length} danh mục</span>
+          </div>
+          <CategoryDonut rows={report.categoryBreakdown || []} />
+        </div>
+
+        <div className="card p-6">
+          <div className="flex justify-between border-b border-line pb-3 mb-4">
+            <h2 className="font-bold text-ink">Tín hiệu vận hành & bảo mật</h2>
+          </div>
+          <SecuritySignals signals={report.securitySignals || []} />
         </div>
       </div>
 
@@ -137,10 +132,156 @@ export default function AnalyticsDashboardPage() {
   );
 }
 
+function RevenueLineChart({ points }) {
+  const W = 720, H = 240, PAD_L = 48, PAD_R = 12, PAD_T = 16, PAD_B = 28;
+  const innerW = W - PAD_L - PAD_R;
+  const innerH = H - PAD_T - PAD_B;
+
+  const data = (points || []).map((p) => ({ date: p.date, value: Number(p.revenue) }));
+  if (data.length === 0) {
+    return <div className="text-ink-subtle text-sm py-12 text-center">Chưa có dữ liệu doanh thu.</div>;
+  }
+  const maxV = Math.max(1, ...data.map((d) => d.value));
+  const niceMax = niceCeil(maxV);
+  const xFor = (i) => PAD_L + (data.length === 1 ? innerW / 2 : (i * innerW) / (data.length - 1));
+  const yFor = (v) => PAD_T + innerH - (v / niceMax) * innerH;
+
+  const linePath = data.map((d, i) => `${i === 0 ? 'M' : 'L'} ${xFor(i)} ${yFor(d.value)}`).join(' ');
+  const areaPath =
+    `${linePath} L ${xFor(data.length - 1)} ${PAD_T + innerH} L ${xFor(0)} ${PAD_T + innerH} Z`;
+
+  const gridLines = [0.25, 0.5, 0.75, 1].map((p) => ({
+    y: PAD_T + innerH - p * innerH,
+    label: formatShort(niceMax * p),
+  }));
+
+  const xTickIdxs = data.length <= 7
+    ? data.map((_, i) => i)
+    : [0, Math.floor(data.length / 4), Math.floor(data.length / 2), Math.floor((3 * data.length) / 4), data.length - 1];
+
+  const last = data.length - 1;
+
+  return (
+    <div className="w-full overflow-x-auto">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Doanh thu theo ngày">
+        {gridLines.map((g, i) => (
+          <g key={i}>
+            <line x1={PAD_L} x2={W - PAD_R} y1={g.y} y2={g.y} stroke="#F0F0F0" strokeDasharray="3 3" />
+            <text x={PAD_L - 6} y={g.y + 3} textAnchor="end" fontSize="10" fill="#989393">{g.label}</text>
+          </g>
+        ))}
+        <line x1={PAD_L} x2={PAD_L} y1={PAD_T} y2={PAD_T + innerH} stroke="#E3E3E3" />
+        <line x1={PAD_L} x2={W - PAD_R} y1={PAD_T + innerH} y2={PAD_T + innerH} stroke="#E3E3E3" />
+
+        <path d={areaPath} fill="#157F19" fillOpacity="0.12" />
+        <path d={linePath} fill="none" stroke="#157F19" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+
+        {data.map((d, i) => {
+          const isLast = i === last;
+          return (
+            <g key={i}>
+              <circle cx={xFor(i)} cy={yFor(d.value)} r={isLast ? 5 : 3} fill="#157F19"
+                      stroke={isLast ? 'white' : 'none'} strokeWidth={isLast ? 2 : 0}>
+                <title>{shortDay(d.date)} · {formatVND(d.value)}</title>
+              </circle>
+            </g>
+          );
+        })}
+
+        {xTickIdxs.map((idx) => (
+          <text key={idx} x={xFor(idx)} y={H - 8} fontSize="10" fill="#989393" textAnchor="middle">
+            {shortDay(data[idx].date)}
+          </text>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function CategoryDonut({ rows }) {
+  const data = (rows || []).filter((r) => r.eventCount > 0);
+  if (data.length === 0) {
+    return <div className="text-ink-subtle text-sm py-8 text-center">Chưa có dữ liệu.</div>;
+  }
+  const total = data.reduce((acc, r) => acc + r.eventCount, 0);
+  const size = 180, stroke = 28, r = (size - stroke) / 2, c = 2 * Math.PI * r;
+  let offset = 0;
+
+  return (
+    <div className="flex items-center gap-6 flex-wrap">
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#F0F0F0" strokeWidth={stroke} />
+          {data.map((row, i) => {
+            const frac = row.eventCount / total;
+            const dash = frac * c;
+            const seg = (
+              <circle
+                key={row.category}
+                cx={size / 2} cy={size / 2} r={r}
+                fill="none"
+                stroke={DONUT_COLORS[i % DONUT_COLORS.length]}
+                strokeWidth={stroke}
+                strokeDasharray={`${dash} ${c - dash}`}
+                strokeDashoffset={-offset}>
+                <title>{row.category}: {row.eventCount} sự kiện ({((frac) * 100).toFixed(1)}%)</title>
+              </circle>
+            );
+            offset += dash;
+            return seg;
+          })}
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+          <div className="text-xs text-ink-subtle">Tổng</div>
+          <div className="text-xl font-bold text-ink">{total}</div>
+          <div className="text-[10px] text-ink-subtle">sự kiện</div>
+        </div>
+      </div>
+      <div className="flex-1 min-w-[180px] space-y-1.5">
+        {data.map((row, i) => (
+          <div key={row.category} className="flex items-center gap-2 text-sm">
+            <span className="inline-block w-3 h-3 rounded-sm" style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }} />
+            <span className="text-ink-muted truncate flex-1">{row.category}</span>
+            <span className="text-ink font-medium">{row.eventCount}</span>
+            <span className="text-ink-subtle text-xs w-12 text-right">{((row.eventCount / total) * 100).toFixed(0)}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SecuritySignals({ signals }) {
+  const maxV = Math.max(1, ...signals.map((s) => Number(s.count)));
+  return (
+    <div className="space-y-3">
+      {signals.map((s) => {
+        const sev = SEVERITY[s.severity] || SEVERITY.ok;
+        const pct = (Number(s.count) / maxV) * 100;
+        return (
+          <div key={s.code}>
+            <div className="flex justify-between text-xs mb-1">
+              <span className="flex items-center gap-2 text-ink-muted">
+                <span className="inline-block w-2 h-2 rounded-full" style={{ background: sev.dot }} />
+                {s.label}
+              </span>
+              <span className="font-bold text-ink">{s.count} lần</span>
+            </div>
+            <div className="h-2 rounded bg-surface-alt overflow-hidden">
+              <div className="h-full rounded" style={{ width: `${Math.max(2, pct)}%`, background: sev.bar }} />
+            </div>
+          </div>
+        );
+      })}
+      <div className="text-xs text-ink-subtle pt-2 border-t border-line">
+        Chỉ số bất thường sẽ chuyển sang màu cam hoặc đỏ — kiểm tra ngay khi có tín hiệu cảnh báo.
+      </div>
+    </div>
+  );
+}
+
 function KpiCard({ caption, value, sub, accent }) {
-  const accentClass = accent === 'brand'
-    ? 'text-brand-700'
-    : accent === 'warn' ? 'text-warn-700' : 'text-ink';
+  const accentClass = accent === 'brand' ? 'text-brand-700' : accent === 'warn' ? 'text-warn-700' : 'text-ink';
   return (
     <div className="card p-5">
       <div className="text-[10px] text-ink-subtle uppercase tracking-wide leading-tight">{caption}</div>
@@ -182,4 +323,23 @@ function shortDay(iso) {
   if (!iso) return '';
   const d = new Date(iso);
   return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function niceCeil(v) {
+  if (v <= 0) return 1;
+  const mag = Math.pow(10, Math.floor(Math.log10(v)));
+  const norm = v / mag;
+  let nice;
+  if (norm <= 1) nice = 1;
+  else if (norm <= 2) nice = 2;
+  else if (norm <= 5) nice = 5;
+  else nice = 10;
+  return nice * mag;
+}
+
+function formatShort(v) {
+  if (v >= 1_000_000_000) return (v / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'B';
+  if (v >= 1_000_000) return (v / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (v >= 1_000) return (v / 1_000).toFixed(0) + 'K';
+  return String(Math.round(v));
 }
