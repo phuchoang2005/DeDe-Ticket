@@ -44,17 +44,11 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        if (users.count() == 0) {
-            User demo = users.save(User.builder()
-                    .email("demo@dede.test")
-                    .passwordHash(encoder.encode("demo1234"))
-                    .fullName("Người Dùng")
-                    .phone("0900000000")
-                    .role("USER")
-                    .status("ACTIVE")
-                    .build());
-            log.info("Seeded demo user demo@dede.test / demo1234");
+        User demo = ensureUser("demo@dede.test", "demo1234", "Người Dùng", "0900000000", "USER");
+        ensureUser("admin@dede.test", "admin1234", "Quản Trị Viên", "0900000001", "ADMIN");
+        ensureUser("organizer@dede.test", "org12345", "Ban Tổ Chức", "0900000002", "ORGANIZER");
 
+        if (demo != null && notifications.unreadCount(demo.getId()).unreadCount() == 0) {
             notifications.create(demo.getId(), "WELCOME",
                     "Chào mừng đến với Dề Dê!",
                     "Khám phá các sự kiện đang mở bán và đặt vé chỉ trong vài bước. Bạn sẽ nhận thông báo khi vé được phát hành.",
@@ -366,4 +360,19 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private record SectionSpec(String name, int rows, int seatsPerRow, BigDecimal price) {}
+
+    private User ensureUser(String email, String password, String fullName, String phone, String role) {
+        return users.findByEmail(email).orElseGet(() -> {
+            User u = users.save(User.builder()
+                    .email(email)
+                    .passwordHash(encoder.encode(password))
+                    .fullName(fullName)
+                    .phone(phone)
+                    .role(role)
+                    .status("ACTIVE")
+                    .build());
+            log.info("Seeded {} user {} / {}", role, email, password);
+            return u;
+        });
+    }
 }

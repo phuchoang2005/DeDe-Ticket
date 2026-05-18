@@ -9,4 +9,9 @@ import java.util.Optional;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByUserIdOrderByIssuedAtDesc(Long userId);
     Optional<Ticket> findByIdAndUserId(Long id, Long userId);
+
+    long countByEventId(Long eventId);
+    long countByEventIdAndStatus(Long eventId, String status);
+    long countByStatus(String status);
+    List<Ticket> findByEventId(Long eventId);
 }

@@ -28,6 +28,24 @@ export const ticketApi = {
   get: (id) => apiClient.get(`/v1/tickets/${id}`),
 };
 
+export const adminApi = {
+  events: () => apiClient.get('/v1/admin/events'),
+  event: (id) => apiClient.get(`/v1/admin/events/${id}`),
+  createEvent: (payload) => apiClient.post('/v1/admin/events', payload),
+  updateEvent: (id, payload) => apiClient.put(`/v1/admin/events/${id}`, payload),
+  changeStatus: (id, status) => apiClient.post(`/v1/admin/events/${id}/status`, { status }),
+  addSection: (id, payload) => apiClient.post(`/v1/admin/events/${id}/sections`, payload),
+  updateSection: (id, section, payload) =>
+    apiClient.put(`/v1/admin/events/${id}/sections/${encodeURIComponent(section)}`, payload),
+  deleteSection: (id, section) =>
+    apiClient.delete(`/v1/admin/events/${id}/sections/${encodeURIComponent(section)}`),
+  deleteEvent: (id) => apiClient.delete(`/v1/admin/events/${id}`),
+};
+
+export const analyticsApi = {
+  report: (days = 14) => apiClient.get('/v1/admin/analytics', { params: { days } }),
+};
+
 export const notificationApi = {
   inbox: (type) => apiClient.get('/v1/notifications', { params: type ? { type } : {} }),
   unreadCount: () => apiClient.get('/v1/notifications/unread-count'),
