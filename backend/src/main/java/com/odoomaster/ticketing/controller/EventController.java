@@ -4,8 +4,6 @@ import com.odoomaster.ticketing.dto.EventDtos.*;
 import com.odoomaster.ticketing.service.EventService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/v1/events")
 public class EventController {
@@ -17,8 +15,11 @@ public class EventController {
     }
 
     @GetMapping
-    public List<EventSummary> list() {
-        return events.list();
+    public EventPage list(@RequestParam(defaultValue = "1") int page,
+                          @RequestParam(defaultValue = "12") int limit,
+                          @RequestParam(required = false) String category,
+                          @RequestParam(required = false) String q) {
+        return events.listPaged(page, limit, category, q);
     }
 
     @GetMapping("/{id}")

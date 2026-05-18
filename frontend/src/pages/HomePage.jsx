@@ -20,8 +20,8 @@ export default function HomePage() {
 
   useEffect(() => {
     eventApi
-      .list()
-      .then(setEvents)
+      .list({ limit: 12 })
+      .then((r) => setEvents(r.data || []))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);

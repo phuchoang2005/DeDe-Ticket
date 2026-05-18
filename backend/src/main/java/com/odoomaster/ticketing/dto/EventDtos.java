@@ -12,6 +12,10 @@ public class EventDtos {
             Instant startTime, Instant endTime, String status,
             BigDecimal priceFrom, Integer availableSeats, Integer totalSeats) {}
 
+    public record EventPage(List<EventSummary> data, PageMeta page) {}
+
+    public record PageMeta(int page, int limit, long total, boolean hasMore) {}
+
     public record EventDetail(
             Long id, String title, String description, String location, String imageUrl,
             String category, String organizer,
