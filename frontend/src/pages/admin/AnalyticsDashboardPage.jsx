@@ -24,7 +24,7 @@ export default function AnalyticsDashboardPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-ink">Báo cáo doanh thu & sự kiện</h1>
-          <p className="text-xs text-ink-subtle mt-1">Live KPI · cache 60s · design-supplement.md §9</p>
+          <p className="text-xs text-ink-subtle mt-1">Cập nhật trực tiếp · làm mới mỗi phút</p>
         </div>
         <div className="flex gap-2">
           {[7, 14, 30, 90].map((n) => (
@@ -36,23 +36,23 @@ export default function AnalyticsDashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
-          caption={`DOANH THU ${days} NGÀY · SUM(PAYMENTS.amount status=SUCCESS)`}
+          caption={`Doanh thu ${days} ngày`}
           value={formatVND(kpi.totalRevenue)}
           accent="brand"
         />
         <KpiCard
-          caption="VÉ ĐÃ BÁN · COUNT(TICKETS WHERE status IN VALID,USED)"
+          caption="Vé đã bán"
           value={kpi.ticketsSold.toLocaleString('vi-VN')}
           sub={`${(kpi.capacityFillRate * 100).toFixed(1)}% sức chứa`}
         />
         <KpiCard
-          caption="TỶ LỆ THANH TOÁN THÀNH CÔNG"
+          caption="Tỉ lệ thanh toán thành công"
           value={`${(kpi.paymentSuccessRate * 100).toFixed(1)}%`}
-          sub="PO mục tiêu 98%"
+          sub="Mục tiêu 98%"
           accent={kpi.paymentSuccessRate >= 0.98 ? 'brand' : 'warn'}
         />
         <KpiCard
-          caption="TỶ LỆ CHECK-IN"
+          caption="Tỉ lệ check-in"
           value={`${(kpi.checkinRate * 100).toFixed(1)}%`}
           sub={`${kpi.checkinCount}/${kpi.ticketsSold} vé`}
         />
@@ -62,7 +62,7 @@ export default function AnalyticsDashboardPage() {
         <div className="card p-6 lg:col-span-2">
           <div className="flex justify-between border-b border-line pb-3 mb-4">
             <h2 className="font-bold text-ink">Doanh thu theo ngày</h2>
-            <span className="text-xs text-ink-subtle">PAYMENTS · status=SUCCESS · DATE created_at</span>
+            <span className="text-xs text-ink-subtle">{days} ngày gần đây</span>
           </div>
           <div className="flex items-end gap-2 h-48">
             {report.revenueByDay.map((p) => {
@@ -85,16 +85,15 @@ export default function AnalyticsDashboardPage() {
         <div className="card p-6">
           <div className="flex justify-between border-b border-line pb-3 mb-4">
             <h2 className="font-bold text-ink">Phễu thanh toán</h2>
-            <span className="text-xs text-ink-subtle">PAYMENTS</span>
           </div>
           <FunnelBar label="Thành công" value={report.paymentFunnel.succeeded} total={total(report.paymentFunnel)} color="#157F19" />
           <FunnelBar label="Đang chờ" value={report.paymentFunnel.pending} total={total(report.paymentFunnel)} color="#FFB800" />
           <FunnelBar label="Thất bại" value={report.paymentFunnel.failed} total={total(report.paymentFunnel)} color="#C53030" />
           <div className="border-t border-line my-3" />
-          <div className="text-sm font-bold text-ink mb-2">Đơn cần bù trừ (paid-no-ticket)</div>
+          <div className="text-sm font-bold text-ink mb-2">Đơn cần bù trừ</div>
           <div className="grid grid-cols-2 gap-2">
-            <Pill label="REFUND_PENDING" value={report.paymentFunnel.refundPending} cls="bg-warn-50 text-warn-700" />
-            <Pill label="REFUNDED" value={report.paymentFunnel.refunded} cls="bg-brand-100 text-brand-700" />
+            <Pill label="Chờ hoàn tiền" value={report.paymentFunnel.refundPending} cls="bg-warn-50 text-warn-700" />
+            <Pill label="Đã hoàn tiền" value={report.paymentFunnel.refunded} cls="bg-brand-100 text-brand-700" />
           </div>
         </div>
       </div>
@@ -102,7 +101,7 @@ export default function AnalyticsDashboardPage() {
       <div className="card p-6">
         <div className="flex justify-between border-b border-line pb-3 mb-4">
           <h2 className="font-bold text-ink">Sự kiện hàng đầu</h2>
-          <span className="text-xs text-ink-subtle">JOIN EVENTS · ORDERS · TICKETS</span>
+          <span className="text-xs text-ink-subtle">Theo doanh thu</span>
         </div>
         <table className="w-full text-sm">
           <thead className="text-ink-subtle text-left">

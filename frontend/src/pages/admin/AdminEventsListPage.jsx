@@ -26,6 +26,16 @@ export default function AdminEventsListPage() {
 
   const filtered = filter === 'ALL' ? rows : rows.filter((r) => r.status === filter);
 
+  const remove = async (row) => {
+    if (!confirm(`Xoá sự kiện "${row.title}"? Hành động này không thể hoàn tác.`)) return;
+    try {
+      await adminApi.deleteEvent(row.id);
+      setRows((prev) => prev.filter((x) => x.id !== row.id));
+    } catch (e) {
+      alert(e.message || 'Không thể xoá sự kiện');
+    }
+  };
+
   const create = async () => {
     try {
       const now = new Date();
@@ -55,7 +65,7 @@ export default function AdminEventsListPage() {
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-ink">Quản lý sự kiện</h1>
-          <p className="text-sm text-ink-subtle mt-1">EVENTS · {rows.length} sự kiện</p>
+          <p className="text-sm text-ink-subtle mt-1">{rows.length} sự kiện</p>
         </div>
         <button onClick={create} className="btn-primary">+ Tạo sự kiện mới</button>
       </div>
@@ -81,6 +91,7 @@ export default function AdminEventsListPage() {
               <th className="px-4 py-3 font-medium text-right">Đã bán</th>
               <th className="px-4 py-3 font-medium text-right">Doanh thu</th>
               <th className="px-4 py-3 font-medium">Bắt đầu</th>
+              <th className="px-4 py-3 font-medium text-right">Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -100,10 +111,17 @@ export default function AdminEventsListPage() {
                 <td className="px-4 py-3 text-right text-ink">{r.soldSeats}</td>
                 <td className="px-4 py-3 text-right font-bold text-brand-700">{formatVND(r.revenue)}</td>
                 <td className="px-4 py-3 text-ink-muted">{formatDateTime(r.startTime)}</td>
+                <td className="px-4 py-3 text-right">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); remove(r); }}
+                    className="px-2 py-1 rounded-md text-xs text-danger-600 hover:bg-danger-50">
+                    Xoá
+                  </button>
+                </td>
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan="6" className="px-4 py-8 text-center text-ink-subtle">Không có sự kiện</td></tr>
+              <tr><td colSpan="7" className="px-4 py-8 text-center text-ink-subtle">Không có sự kiện</td></tr>
             )}
           </tbody>
         </table>

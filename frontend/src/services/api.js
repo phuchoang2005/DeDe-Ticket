@@ -39,6 +39,7 @@ export const adminApi = {
     apiClient.put(`/v1/admin/events/${id}/sections/${encodeURIComponent(section)}`, payload),
   deleteSection: (id, section) =>
     apiClient.delete(`/v1/admin/events/${id}/sections/${encodeURIComponent(section)}`),
+  deleteEvent: (id) => apiClient.delete(`/v1/admin/events/${id}`),
 };
 
 export const analyticsApi = {

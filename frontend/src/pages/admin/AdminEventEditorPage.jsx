@@ -68,6 +68,16 @@ export default function AdminEventEditorPage() {
     }
   };
 
+  const removeEvent = async () => {
+    if (!confirm(`Xoá sự kiện "${event.title}"? Hành động này không thể hoàn tác.`)) return;
+    try {
+      await adminApi.deleteEvent(id);
+      navigate('/admin/events');
+    } catch (e) {
+      setMessage({ kind: 'error', text: e.message || 'Không thể xoá sự kiện' });
+    }
+  };
+
   const changeStatus = async (status) => {
     try {
       const next = await adminApi.changeStatus(id, status);
@@ -99,14 +109,17 @@ export default function AdminEventEditorPage() {
             </span>
           </div>
           <p className="text-xs text-ink-subtle mt-1">
-            EVENTS.id = {event.id} · {event.totalSeats} ghế · {event.soldSeats} đã bán · Doanh thu {formatVND(event.revenue)}
+            Mã sự kiện #{event.id} · {event.totalSeats} ghế · {event.soldSeats} đã bán · Doanh thu {formatVND(event.revenue)}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Link to={`/events/${event.id}`} className="btn-ghost text-sm">Xem trước</Link>
           {event.status === 'DRAFT' && (
-            <button onClick={publish} className="btn-primary text-sm">Xuất bản (PUBLISH)</button>
+            <button onClick={publish} className="btn-primary text-sm">Xuất bản</button>
           )}
+          <button onClick={removeEvent} className="px-3 py-2 rounded-lg text-sm text-danger-600 bg-danger-50 border border-danger-200 hover:bg-danger-100">
+            Xoá sự kiện
+          </button>
         </div>
       </div>
 
@@ -120,48 +133,47 @@ export default function AdminEventEditorPage() {
         <div className="lg:col-span-2 card p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-line pb-3">
             <h2 className="font-bold text-ink">Thông tin sự kiện</h2>
-            <span className="text-xs text-ink-subtle">EVENTS</span>
           </div>
 
-          <Field label="Tiêu đề · EVENTS.title" required>
+          <Field label="Tiêu đề" required>
             <input className="field-input" value={form.title || ''}
                    onChange={(e) => setForm({ ...form, title: e.target.value })} />
           </Field>
 
-          <Field label="Mô tả · EVENTS.description">
+          <Field label="Mô tả">
             <textarea className="field-input min-h-[120px]" value={form.description || ''}
                       maxLength={4000}
                       onChange={(e) => setForm({ ...form, description: e.target.value })} />
             <div className="text-xs text-ink-subtle text-right mt-1">{(form.description || '').length} / 4000 ký tự</div>
           </Field>
 
-          <Field label="Địa điểm hiển thị · EVENTS.location">
+          <Field label="Địa điểm hiển thị">
             <input className="field-input" value={form.location || ''}
                    onChange={(e) => setForm({ ...form, location: e.target.value })} />
           </Field>
 
-          <Field label="Ảnh bìa · EVENTS.image_url">
+          <Field label="Ảnh bìa">
             <input className="field-input" value={form.imageUrl || ''}
                    onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
           </Field>
 
-          <Field label="Đơn vị tổ chức · EVENTS.organizer">
+          <Field label="Đơn vị tổ chức">
             <input className="field-input" value={form.organizer || ''}
                    onChange={(e) => setForm({ ...form, organizer: e.target.value })} />
           </Field>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Bắt đầu · start_time" required>
+            <Field label="Bắt đầu" required>
               <input type="datetime-local" className="field-input" value={form.startTime || ''}
                      onChange={(e) => setForm({ ...form, startTime: e.target.value })} />
             </Field>
-            <Field label="Kết thúc · end_time" required>
+            <Field label="Kết thúc" required>
               <input type="datetime-local" className="field-input" value={form.endTime || ''}
                      onChange={(e) => setForm({ ...form, endTime: e.target.value })} />
             </Field>
           </div>
 
-          <Field label="Trạng thái · EVENTS.status">
+          <Field label="Trạng thái">
             <div className="flex gap-2 flex-wrap">
               {STATUSES.map((s) => (
                 <button key={s} onClick={() => changeStatus(s)}
@@ -172,7 +184,7 @@ export default function AdminEventEditorPage() {
             </div>
           </Field>
 
-          <Field label="Danh mục · EVENT_CATEGORIES + EVENT_CATEGORY_MAP">
+          <Field label="Danh mục">
             <div className="flex gap-2 flex-wrap">
               {CATEGORIES.map((c) => (
                 <button key={c} onClick={() => setForm({ ...form, category: c })}
@@ -193,7 +205,7 @@ export default function AdminEventEditorPage() {
         <div className="card p-6 space-y-4">
           <div className="flex items-center justify-between border-b border-line pb-3">
             <h2 className="font-bold text-ink">Loại vé</h2>
-            <span className="text-xs text-ink-subtle">TICKET_TYPES ({(event.sections || []).length})</span>
+            <span className="text-xs text-ink-subtle">{(event.sections || []).length} loại</span>
           </div>
 
           {(event.sections || []).map((s, idx) => (
@@ -204,10 +216,10 @@ export default function AdminEventEditorPage() {
                 <div className="font-bold text-ink">{s.name}</div>
                 <Link to={`/admin/events/${event.id}/venue`} className="text-xs text-brand-700 hover:underline">✎</Link>
               </div>
-              <Row label="Giá · price" value={formatVND(s.price)} />
-              <Row label="Số lượng · quantity" value={s.seatCount} />
-              <Row label="Đã bán · sold_quantity" value={s.soldCount} />
-              <Row label="Số hàng · rows" value={s.rowCount} />
+              <Row label="Giá" value={formatVND(s.price)} />
+              <Row label="Số lượng" value={s.seatCount} />
+              <Row label="Đã bán" value={s.soldCount} />
+              <Row label="Số hàng" value={s.rowCount} />
             </div>
           ))}
 
@@ -229,8 +241,7 @@ export default function AdminEventEditorPage() {
 
           <div className="rounded-xl bg-warn-50 border border-warn-50 p-3 text-xs text-warn-700">
             <div className="font-bold mb-1">⚠ Khi xuất bản</div>
-            Hệ thống materialize SECTIONS → EVENT_SEATS với status=AVAILABLE, version=0.
-            Sau khi PUBLISHED, sửa SECTIONS sẽ ảnh hưởng đến vé đã bán.
+            Toàn bộ ghế trong các khu vực sẽ được mở bán. Hạn chế chỉnh sửa khu vực sau khi đã có vé bán ra.
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ package com.odoomaster.ticketing.controller;
 import com.odoomaster.ticketing.dto.AdminDtos.*;
 import com.odoomaster.ticketing.service.AdminEventService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,5 +57,11 @@ public class AdminEventController {
     @DeleteMapping("/{id}/sections/{section}")
     public AdminEventDetail deleteSection(@PathVariable Long id, @PathVariable String section) {
         return service.deleteSection(id, section);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

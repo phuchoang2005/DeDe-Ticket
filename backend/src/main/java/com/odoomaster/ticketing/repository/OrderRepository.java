@@ -30,4 +30,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Object[]> revenueByDay(Instant from);
 
     long countByStatus(String status);
+
+    long countByEventIdAndStatusNotIn(Long eventId, java.util.Collection<String> excludedStatuses);
 }

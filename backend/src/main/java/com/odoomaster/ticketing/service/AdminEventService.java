@@ -178,6 +178,31 @@ public class AdminEventService {
 
     @Transactional
     @Caching(evict = {
+            @CacheEvict(value = CacheConfig.EVENT_DETAIL, key = "#id"),
+            @CacheEvict(value = CacheConfig.EVENT_SEATS, key = "#id"),
+            @CacheEvict(value = CacheConfig.EVENTS_LIST, allEntries = true)
+    })
+    public void delete(Long id) {
+        Event e = events.findById(id)
+                .orElseThrow(() -> new AppException("EVENT_NOT_FOUND", "Event not found.", HttpStatus.NOT_FOUND));
+        long ticketCount = tickets.countByEventId(id);
+        if (ticketCount > 0) {
+            throw new AppException("EVENT_HAS_TICKETS",
+                    "Cannot delete: event has " + ticketCount + " issued tickets. Cancel it instead.",
+                    HttpStatus.CONFLICT);
+        }
+        long activeOrders = orders.countByEventIdAndStatusNotIn(id, List.of("CANCELLED", "EXPIRED"));
+        if (activeOrders > 0) {
+            throw new AppException("EVENT_HAS_ORDERS",
+                    "Cannot delete: event has active orders. Cancel it instead.",
+                    HttpStatus.CONFLICT);
+        }
+        seats.deleteAll(seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(id));
+        events.delete(e);
+    }
+
+    @Transactional
+    @Caching(evict = {
             @CacheEvict(value = CacheConfig.EVENT_DETAIL, key = "#eventId"),
             @CacheEvict(value = CacheConfig.EVENT_SEATS, key = "#eventId"),
             @CacheEvict(value = CacheConfig.EVENTS_LIST, allEntries = true)

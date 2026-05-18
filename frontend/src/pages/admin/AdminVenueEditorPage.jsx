@@ -90,7 +90,7 @@ export default function AdminVenueEditorPage() {
       <div>
         <h1 className="text-2xl font-bold text-ink">{event.title} · Sơ đồ chỗ ngồi</h1>
         <p className="text-xs text-ink-subtle mt-1">
-          EVENT.id = {event.id} · {event.totalSeats} ghế · materialize EVENT_SEATS
+          Mã sự kiện #{event.id} · {event.totalSeats} ghế
         </p>
       </div>
 
@@ -104,7 +104,7 @@ export default function AdminVenueEditorPage() {
         <div className="card p-5 space-y-3">
           <div className="flex items-center justify-between border-b border-line pb-2">
             <div className="font-bold text-ink">Cây khu vực</div>
-            <span className="text-xs text-ink-subtle">SECTIONS</span>
+            <span className="text-xs text-ink-subtle">{(event.sections || []).length} khu</span>
           </div>
 
           {(event.sections || []).map((s, idx) => (
@@ -134,8 +134,8 @@ export default function AdminVenueEditorPage() {
           </button>
 
           <div className="border-t border-line pt-3 space-y-1 text-xs text-ink-subtle">
-            <div>Schema: VENUES · SECTIONS · SEATS</div>
-            <div>Mỗi event lấy snapshot vào EVENT_SEATS</div>
+            <div>Mỗi khu vực bao gồm nhiều hàng và số ghế cố định.</div>
+            <div>Sau khi xuất bản, hệ thống tự sinh sơ đồ chỗ ngồi cho từng vé.</div>
           </div>
         </div>
 
@@ -196,9 +196,9 @@ export default function AdminVenueEditorPage() {
               </div>
 
               <div className="border-t border-line pt-3 text-xs text-ink-muted space-y-1">
-                <div>• SEATS.UNIQUE(section, row_label, seat_number) — không cho phép trùng</div>
-                <div>• Mỗi EVENT_SEATS có cột version cho optimistic locking (design-supplement.md §1)</div>
-                <div>• Xoá SECTION đang được tham chiếu sẽ bị từ chối</div>
+                <div>• Mỗi ghế trong một khu vực phải có hàng và số duy nhất.</div>
+                <div>• Khi nhiều người đặt cùng lúc, hệ thống tự khoá ghế để tránh trùng vé.</div>
+                <div>• Không thể xoá khu vực đang có vé đã giữ chỗ hoặc đã thanh toán.</div>
               </div>
             </>
           ) : (
