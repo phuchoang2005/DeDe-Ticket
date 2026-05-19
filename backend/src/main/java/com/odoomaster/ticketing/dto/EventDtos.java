@@ -23,7 +23,7 @@ public class EventDtos {
             BigDecimal priceFrom, BigDecimal priceTo, Integer availableSeats, Integer totalSeats) {}
 
     public record SeatItem(Long id, String rowLabel, String seatNumber, String section,
-                           BigDecimal price, String status) {}
+                           BigDecimal price, String status, Instant lockedUntil) {}
 
     public record SeatMap(Long eventId, List<SeatItem> seats) {}
 }

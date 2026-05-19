@@ -77,7 +77,8 @@ public class EventService {
             throw new AppException("EVENT_NOT_FOUND", "Event not found.", HttpStatus.NOT_FOUND);
         }
         var list = seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(eventId).stream()
-                .map(s -> new SeatItem(s.getId(), s.getRowLabel(), s.getSeatNumber(), s.getSection(), s.getPrice(), s.getStatus()))
+                .map(s -> new SeatItem(s.getId(), s.getRowLabel(), s.getSeatNumber(), s.getSection(),
+                        s.getPrice(), s.getStatus(), s.getLockedUntil()))
                 .toList();
         return new SeatMap(eventId, list);
     }

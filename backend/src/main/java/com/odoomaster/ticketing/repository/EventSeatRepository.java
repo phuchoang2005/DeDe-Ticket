@@ -3,7 +3,9 @@ package com.odoomaster.ticketing.repository;
 import com.odoomaster.ticketing.domain.EventSeat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface EventSeatRepository extends JpaRepository<EventSeat, Long> {
@@ -18,4 +20,7 @@ public interface EventSeatRepository extends JpaRepository<EventSeat, Long> {
 
     @Query("SELECT COUNT(s) FROM EventSeat s")
     long countAll();
+
+    @Query("SELECT s FROM EventSeat s WHERE s.status = 'LOCKED' AND s.lockedUntil < :now")
+    List<EventSeat> findExpiredLocks(@Param("now") Instant now);
 }

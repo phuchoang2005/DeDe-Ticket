@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { eventApi, orderApi } from '../services/api';
 import { useAuth } from '../store/AuthContext';
@@ -14,12 +14,33 @@ export default function EventDetailPage() {
   const [selected, setSelected] = useState(new Set());
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  const pollRef = useRef(null);
+
+  const refreshSeats = useCallback(() => {
+    eventApi.seats(id).then((s) => {
+      setSeatMap(s);
+      // deselect any seats that are no longer AVAILABLE
+      setSelected((prev) => {
+        const availableIds = new Set(s.seats.filter((x) => x.status === 'AVAILABLE').map((x) => x.id));
+        const next = new Set([...prev].filter((sid) => availableIds.has(sid)));
+        return next.size === prev.size ? prev : next;
+      });
+    }).catch(() => {});
+  }, [id]);
 
   useEffect(() => {
     Promise.all([eventApi.detail(id), eventApi.seats(id)])
       .then(([d, s]) => { setEvent(d); setSeatMap(s); })
       .catch((err) => setError(err.message));
-  }, [id]);
+
+    pollRef.current = setInterval(refreshSeats, 20_000);
+    const clockTick = setInterval(() => setNow(Date.now()), 1_000);
+    return () => {
+      clearInterval(pollRef.current);
+      clearInterval(clockTick);
+    };
+  }, [id, refreshSeats]);
 
   const grouped = useMemo(() => {
     if (!seatMap) return [];
@@ -77,8 +98,7 @@ export default function EventDetailPage() {
       navigate(`/checkout/${order.id}`);
     } catch (err) {
       setError(err.message);
-      eventApi.seats(id).then(setSeatMap).catch(() => {});
-      setSelected(new Set());
+      refreshSeats();
     } finally {
       setBusy(false);
     }
@@ -158,7 +178,7 @@ export default function EventDetailPage() {
           <div className="flex flex-wrap items-center gap-4 text-xs mb-5">
             <Legend className="bg-white border-line" label="Trống" />
             <Legend className="bg-brand-600 border-brand-700" label="Đang chọn" textInverted />
-            <Legend className="bg-warn-400 border-warn-700" label="Đang giữ" textInverted />
+            <Legend className="bg-warn-400 border-warn-700" label="Đang giữ (hiện đếm ngược)" textInverted />
             <Legend className="bg-ink-faint border-ink-muted" label="Đã bán" textInverted />
           </div>
 
@@ -184,15 +204,20 @@ export default function EventDetailPage() {
                               : s.status === 'LOCKED'
                                 ? 'bg-warn-400 text-white border-warn-700 cursor-not-allowed'
                                 : 'bg-ink-faint text-white border-ink-muted cursor-not-allowed';
+                          const countdown = s.status === 'LOCKED' && s.lockedUntil
+                            ? lockCountdown(s.lockedUntil, now)
+                            : null;
                           return (
                             <button
                               key={s.id}
                               type="button"
                               disabled={s.status !== 'AVAILABLE'}
                               onClick={() => toggleSeat(s)}
-                              title={`${section} ${s.rowLabel}-${s.seatNumber} · ${formatVND(s.price)}`}
+                              title={countdown
+                                ? `${section} ${s.rowLabel}-${s.seatNumber} · Đang giữ, còn ${countdown}`
+                                : `${section} ${s.rowLabel}-${s.seatNumber} · ${formatVND(s.price)}`}
                               className={`w-8 h-8 text-[11px] font-semibold rounded border ${cls}`}>
-                              {s.seatNumber}
+                              {countdown ?? s.seatNumber}
                             </button>
                           );
                         })}
@@ -262,6 +287,14 @@ export default function EventDetailPage() {
       </div>
     </div>
   );
+}
+
+function lockCountdown(lockedUntil, nowMs) {
+  const secsLeft = Math.max(0, Math.floor((new Date(lockedUntil).getTime() - nowMs) / 1000));
+  if (secsLeft <= 0) return null;
+  const m = Math.floor(secsLeft / 60);
+  const s = secsLeft % 60;
+  return m > 0 ? `${m}p` : `${s}s`;
 }
 
 function Legend({ className, label, textInverted }) {
