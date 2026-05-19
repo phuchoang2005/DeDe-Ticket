@@ -213,6 +213,7 @@ public class OrderService {
             }
         }
         seats.saveAll(picked);
+        orderItems.deleteAll(items);
         order.setStatus("CANCELLED");
         orders.save(order);
     }
