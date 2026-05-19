@@ -83,10 +83,12 @@ export default function AppLayout() {
             <NavLink to="/events" className={desktopNavLink}>Sự kiện</NavLink>
             {user && <NavLink to="/tickets" className={desktopNavLink}>Vé của tôi</NavLink>}
             {user && <NavLink to="/notifications" className={desktopNavLink}>Thông báo</NavLink>}
+            {user && <NavLink to="/feedback" className={desktopNavLink}>Phản hồi</NavLink>}
             {user && (user.role === 'ADMIN' || user.role === 'ORGANIZER') && (
               <>
                 <NavLink to="/admin/events" className={desktopNavLink}>Quản trị sự kiện</NavLink>
                 <NavLink to="/admin/analytics" className={desktopNavLink}>Báo cáo</NavLink>
+                <NavLink to="/admin/feedback" className={desktopNavLink}>Phản hồi KH</NavLink>
                 <span className="ml-1 px-2 py-0.5 rounded-full bg-warn-50 text-warn-700 text-[10px] font-bold">
                   {user.role}
                 </span>
@@ -180,10 +182,12 @@ export default function AppLayout() {
                 </NavLink>
               )}
               {user && <NavLink to="/profile" className={drawerNavLink}>👤 Hồ sơ</NavLink>}
+              {user && <NavLink to="/feedback" className={drawerNavLink}>💬 Gửi phản hồi</NavLink>}
               {user && (user.role === 'ADMIN' || user.role === 'ORGANIZER') && (
                 <>
                   <NavLink to="/admin/events" className={drawerNavLink}>🛠 Quản trị sự kiện</NavLink>
                   <NavLink to="/admin/analytics" className={drawerNavLink}>📊 Báo cáo</NavLink>
+                  <NavLink to="/admin/feedback" className={drawerNavLink}>📋 Phản hồi KH</NavLink>
                 </>
               )}
             </nav>

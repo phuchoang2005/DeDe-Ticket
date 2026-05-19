@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/v1/auth/**", "/v1/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/events", "/v1/events/**").permitAll()
                         .requestMatchers("/v1/admin/**").hasAnyRole("ADMIN", "ORGANIZER")
+                        .requestMatchers(HttpMethod.POST, "/v1/feedback").authenticated()
                         .anyRequest().authenticated())
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint((req, res, ex) -> {

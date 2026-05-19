@@ -18,6 +18,8 @@ import AdminEventsListPage from './pages/admin/AdminEventsListPage';
 import AdminEventEditorPage from './pages/admin/AdminEventEditorPage';
 import AdminVenueEditorPage from './pages/admin/AdminVenueEditorPage';
 import AnalyticsDashboardPage from './pages/admin/AnalyticsDashboardPage';
+import AdminFeedbackReportPage from './pages/admin/AdminFeedbackReportPage';
+import FeedbackPage from './pages/FeedbackPage';
 
 const adminRoles = ['ADMIN', 'ORGANIZER'];
 
@@ -41,6 +43,8 @@ export default function App() {
             <Route path="admin/events/:id" element={<RequireRole roles={adminRoles}><AdminEventEditorPage /></RequireRole>} />
             <Route path="admin/events/:id/venue" element={<RequireRole roles={adminRoles}><AdminVenueEditorPage /></RequireRole>} />
             <Route path="admin/analytics" element={<RequireRole roles={adminRoles}><AnalyticsDashboardPage /></RequireRole>} />
+            <Route path="admin/feedback" element={<RequireRole roles={adminRoles}><AdminFeedbackReportPage /></RequireRole>} />
+            <Route path="feedback" element={<RequireAuth><FeedbackPage /></RequireAuth>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

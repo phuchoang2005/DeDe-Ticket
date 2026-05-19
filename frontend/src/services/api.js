@@ -52,3 +52,13 @@ export const notificationApi = {
   markRead: (id) => apiClient.post(`/v1/notifications/${id}/read`),
   markAllRead: () => apiClient.post('/v1/notifications/read-all'),
 };
+
+export const feedbackApi = {
+  submit: (payload) => apiClient.post('/v1/feedback', payload),
+};
+
+export const adminFeedbackApi = {
+  list: (params = {}) => apiClient.get('/v1/admin/feedback', { params }),
+  summary: () => apiClient.get('/v1/admin/feedback/summary'),
+  updateStatus: (id, payload) => apiClient.patch(`/v1/admin/feedback/${id}/status`, payload),
+};
