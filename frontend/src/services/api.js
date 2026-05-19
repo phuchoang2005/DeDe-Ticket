@@ -21,6 +21,7 @@ export const orderApi = {
   pay: (id, method) => apiClient.post(`/v1/orders/${id}/pay`, { method }),
   list: () => apiClient.get('/v1/orders'),
   get: (id) => apiClient.get(`/v1/orders/${id}`),
+  cancel: (id) => apiClient.delete(`/v1/orders/${id}`),
 };
 
 export const ticketApi = {

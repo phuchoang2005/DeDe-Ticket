@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { orderApi } from '../services/api';
 import { formatVND } from '../utils/format';
@@ -16,9 +16,20 @@ export default function CheckoutPage() {
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [method, setMethod] = useState('MOMO');
+  const paidRef = useRef(false);
 
   useEffect(() => {
     orderApi.get(id).then(setOrder).catch((err) => setError(err.message));
+  }, [id]);
+
+  // Release seat locks when user navigates away (SPA navigation) without paying.
+  // Browser close / hard refresh: sweeper releases after 10-min TTL.
+  useEffect(() => {
+    return () => {
+      if (!paidRef.current) {
+        orderApi.cancel(id).catch(() => {});
+      }
+    };
   }, [id]);
 
   const pay = async () => {
@@ -26,6 +37,7 @@ export default function CheckoutPage() {
     setError(null);
     try {
       const paid = await orderApi.pay(id, method);
+      paidRef.current = true;
       setOrder(paid);
       navigate('/tickets', { state: { justPaidOrder: paid.id } });
     } catch (err) {

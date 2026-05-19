@@ -83,7 +83,11 @@ export default function AppLayout() {
             <NavLink to="/events" className={desktopNavLink}>Sự kiện</NavLink>
             {user && <NavLink to="/tickets" className={desktopNavLink}>Vé của tôi</NavLink>}
             {user && <NavLink to="/notifications" className={desktopNavLink}>Thông báo</NavLink>}
-            {user && <NavLink to="/feedback" className={desktopNavLink}>Phản hồi</NavLink>}
+            {user && (
+              <Link to="/feedback" className="ml-1 text-xs font-semibold px-3 py-1.5 rounded-full border border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100 transition-colors">
+                Phản hồi
+              </Link>
+            )}
             {user && (user.role === 'ADMIN' || user.role === 'ORGANIZER') && (
               <>
                 <NavLink to="/admin/events" className={desktopNavLink}>Quản trị sự kiện</NavLink>
@@ -182,7 +186,12 @@ export default function AppLayout() {
                 </NavLink>
               )}
               {user && <NavLink to="/profile" className={drawerNavLink}>👤 Hồ sơ</NavLink>}
-              {user && <NavLink to="/feedback" className={drawerNavLink}>💬 Gửi phản hồi</NavLink>}
+              {user && (
+                <Link to="/feedback" onClick={() => setDrawerOpen(false)}
+                      className="block px-4 py-3 text-base font-semibold rounded-lg text-brand-700 bg-brand-50 hover:bg-brand-100">
+                  💬 Gửi phản hồi
+                </Link>
+              )}
               {user && (user.role === 'ADMIN' || user.role === 'ORGANIZER') && (
                 <>
                   <NavLink to="/admin/events" className={drawerNavLink}>🛠 Quản trị sự kiện</NavLink>

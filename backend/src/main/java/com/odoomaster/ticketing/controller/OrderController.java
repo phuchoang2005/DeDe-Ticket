@@ -44,4 +44,10 @@ public class OrderController {
     public OrderView get(@PathVariable Long id) {
         return service.getMine(current.require().userId(), id);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> cancel(@PathVariable Long id) {
+        service.cancel(current.require().userId(), id);
+        return ResponseEntity.noContent().build();
+    }
 }

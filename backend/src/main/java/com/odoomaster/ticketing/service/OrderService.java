@@ -185,6 +185,38 @@ public class OrderService {
         return view(order);
     }
 
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = CacheConfig.EVENT_SEATS, allEntries = true),
+            @CacheEvict(value = CacheConfig.EVENT_DETAIL, allEntries = true),
+            @CacheEvict(value = CacheConfig.EVENTS_LIST, allEntries = true)
+    })
+    public void cancel(Long userId, Long orderId) {
+        Order order = orders.findById(orderId)
+                .orElseThrow(() -> new AppException("ORDER_NOT_FOUND", "Order not found.", HttpStatus.NOT_FOUND));
+        if (!Objects.equals(order.getUserId(), userId)) {
+            throw new AppException("FORBIDDEN", "Order does not belong to current user.", HttpStatus.FORBIDDEN);
+        }
+        if ("PAID".equals(order.getStatus())) {
+            throw new AppException("ORDER_ALREADY_PAID", "Cannot cancel a paid order.", HttpStatus.CONFLICT);
+        }
+        if ("CANCELLED".equals(order.getStatus())) return;
+
+        List<OrderItem> items = orderItems.findByOrderId(order.getId());
+        List<Long> seatIds = items.stream().map(OrderItem::getEventSeatId).toList();
+        List<EventSeat> picked = seats.findByIdIn(seatIds);
+        for (EventSeat s : picked) {
+            if ("LOCKED".equals(s.getStatus())) {
+                s.setStatus("AVAILABLE");
+                s.setLockedBy(null);
+                s.setLockedUntil(null);
+            }
+        }
+        seats.saveAll(picked);
+        order.setStatus("CANCELLED");
+        orders.save(order);
+    }
+
     @Transactional(readOnly = true)
     public List<OrderView> listMine(Long userId) {
         return orders.findByUserIdOrderByCreatedAtDesc(userId).stream().map(this::view).toList();
