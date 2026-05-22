@@ -2,15 +2,19 @@ package com.odoomaster.ticketing.service;
 
 import com.odoomaster.ticketing.config.CacheConfig;
 import com.odoomaster.ticketing.domain.Event;
+import com.odoomaster.ticketing.domain.EventCategory;
 import com.odoomaster.ticketing.domain.EventSeat;
 import com.odoomaster.ticketing.dto.AdminDtos.*;
 import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.repository.EventCategoryRepository;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
 import com.odoomaster.ticketing.repository.OrderItemRepository;
 import com.odoomaster.ticketing.repository.OrderRepository;
 import com.odoomaster.ticketing.repository.PaymentRepository;
 import com.odoomaster.ticketing.repository.TicketRepository;
+import com.odoomaster.ticketing.repository.TicketTypeRepository;
+import com.odoomaster.ticketing.domain.TicketType;
 import com.odoomaster.ticketing.domain.Order;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
@@ -27,21 +31,30 @@ public class AdminEventService {
     private static final Set<String> ALLOWED_STATUSES = Set.of("DRAFT", "PUBLISHED", "CANCELLED", "COMPLETED");
 
     private final EventRepository events;
+    private final EventCategoryRepository categories;
     private final EventSeatRepository seats;
     private final OrderRepository orders;
     private final OrderItemRepository orderItems;
     private final PaymentRepository payments;
     private final TicketRepository tickets;
+    private final TicketTypeRepository ticketTypes;
+    private final SeatCatalogService catalog;
 
-    public AdminEventService(EventRepository events, EventSeatRepository seats,
+    public AdminEventService(EventRepository events, EventCategoryRepository categories,
+                             EventSeatRepository seats,
                              OrderRepository orders, OrderItemRepository orderItems,
-                             PaymentRepository payments, TicketRepository tickets) {
+                             PaymentRepository payments, TicketRepository tickets,
+                             TicketTypeRepository ticketTypes,
+                             SeatCatalogService catalog) {
         this.events = events;
+        this.categories = categories;
         this.seats = seats;
         this.orders = orders;
         this.orderItems = orderItems;
         this.payments = payments;
         this.tickets = tickets;
+        this.ticketTypes = ticketTypes;
+        this.catalog = catalog;
     }
 
     @Transactional(readOnly = true)
@@ -60,9 +73,28 @@ public class AdminEventService {
         int avail = (int) all.stream().filter(s -> "AVAILABLE".equals(s.getStatus())).count();
         return new AdminEventDetail(
                 e.getId(), e.getTitle(), e.getDescription(), e.getLocation(), e.getImageUrl(),
-                e.getCategory(), e.getOrganizer(), e.getStartTime(), e.getEndTime(), e.getStatus(),
+                EventService.categoryRefs(e), e.getOrganizer(), e.getStartTime(), e.getEndTime(), e.getStatus(),
                 total, avail, sold, revenue,
                 buildSections(all));
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryView> listCategories() {
+        return categories.findAllByOrderByNameAsc().stream()
+                .map(c -> new CategoryView(c.getId(), c.getName()))
+                .toList();
+    }
+
+    @Transactional
+    public CategoryView createCategory(String name) {
+        if (name == null || name.isBlank()) {
+            throw new AppException("VALIDATION_FAILED", "name is required.", HttpStatus.BAD_REQUEST);
+        }
+        String trimmed = name.trim();
+        EventCategory existing = categories.findByName(trimmed).orElse(null);
+        if (existing != null) return new CategoryView(existing.getId(), existing.getName());
+        EventCategory saved = categories.save(EventCategory.builder().name(trimmed).build());
+        return new CategoryView(saved.getId(), saved.getName());
     }
 
     @Transactional
@@ -71,17 +103,18 @@ public class AdminEventService {
     })
     public AdminEventDetail create(AdminEventUpsertRequest req) {
         validateTimes(req);
-        Event e = events.save(Event.builder()
+        Event e = Event.builder()
                 .title(req.title().trim())
                 .description(req.description())
                 .location(req.location())
-                .category(req.category())
                 .organizer(req.organizer())
                 .imageUrl(req.imageUrl())
                 .startTime(req.startTime())
                 .endTime(req.endTime())
                 .status("DRAFT")
-                .build());
+                .build();
+        e.setCategories(resolveCategories(req.categories()));
+        events.save(e);
         return detail(e.getId());
     }
 
@@ -98,13 +131,26 @@ public class AdminEventService {
         e.setTitle(req.title().trim());
         e.setDescription(req.description());
         e.setLocation(req.location());
-        e.setCategory(req.category());
         e.setOrganizer(req.organizer());
         e.setImageUrl(req.imageUrl());
         e.setStartTime(req.startTime());
         e.setEndTime(req.endTime());
+        e.setCategories(resolveCategories(req.categories()));
         events.save(e);
         return detail(e.getId());
+    }
+
+    private Set<EventCategory> resolveCategories(List<String> names) {
+        Set<EventCategory> out = new HashSet<>();
+        if (names == null) return out;
+        for (String raw : names) {
+            if (raw == null || raw.isBlank()) continue;
+            String n = raw.trim();
+            EventCategory c = categories.findByName(n).orElseGet(() ->
+                    categories.save(EventCategory.builder().name(n).build()));
+            out.add(c);
+        }
+        return out;
     }
 
     @Transactional
@@ -149,15 +195,37 @@ public class AdminEventService {
                     "Section '" + name + "' already exists for this event.", HttpStatus.CONFLICT);
         }
         char startLetter = nextStartingLetter(eventId);
+        var venue = catalog.ensureVenue(e.getLocation(), null);
+        var section = catalog.ensureSection(venue.getId(), name);
+        int quantity = req.rows() * req.seatsPerRow();
+        TicketType tt = ticketTypes.findByEventIdAndName(eventId, name).orElse(null);
+        if (tt == null) {
+            tt = ticketTypes.save(TicketType.builder()
+                    .eventId(eventId)
+                    .name(name)
+                    .price(req.price())
+                    .quantity(quantity)
+                    .soldQuantity(0)
+                    .build());
+        } else {
+            tt.setPrice(req.price());
+            tt.setQuantity(tt.getQuantity() + quantity);
+            ticketTypes.save(tt);
+        }
         List<EventSeat> toSave = new ArrayList<>();
         for (int r = 0; r < req.rows(); r++) {
             char rowLabel = (char) (startLetter + r);
             for (int n = 1; n <= req.seatsPerRow(); n++) {
+                String rl = String.valueOf(rowLabel);
+                String sn = String.format("%02d", n);
+                var seat = catalog.ensureSeat(section.getId(), rl, sn);
                 toSave.add(EventSeat.builder()
                         .eventId(e.getId())
+                        .seatId(seat.getId())
+                        .ticketTypeId(tt.getId())
                         .section(name)
-                        .rowLabel(String.valueOf(rowLabel))
-                        .seatNumber(String.format("%02d", n))
+                        .rowLabel(rl)
+                        .seatNumber(sn)
                         .price(req.price())
                         .status("AVAILABLE")
                         .build());
@@ -273,7 +341,7 @@ public class AdminEventService {
         int avail = (int) all.stream().filter(s -> "AVAILABLE".equals(s.getStatus())).count();
         BigDecimal revenue = orders.sumPaidRevenueForEvent(e.getId());
         return new AdminEventRow(
-                e.getId(), e.getTitle(), e.getLocation(), e.getCategory(), e.getOrganizer(),
+                e.getId(), e.getTitle(), e.getLocation(), EventService.categoryRefs(e), e.getOrganizer(),
                 e.getStatus(), e.getStartTime(), e.getEndTime(), e.getCreatedAt(),
                 total, avail, sold, revenue);
     }

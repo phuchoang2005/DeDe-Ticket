@@ -100,7 +100,7 @@ export default function AdminEventsListPage() {
                   onClick={() => navigate(`/admin/events/${r.id}`)}>
                 <td className="px-4 py-3">
                   <div className="font-semibold text-ink">{r.title}</div>
-                  <div className="text-xs text-ink-subtle">{r.location} · {r.category}</div>
+                  <div className="text-xs text-ink-subtle">{r.location} · {(r.categories || []).map((c) => c.name).join(', ') || '—'}</div>
                 </td>
                 <td className="px-4 py-3">
                   <span className={`inline-block px-2 py-1 rounded-full text-xs font-bold ${STATUS_CLASS[r.status] || 'bg-surface-panel text-ink-muted'}`}>

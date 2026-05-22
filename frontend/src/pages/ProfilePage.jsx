@@ -42,7 +42,7 @@ export default function ProfilePage() {
           <div className="text-base sm:text-lg font-bold text-ink truncate">{user.fullName || 'Người dùng'}</div>
           <div className="text-sm text-ink-subtle truncate">{user.email}</div>
           <div className="mt-1 inline-block px-2 py-0.5 rounded-full bg-brand-100 text-brand-700 text-xs font-semibold">
-            Vai trò: {user.role}
+            Vai trò: {(user.roles || []).join(', ') || 'USER'}
           </div>
         </div>
       </div>

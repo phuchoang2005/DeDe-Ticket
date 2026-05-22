@@ -23,6 +23,12 @@ public class EventSeat {
     @Column(name = "event_id", nullable = false)
     private Long eventId;
 
+    @Column(name = "seat_id", nullable = false)
+    private Long seatId;
+
+    @Column(name = "ticket_type_id")
+    private Long ticketTypeId;
+
     @Column(name = "row_label", nullable = false, length = 8)
     private String rowLabel;
 

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users", indexes = @Index(name = "idx_users_email", columnList = "email", unique = true))
@@ -26,8 +29,13 @@ public class User {
     @Column(length = 50)
     private String phone;
 
-    @Column(nullable = false, length = 20)
-    private String role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Builder.Default
+    private Set<Role> roles = new HashSet<>();
 
     @Column(nullable = false, length = 20)
     private String status;
@@ -43,12 +51,15 @@ public class User {
         Instant now = Instant.now();
         if (createdAt == null) createdAt = now;
         updatedAt = now;
-        if (role == null) role = "USER";
         if (status == null) status = "ACTIVE";
     }
 
     @PreUpdate
     void preUpdate() {
         updatedAt = Instant.now();
+    }
+
+    public Set<String> getRoleNames() {
+        return roles == null ? Set.of() : roles.stream().map(Role::getName).collect(Collectors.toSet());
     }
 }

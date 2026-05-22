@@ -12,8 +12,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e ORDER BY e.createdAt DESC")
     List<Event> findAllForAdmin();
 
-    @Query("SELECT e FROM Event e WHERE e.status = :status " +
-            "AND (:category IS NULL OR e.category = :category) " +
+    @Query("SELECT DISTINCT e FROM Event e LEFT JOIN e.categories c " +
+            "WHERE e.status = :status " +
+            "AND (:category IS NULL OR c.name = :category) " +
             "AND (:q IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :q, '%')) OR LOWER(e.location) LIKE LOWER(CONCAT('%', :q, '%'))) " +
             "ORDER BY e.startTime ASC")
     org.springframework.data.domain.Page<Event> findPublished(String status, String category, String q,

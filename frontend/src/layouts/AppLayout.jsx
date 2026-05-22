@@ -88,13 +88,13 @@ export default function AppLayout() {
                 Phản hồi
               </Link>
             )}
-            {user && (user.role === 'ADMIN' || user.role === 'ORGANIZER') && (
+            {user && (user.roles?.includes('ADMIN') || user.roles?.includes('ORGANIZER')) && (
               <>
                 <NavLink to="/admin/events" className={desktopNavLink}>Quản trị sự kiện</NavLink>
                 <NavLink to="/admin/analytics" className={desktopNavLink}>Báo cáo</NavLink>
                 <NavLink to="/admin/feedback" className={desktopNavLink}>Phản hồi KH</NavLink>
                 <span className="ml-1 px-2 py-0.5 rounded-full bg-warn-50 text-warn-700 text-[10px] font-bold">
-                  {user.role}
+                  {(user.roles || []).join(' / ')}
                 </span>
               </>
             )}
@@ -192,7 +192,7 @@ export default function AppLayout() {
                   💬 Gửi phản hồi
                 </Link>
               )}
-              {user && (user.role === 'ADMIN' || user.role === 'ORGANIZER') && (
+              {user && (user.roles?.includes('ADMIN') || user.roles?.includes('ORGANIZER')) && (
                 <>
                   <NavLink to="/admin/events" className={drawerNavLink}>🛠 Quản trị sự kiện</NavLink>
                   <NavLink to="/admin/analytics" className={drawerNavLink}>📊 Báo cáo</NavLink>

@@ -11,4 +11,10 @@ public class TicketDtos {
             Instant eventStartTime,
             String rowLabel, String seatNumber, String section,
             BigDecimal price, Instant issuedAt) {}
+
+    public record ScanRequest(String qrCode, String deviceId) {}
+
+    public record ScanResult(String status, Long ticketId, Long eventId,
+                             String eventTitle, String rowLabel, String seatNumber,
+                             String section, Instant checkedInAt) {}
 }

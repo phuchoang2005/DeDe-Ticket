@@ -11,12 +11,14 @@ export default function RequireRole({ roles, children }) {
   if (!user) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
-  if (!roles.includes(user.role)) {
+  const userRoles = user.roles || [];
+  const hasAny = roles.some((r) => userRoles.includes(r));
+  if (!hasAny) {
     return (
       <div className="card p-8 text-center">
         <div className="text-lg font-bold text-ink mb-2">Không có quyền truy cập</div>
         <div className="text-sm text-ink-subtle">
-          Trang này yêu cầu vai trò {roles.join(' hoặc ')}. Tài khoản của bạn là {user.role}.
+          Trang này yêu cầu vai trò {roles.join(' hoặc ')}. Tài khoản của bạn: {userRoles.join(', ') || '(không có)'}.
         </div>
       </div>
     );

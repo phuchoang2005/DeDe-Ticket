@@ -2,7 +2,9 @@ import { Link } from 'react-router-dom';
 import { availabilityBadge, categoryTheme, formatDate, formatTime, formatVND } from '../utils/format';
 
 export default function EventCard({ event, variant = 'default' }) {
-  const cat = categoryTheme(event.category);
+  const categories = event.categories || [];
+  const primaryCategory = categories[0]?.name || event.category || null;
+  const cat = categoryTheme(primaryCategory);
   const badge = availabilityBadge(event.availableSeats, event.totalSeats);
   const isLarge = variant === 'large';
 
@@ -20,11 +22,12 @@ export default function EventCard({ event, variant = 'default' }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-brand-700 text-2xl font-bold">
-            {event.category}
+            {primaryCategory}
           </div>
         )}
         <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-semibold bg-white shadow-sm ${cat.tint}`}>
-          {event.category || 'Sự kiện'}
+          {primaryCategory || 'Sự kiện'}
+          {categories.length > 1 && <span className="ml-1 text-ink-subtle">+{categories.length - 1}</span>}
         </span>
         {badge && (
           <span className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide ${badge.cls}`}>

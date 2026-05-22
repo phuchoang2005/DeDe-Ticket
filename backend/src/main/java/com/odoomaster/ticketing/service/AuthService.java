@@ -1,8 +1,10 @@
 package com.odoomaster.ticketing.service;
 
+import com.odoomaster.ticketing.domain.Role;
 import com.odoomaster.ticketing.domain.User;
 import com.odoomaster.ticketing.dto.AuthDtos.*;
 import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.repository.RoleRepository;
 import com.odoomaster.ticketing.repository.UserRepository;
 import com.odoomaster.ticketing.security.JwtService;
 import org.springframework.http.HttpStatus;
@@ -10,15 +12,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class AuthService {
 
     private final UserRepository users;
+    private final RoleRepository roles;
     private final PasswordEncoder encoder;
     private final JwtService jwt;
 
-    public AuthService(UserRepository users, PasswordEncoder encoder, JwtService jwt) {
+    public AuthService(UserRepository users, RoleRepository roles, PasswordEncoder encoder, JwtService jwt) {
         this.users = users;
+        this.roles = roles;
         this.encoder = encoder;
         this.jwt = jwt;
     }
@@ -29,12 +36,17 @@ public class AuthService {
         if (users.existsByEmail(email)) {
             throw new AppException("EMAIL_ALREADY_REGISTERED", "Email is already registered.", HttpStatus.CONFLICT);
         }
+        Role userRole = roles.findByName("USER")
+                .orElseThrow(() -> new AppException("ROLE_NOT_SEEDED", "USER role missing.", HttpStatus.INTERNAL_SERVER_ERROR));
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(userRole);
+
         User u = User.builder()
                 .email(email)
                 .passwordHash(encoder.encode(req.password()))
                 .fullName(req.fullName())
                 .phone(req.phone())
-                .role("USER")
+                .roles(roleSet)
                 .status("ACTIVE")
                 .build();
         users.save(u);
@@ -56,8 +68,9 @@ public class AuthService {
     }
 
     private AuthResponse issue(User u) {
-        String token = jwt.issue(u.getId(), u.getEmail(), u.getRole());
-        UserResponse ur = new UserResponse(u.getId(), u.getEmail(), u.getFullName(), u.getPhone(), u.getRole());
+        Set<String> roleNames = u.getRoleNames();
+        String token = jwt.issue(u.getId(), u.getEmail(), roleNames);
+        UserResponse ur = new UserResponse(u.getId(), u.getEmail(), u.getFullName(), u.getPhone(), roleNames);
         return new AuthResponse(token, jwt.getTtlMinutes(), ur);
     }
 }

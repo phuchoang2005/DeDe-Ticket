@@ -107,7 +107,9 @@ export default function EventDetailPage() {
   if (error && !event) return <div className="text-danger-600">Không thể tải: {error}</div>;
   if (!event || !seatMap) return <div className="text-ink-subtle">Đang tải…</div>;
 
-  const cat = categoryTheme(event.category);
+  const eventCategories = event.categories || [];
+  const primaryCategory = eventCategories[0]?.name || event.category || null;
+  const cat = categoryTheme(primaryCategory);
   const badge = availabilityBadge(event.availableSeats, event.totalSeats);
 
   return (
@@ -119,9 +121,14 @@ export default function EventDetailPage() {
             <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover" />
           )}
           <div className="absolute top-3 left-3 flex flex-wrap gap-2 max-w-[calc(100%-1.5rem)]">
-            <span className={`px-2.5 py-1 rounded-full text-xs font-semibold bg-white ${cat.tint}`}>
-              {event.category}
-            </span>
+            {eventCategories.length > 0
+              ? eventCategories.map((c) => (
+                  <span key={c.id || c.name}
+                        className={`px-2.5 py-1 rounded-full text-xs font-semibold bg-white ${cat.tint}`}>
+                    {c.name}
+                  </span>
+                ))
+              : <span className={`px-2.5 py-1 rounded-full text-xs font-semibold bg-white ${cat.tint}`}>Sự kiện</span>}
             {badge && (
               <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${badge.cls}`}>{badge.label}</span>
             )}

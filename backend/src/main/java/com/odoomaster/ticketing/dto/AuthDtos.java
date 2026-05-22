@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.Set;
+
 public class AuthDtos {
 
     public record RegisterRequest(
@@ -18,5 +20,5 @@ public class AuthDtos {
 
     public record AuthResponse(String token, long expiresInMinutes, UserResponse user) {}
 
-    public record UserResponse(Long id, String email, String fullName, String phone, String role) {}
+    public record UserResponse(Long id, String email, String fullName, String phone, Set<String> roles) {}
 }

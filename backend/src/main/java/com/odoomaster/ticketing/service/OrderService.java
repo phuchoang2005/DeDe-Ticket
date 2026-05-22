@@ -1,5 +1,6 @@
 package com.odoomaster.ticketing.service;
 
+import com.odoomaster.ticketing.audit.Auditable;
 import com.odoomaster.ticketing.config.CacheConfig;
 import com.odoomaster.ticketing.domain.*;
 import com.odoomaster.ticketing.dto.OrderDtos.*;
@@ -44,6 +45,7 @@ public class OrderService {
     }
 
     @Transactional
+    @Auditable(action = "ORDER_CREATED", entity = "orders")
     @Caching(evict = {
             @CacheEvict(value = CacheConfig.EVENT_SEATS, key = "#req.eventId()"),
             @CacheEvict(value = CacheConfig.EVENT_DETAIL, key = "#req.eventId()"),
@@ -101,6 +103,7 @@ public class OrderService {
             items.add(OrderItem.builder()
                     .orderId(order.getId())
                     .eventSeatId(s.getId())
+                    .ticketTypeId(s.getTicketTypeId())
                     .price(s.getPrice())
                     .build());
         }
@@ -110,6 +113,7 @@ public class OrderService {
     }
 
     @Transactional
+    @Auditable(action = "ORDER_PAID", entity = "orders")
     @Caching(evict = {
             @CacheEvict(value = CacheConfig.EVENT_SEATS, allEntries = true),
             @CacheEvict(value = CacheConfig.EVENT_DETAIL, allEntries = true),

@@ -27,7 +27,7 @@ public class UserController {
         Long uid = current.require().userId();
         User u = users.findById(uid).orElseThrow(() ->
                 new AppException("USER_NOT_FOUND", "User not found.", HttpStatus.NOT_FOUND));
-        return new UserResponse(u.getId(), u.getEmail(), u.getFullName(), u.getPhone(), u.getRole());
+        return new UserResponse(u.getId(), u.getEmail(), u.getFullName(), u.getPhone(), u.getRoleNames());
     }
 
     @PutMapping("/me")
@@ -38,7 +38,7 @@ public class UserController {
         if (req.fullName() != null) u.setFullName(req.fullName());
         if (req.phone() != null) u.setPhone(req.phone());
         users.save(u);
-        return new UserResponse(u.getId(), u.getEmail(), u.getFullName(), u.getPhone(), u.getRole());
+        return new UserResponse(u.getId(), u.getEmail(), u.getFullName(), u.getPhone(), u.getRoleNames());
     }
 
     public record UpdateProfileRequest(@Size(max = 255) String fullName, @Size(max = 50) String phone) {}

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "events")
@@ -24,8 +27,13 @@ public class Event {
     @Column(length = 255)
     private String location;
 
-    @Column(length = 32)
-    private String category;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "event_category_map",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @Builder.Default
+    private Set<EventCategory> categories = new HashSet<>();
 
     @Column(length = 255)
     private String organizer;
@@ -42,6 +50,9 @@ public class Event {
     @Column(nullable = false, length = 20)
     private String status;
 
+    @Column(name = "created_by")
+    private Long createdBy;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -49,5 +60,9 @@ public class Event {
     void prePersist() {
         if (createdAt == null) createdAt = Instant.now();
         if (status == null) status = "PUBLISHED";
+    }
+
+    public Set<String> getCategoryNames() {
+        return categories == null ? Set.of() : categories.stream().map(EventCategory::getName).collect(Collectors.toSet());
     }
 }

@@ -6,9 +6,11 @@ import java.util.List;
 
 public class EventDtos {
 
+    public record CategoryRef(Long id, String name) {}
+
     public record EventSummary(
             Long id, String title, String location, String imageUrl,
-            String category, String organizer,
+            List<CategoryRef> categories, String organizer,
             Instant startTime, Instant endTime, String status,
             BigDecimal priceFrom, Integer availableSeats, Integer totalSeats) {}
 
@@ -18,7 +20,7 @@ public class EventDtos {
 
     public record EventDetail(
             Long id, String title, String description, String location, String imageUrl,
-            String category, String organizer,
+            List<CategoryRef> categories, String organizer,
             Instant startTime, Instant endTime, String status,
             BigDecimal priceFrom, BigDecimal priceTo, Integer availableSeats, Integer totalSeats) {}
 

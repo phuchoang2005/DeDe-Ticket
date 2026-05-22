@@ -219,7 +219,6 @@ class FeedbackServiceTest {
         User u = new User();
         u.setId(id);
         u.setEmail(email);
-        u.setRole("USER");
         u.setStatus("ACTIVE");
         return u;
     }

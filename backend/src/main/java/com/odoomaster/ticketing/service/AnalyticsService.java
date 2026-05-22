@@ -57,11 +57,16 @@ public class AnalyticsService {
         Map<String, long[]> buckets = new LinkedHashMap<>();
         Map<String, BigDecimal> rev = new HashMap<>();
         for (Event e : all) {
-            String cat = e.getCategory() == null ? "Khác" : e.getCategory();
-            buckets.computeIfAbsent(cat, k -> new long[]{0L, 0L});
-            buckets.get(cat)[0] += 1;
-            buckets.get(cat)[1] += tickets.countByEventId(e.getId());
-            rev.merge(cat, orders.sumPaidRevenueForEvent(e.getId()), BigDecimal::add);
+            Set<String> names = e.getCategoryNames();
+            if (names.isEmpty()) names = Set.of("Khác");
+            long sold = tickets.countByEventId(e.getId());
+            BigDecimal r = orders.sumPaidRevenueForEvent(e.getId());
+            for (String cat : names) {
+                buckets.computeIfAbsent(cat, k -> new long[]{0L, 0L});
+                buckets.get(cat)[0] += 1;
+                buckets.get(cat)[1] += sold;
+                rev.merge(cat, r, BigDecimal::add);
+            }
         }
         return buckets.entrySet().stream()
                 .map(en -> new CategoryBreakdownRow(en.getKey(), en.getValue()[0], en.getValue()[1],
@@ -138,8 +143,9 @@ public class AnalyticsService {
             BigDecimal rev = orders.sumPaidRevenueForEvent(e.getId());
             long used = tickets.countByEventIdAndStatus(e.getId(), "USED");
             double rate = sold == 0 ? 0 : (double) used / sold;
+            String catLabel = String.join(", ", new TreeSet<>(e.getCategoryNames()));
             rows.add(new EventLeaderboardRow(
-                    e.getId(), e.getTitle(), e.getCategory(), e.getStatus(),
+                    e.getId(), e.getTitle(), catLabel, e.getStatus(),
                     sold, rev, round(rate, 4)));
         }
         rows.sort(Comparator.comparing(EventLeaderboardRow::revenue).reversed());

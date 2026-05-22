@@ -1,12 +1,19 @@
 package com.odoomaster.ticketing.config;
 
 import com.odoomaster.ticketing.domain.Event;
+import com.odoomaster.ticketing.domain.EventCategory;
 import com.odoomaster.ticketing.domain.EventSeat;
+import com.odoomaster.ticketing.domain.Role;
 import com.odoomaster.ticketing.domain.User;
+import com.odoomaster.ticketing.repository.EventCategoryRepository;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
+import com.odoomaster.ticketing.repository.RoleRepository;
+import com.odoomaster.ticketing.repository.TicketTypeRepository;
 import com.odoomaster.ticketing.repository.UserRepository;
+import com.odoomaster.ticketing.domain.TicketType;
 import com.odoomaster.ticketing.service.NotificationService;
+import com.odoomaster.ticketing.service.SeatCatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -18,7 +25,9 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
@@ -27,18 +36,29 @@ public class DataSeeder implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(DataSeeder.class);
 
     private final EventRepository events;
+    private final EventCategoryRepository eventCategories;
     private final EventSeatRepository seats;
     private final UserRepository users;
+    private final RoleRepository roles;
+    private final TicketTypeRepository ticketTypes;
     private final PasswordEncoder encoder;
     private final NotificationService notifications;
+    private final SeatCatalogService catalog;
 
-    public DataSeeder(EventRepository events, EventSeatRepository seats, UserRepository users,
-                      PasswordEncoder encoder, NotificationService notifications) {
+    public DataSeeder(EventRepository events, EventCategoryRepository eventCategories,
+                      EventSeatRepository seats, UserRepository users,
+                      RoleRepository roles, TicketTypeRepository ticketTypes,
+                      PasswordEncoder encoder, NotificationService notifications,
+                      SeatCatalogService catalog) {
         this.events = events;
+        this.eventCategories = eventCategories;
         this.seats = seats;
         this.users = users;
+        this.roles = roles;
+        this.ticketTypes = ticketTypes;
         this.encoder = encoder;
         this.notifications = notifications;
+        this.catalog = catalog;
     }
 
     @Override
@@ -329,27 +349,49 @@ public class DataSeeder implements CommandLineRunner {
     private void seedEvent(String title, String category, String organizer,
                            String desc, String location, String imageUrl,
                            Instant start, SectionSpec... sections) {
-        Event e = events.save(Event.builder()
+        EventCategory cat = eventCategories.findByName(category)
+                .orElseGet(() -> eventCategories.save(EventCategory.builder().name(category).build()));
+        Set<EventCategory> catSet = new HashSet<>();
+        catSet.add(cat);
+
+        Event e = Event.builder()
                 .title(title)
                 .description(desc)
-                .category(category)
                 .organizer(organizer)
                 .location(location)
                 .imageUrl(imageUrl)
                 .startTime(start)
                 .endTime(start.plus(3, ChronoUnit.HOURS))
                 .status("PUBLISHED")
-                .build());
+                .build();
+        e.setCategories(catSet);
+        events.save(e);
+        var venue = catalog.ensureVenue(location, null);
         List<EventSeat> toSave = new ArrayList<>();
         for (SectionSpec sec : sections) {
+            var sectionRow = catalog.ensureSection(venue.getId(), sec.name);
+            int qty = sec.rows * sec.seatsPerRow;
+            TicketType tt = ticketTypes.findByEventIdAndName(e.getId(), sec.name).orElseGet(() ->
+                    ticketTypes.save(TicketType.builder()
+                            .eventId(e.getId())
+                            .name(sec.name)
+                            .price(sec.price)
+                            .quantity(qty)
+                            .soldQuantity(0)
+                            .build()));
             for (int r = 0; r < sec.rows; r++) {
                 char rowLabel = (char) ('A' + r);
                 for (int n = 1; n <= sec.seatsPerRow; n++) {
+                    String rl = String.valueOf(rowLabel);
+                    String sn = String.format("%02d", n);
+                    var seat = catalog.ensureSeat(sectionRow.getId(), rl, sn);
                     toSave.add(EventSeat.builder()
                             .eventId(e.getId())
+                            .seatId(seat.getId())
+                            .ticketTypeId(tt.getId())
                             .section(sec.name)
-                            .rowLabel(String.valueOf(rowLabel))
-                            .seatNumber(String.format("%02d", n))
+                            .rowLabel(rl)
+                            .seatNumber(sn)
                             .price(sec.price)
                             .status("AVAILABLE")
                             .build());
@@ -363,12 +405,15 @@ public class DataSeeder implements CommandLineRunner {
 
     private User ensureUser(String email, String password, String fullName, String phone, String role) {
         return users.findByEmail(email).orElseGet(() -> {
+            Role r = roles.findByName(role).orElseGet(() -> roles.save(Role.builder().name(role).build()));
+            Set<Role> roleSet = new HashSet<>();
+            roleSet.add(r);
             User u = users.save(User.builder()
                     .email(email)
                     .passwordHash(encoder.encode(password))
                     .fullName(fullName)
                     .phone(phone)
-                    .role(role)
+                    .roles(roleSet)
                     .status("ACTIVE")
                     .build());
             log.info("Seeded {} user {} / {}", role, email, password);

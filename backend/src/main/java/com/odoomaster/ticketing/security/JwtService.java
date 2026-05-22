@@ -11,7 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class JwtService {
@@ -30,11 +32,11 @@ public class JwtService {
         this.ttlMinutes = ttlMinutes;
     }
 
-    public String issue(Long userId, String email, String role) {
+    public String issue(Long userId, String email, Set<String> roles) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(String.valueOf(userId))
-                .claims(Map.of("email", email, "role", role))
+                .claims(Map.of("email", email, "roles", List.copyOf(roles)))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(ttlMinutes, ChronoUnit.MINUTES)))
                 .signWith(key)

@@ -31,7 +31,11 @@ export default function HomePage() {
 
   const categoryCounts = useMemo(() => {
     const map = new Map();
-    for (const e of events) map.set(e.category, (map.get(e.category) || 0) + 1);
+    for (const e of events) {
+      const names = (e.categories || []).map((c) => c.name);
+      if (names.length === 0 && e.category) names.push(e.category);
+      for (const n of names) map.set(n, (map.get(n) || 0) + 1);
+    }
     return map;
   }, [events]);
 

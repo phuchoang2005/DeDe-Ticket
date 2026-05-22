@@ -31,7 +31,7 @@ class FeedbackControllerSmokeTest {
     @InjectMocks FeedbackController feedbackController;
     @InjectMocks AdminFeedbackController adminController;
 
-    private static final AuthPrincipal PRINCIPAL = new AuthPrincipal(1L, "user@test.com", "USER");
+    private static final AuthPrincipal PRINCIPAL = new AuthPrincipal(1L, "user@test.com", java.util.Set.of("USER"));
 
     @BeforeEach
     void setup() {

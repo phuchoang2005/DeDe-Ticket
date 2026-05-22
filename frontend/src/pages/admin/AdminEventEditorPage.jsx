@@ -27,7 +27,7 @@ export default function AdminEventEditorPage() {
       title: e.title || '',
       description: e.description || '',
       location: e.location || '',
-      category: e.category || '',
+      categories: (e.categories || []).map((c) => c.name),
       organizer: e.organizer || '',
       imageUrl: e.imageUrl || '',
       startTime: toLocalInput(e.startTime),
@@ -184,14 +184,22 @@ export default function AdminEventEditorPage() {
             </div>
           </Field>
 
-          <Field label="Danh mục">
+          <Field label="Danh mục (chọn nhiều)">
             <div className="flex gap-2 flex-wrap">
-              {CATEGORIES.map((c) => (
-                <button key={c} onClick={() => setForm({ ...form, category: c })}
-                        className={`chip ${form.category === c ? 'chip-active' : ''}`}>
-                  {c}
-                </button>
-              ))}
+              {CATEGORIES.map((c) => {
+                const selected = (form.categories || []).includes(c);
+                return (
+                  <button key={c}
+                          onClick={() => {
+                            const cur = new Set(form.categories || []);
+                            if (selected) cur.delete(c); else cur.add(c);
+                            setForm({ ...form, categories: Array.from(cur) });
+                          }}
+                          className={`chip ${selected ? 'chip-active' : ''}`}>
+                    {c}
+                  </button>
+                );
+              })}
             </div>
           </Field>
 

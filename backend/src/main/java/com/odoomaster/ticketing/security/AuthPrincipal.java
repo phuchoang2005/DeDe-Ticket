@@ -1,3 +1,10 @@
 package com.odoomaster.ticketing.security;
 
-public record AuthPrincipal(Long userId, String email, String role) {}
+import java.util.Set;
+
+public record AuthPrincipal(Long userId, String email, Set<String> roles) {
+
+    public boolean hasRole(String role) {
+        return roles != null && roles.contains(role);
+    }
+}

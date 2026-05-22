@@ -1,6 +1,7 @@
 package com.odoomaster.ticketing.service;
 
 import com.odoomaster.ticketing.domain.Event;
+import com.odoomaster.ticketing.domain.EventCategory;
 import com.odoomaster.ticketing.domain.EventSeat;
 import com.odoomaster.ticketing.dto.EventDtos.*;
 import com.odoomaster.ticketing.config.CacheConfig;
@@ -42,12 +43,20 @@ public class EventService {
         return new EventPage(items, new PageMeta(safePage, safeLimit, result.getTotalElements(), hasMore));
     }
 
+    static List<CategoryRef> categoryRefs(Event e) {
+        if (e.getCategories() == null) return List.of();
+        return e.getCategories().stream()
+                .sorted(Comparator.comparing(EventCategory::getName))
+                .map(c -> new CategoryRef(c.getId(), c.getName()))
+                .toList();
+    }
+
     private EventSummary toSummary(Event e) {
         var s = seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(e.getId());
         BigDecimal min = s.stream().map(EventSeat::getPrice).min(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
         int avail = (int) s.stream().filter(x -> "AVAILABLE".equals(x.getStatus())).count();
         return new EventSummary(e.getId(), e.getTitle(), e.getLocation(), e.getImageUrl(),
-                e.getCategory(), e.getOrganizer(),
+                categoryRefs(e), e.getOrganizer(),
                 e.getStartTime(), e.getEndTime(), e.getStatus(), min, avail, s.size());
     }
 
@@ -67,7 +76,7 @@ public class EventService {
         BigDecimal max = s.stream().map(EventSeat::getPrice).max(Comparator.naturalOrder()).orElse(BigDecimal.ZERO);
         int avail = (int) s.stream().filter(x -> "AVAILABLE".equals(x.getStatus())).count();
         return new EventDetail(e.getId(), e.getTitle(), e.getDescription(), e.getLocation(), e.getImageUrl(),
-                e.getCategory(), e.getOrganizer(),
+                categoryRefs(e), e.getOrganizer(),
                 e.getStartTime(), e.getEndTime(), e.getStatus(), min, max, avail, s.size());
     }
 

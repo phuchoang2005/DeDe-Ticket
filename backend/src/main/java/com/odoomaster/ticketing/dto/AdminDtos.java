@@ -1,5 +1,6 @@
 package com.odoomaster.ticketing.dto;
 
+import com.odoomaster.ticketing.dto.EventDtos.CategoryRef;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -12,14 +13,14 @@ import java.util.List;
 public class AdminDtos {
 
     public record AdminEventRow(
-            Long id, String title, String location, String category, String organizer,
+            Long id, String title, String location, List<CategoryRef> categories, String organizer,
             String status, Instant startTime, Instant endTime, Instant createdAt,
             Integer totalSeats, Integer availableSeats, Integer soldSeats,
             BigDecimal revenue) {}
 
     public record AdminEventDetail(
             Long id, String title, String description, String location, String imageUrl,
-            String category, String organizer,
+            List<CategoryRef> categories, String organizer,
             Instant startTime, Instant endTime, String status,
             Integer totalSeats, Integer availableSeats, Integer soldSeats,
             BigDecimal revenue,
@@ -33,7 +34,7 @@ public class AdminDtos {
             @NotBlank @Size(max = 255) String title,
             @Size(max = 4000) String description,
             @Size(max = 255) String location,
-            @Size(max = 32) String category,
+            List<String> categories,
             @Size(max = 255) String organizer,
             @Size(max = 500) String imageUrl,
             @NotNull Instant startTime,
@@ -50,4 +51,6 @@ public class AdminDtos {
     public record SectionUpdateRequest(
             @NotBlank @Size(max = 32) String name,
             @NotNull @Positive BigDecimal price) {}
+
+    public record CategoryView(Long id, String name) {}
 }

@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+# tests/smoke/main.sh — happy-path smoke for the live `demo` deployment.
+#
+# Assertions land here (not in scratch) per docs/database-setup/migration-to-normalized.md §11.
+# Each slice updates this script in the same PR that ships the breaking change.
+#
+# Usage:
+#   BASE_URL=http://localhost:8080 ./tests/smoke/main.sh
+#
+# Exit code: 0 = all assertions pass, 1 = any assertion fails.
+
+set -u
+BASE_URL="${BASE_URL:-http://localhost:8080}"
+DEMO_EMAIL="${DEMO_EMAIL:-demo@dede.test}"
+DEMO_PASS="${DEMO_PASS:-demo1234}"
+ADMIN_EMAIL="${ADMIN_EMAIL:-admin@dede.test}"
+ADMIN_PASS="${ADMIN_PASS:-admin1234}"
+
+PASS=0
+FAIL=0
+trap '[[ $FAIL -gt 0 ]] && echo "FAIL: $FAIL" && exit 1 || echo "PASS: $PASS"; exit 0' EXIT
+
+red()    { printf "\033[31m%s\033[0m\n" "$*" ; }
+green()  { printf "\033[32m%s\033[0m\n" "$*" ; }
+
+assert() {
+  local label="$1"; shift
+  if "$@"; then
+    PASS=$((PASS+1)); green "  ok   $label"
+  else
+    FAIL=$((FAIL+1)); red   "  FAIL $label"
+  fi
+}
+
+# tiny helpers (require curl + jq)
+jq_get() { jq -r "$1" <<<"$2"; }
+
+login() {
+  local email="$1" pass="$2"
+  curl -fsS "${BASE_URL}/v1/auth/login" \
+       -H 'Content-Type: application/json' \
+       -d "{\"email\":\"${email}\",\"password\":\"${pass}\"}"
+}
+
+echo "== auth =="
+DEMO_RESP=$(login "$DEMO_EMAIL" "$DEMO_PASS" || true)
+ADMIN_RESP=$(login "$ADMIN_EMAIL" "$ADMIN_PASS" || true)
+DEMO_TOKEN=$(jq_get '.token' "$DEMO_RESP")
+ADMIN_TOKEN=$(jq_get '.token' "$ADMIN_RESP")
+
+# Slice A assertion: login payload now has roles[] instead of role
+assert "login returns roles array (slice A)" \
+       test "$(jq_get '.user.roles | type' "$DEMO_RESP")" = "array"
+
+USER_HAS_ROLE=$(jq -r '.user.roles | index("USER") // "absent"' <<<"$DEMO_RESP")
+assert "login roles contains USER (slice A)" \
+       test "$USER_HAS_ROLE" != "absent"
+
+echo "== events browse =="
+LIST=$(curl -fsS "${BASE_URL}/v1/events?limit=5")
+FIRST_ID=$(jq_get '.data[0].id' "$LIST")
+
+# Slice B assertion: each event has categories[] (was: single category string)
+assert "events list returns categories[] (slice B)" \
+       test "$(jq_get '.data[0].categories | type' "$LIST")" = "array"
+
+# Slice C assertion: event detail seat-map shape is stable (row/seat/section still present)
+SEATS=$(curl -fsS "${BASE_URL}/v1/events/${FIRST_ID}/seats")
+assert "seat map keeps rowLabel/seatNumber/section (slice C)" \
+       test -n "$(jq_get '.seats[0].rowLabel' "$SEATS")"
+
+echo "== check-in (slice F) =="
+# pick an AVAILABLE seat for the smoke order
+AVAIL_SEAT=$(jq -r '[.seats[] | select(.status=="AVAILABLE")][0].id // empty' <<<"$SEATS")
+if [[ -z "$AVAIL_SEAT" ]]; then
+  red "  no AVAILABLE seats for event ${FIRST_ID}; skipping order+scan path"
+fi
+ORDER_BODY="{\"eventId\":${FIRST_ID},\"seatIds\":[${AVAIL_SEAT:-0}]}"
+ORDER=$(curl -fsS -X POST "${BASE_URL}/v1/orders" \
+             -H "Authorization: Bearer ${DEMO_TOKEN}" \
+             -H 'Content-Type: application/json' \
+             -H "Idempotency-Key: smoke-$(date +%s)-$$" \
+             -d "${ORDER_BODY}" 2>/dev/null || true)
+ORDER_ID=$(jq_get '.id' "$ORDER")
+if [[ -n "$ORDER_ID" && "$ORDER_ID" != "null" ]]; then
+  curl -fsS -X POST "${BASE_URL}/v1/orders/${ORDER_ID}/pay" \
+       -H "Authorization: Bearer ${DEMO_TOKEN}" \
+       -H 'Content-Type: application/json' \
+       -H "Idempotency-Key: smoke-pay-$(date +%s)" \
+       -d '{"method":"MOMO"}' > /dev/null || true
+
+  TICKETS=$(curl -fsS "${BASE_URL}/v1/tickets" -H "Authorization: Bearer ${DEMO_TOKEN}")
+  QR=$(jq -r '.[0].qrCode' <<<"$TICKETS")
+
+  # 1st scan with admin → 200
+  SCAN1=$(curl -fsS -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/v1/tickets/scan" \
+               -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+               -H 'Content-Type: application/json' \
+               -d "{\"qrCode\":\"${QR}\"}" || true)
+  assert "POST /v1/tickets/scan → 200 first time (slice F)" \
+         test "$SCAN1" = "200"
+
+  # 2nd scan → 409 ALREADY_USED
+  SCAN2=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/v1/tickets/scan" \
+               -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+               -H 'Content-Type: application/json' \
+               -d "{\"qrCode\":\"${QR}\"}" || true)
+  assert "POST /v1/tickets/scan → 409 duplicate (slice F)" \
+         test "$SCAN2" = "409"
+fi
+
+echo "== audit (slice G) =="
+AUDIT=$(curl -fsS "${BASE_URL}/v1/admin/audit?entity=orders&size=5" \
+             -H "Authorization: Bearer ${ADMIN_TOKEN}" || true)
+assert "GET /v1/admin/audit returns at least one ORDER_* row (slice G)" \
+       test "$(jq -r 'length // 0' <<<"$AUDIT")" -ge 1
+
+echo "== categories (slice B) =="
+CATS=$(curl -fsS "${BASE_URL}/v1/admin/categories" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" || true)
+assert "GET /v1/admin/categories returns array (slice B)" \
+       test "$(jq -r 'type' <<<"$CATS")" = "array"
+
+echo "== venues (slice C) =="
+VENUES=$(curl -fsS "${BASE_URL}/v1/admin/venues" \
+              -H "Authorization: Bearer ${ADMIN_TOKEN}" || true)
+assert "GET /v1/admin/venues returns array (slice C)" \
+       test "$(jq -r 'type' <<<"$VENUES")" = "array"
+
+echo "== ticket-types (slice D) =="
+TT=$(curl -fsS "${BASE_URL}/v1/admin/events/${FIRST_ID}/ticket-types" \
+          -H "Authorization: Bearer ${ADMIN_TOKEN}" || true)
+assert "GET /v1/admin/events/{id}/ticket-types returns array (slice D)" \
+       test "$(jq -r 'type' <<<"$TT")" = "array"

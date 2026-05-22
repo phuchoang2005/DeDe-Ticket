@@ -22,6 +22,9 @@ public class OrderItem {
     @Column(name = "event_seat_id", nullable = false)
     private Long eventSeatId;
 
+    @Column(name = "ticket_type_id")
+    private Long ticketTypeId;
+
     @Column(nullable = false, precision = 12, scale = 0)
     private BigDecimal price;
 }

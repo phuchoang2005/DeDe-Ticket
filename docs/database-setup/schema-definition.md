@@ -162,6 +162,20 @@ erDiagram
         timestamp created_at
     }
 
+    FEEDBACKS {
+        bigint id PK
+        bigint user_id FK
+        bigint event_id FK
+        string category
+        string subject
+        string body
+        int rating
+        string status
+        timestamp created_at
+        timestamp resolved_at
+        string admin_note
+    }
+
     USERS ||--o{ USER_ROLES : has
     ROLES ||--o{ USER_ROLES : assigned
 
@@ -195,7 +209,18 @@ erDiagram
 
     USERS ||--o{ NOTIFICATIONS : receives
     USERS ||--o{ AUDIT_LOGS : triggers
+
+    USERS  ||--o{ FEEDBACKS : submits
+    EVENTS ||--o{ FEEDBACKS : about
 ```
+
+### 📝 Feedback (live, ITPJ2602)
+
+- `FEEDBACKS` collects user-submitted issues, ratings, and general feedback.
+- `category` is free-form short string (e.g. `BUG`, `EVENT`, `OTHER`); `status` tracks triage (`NEW` → `IN_PROGRESS` → `RESOLVED`).
+- `event_id` is optional — feedback may be about the app in general.
+- Admin replies are stored inline as `admin_note` for the demo (no thread model).
+
 
 ---
 
