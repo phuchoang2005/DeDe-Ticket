@@ -1,5 +1,7 @@
 **Note** Install `bierner.markdown-mermaid` required
 
+> **Status (2026-05-22):** all 19 tables in this ERD are physically live in MySQL via Flyway (see [`migration-to-normalized.md`](./migration-to-normalized.md) and [`../tracking/tracking-4.md` §7](../tracking/tracking-4.md)). Prod profile runs `ddl-auto: validate` against this schema. Forward-only migrations from here — no `ddl-auto: update` in any new environment.
+
 - Tách rõ **User / Role / Permission**
 - Event + Ticket + Seat mapping
 - Order + Payment + Retry

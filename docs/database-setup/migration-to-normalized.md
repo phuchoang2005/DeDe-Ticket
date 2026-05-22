@@ -1,8 +1,25 @@
 # Migration Plan: As-Built → Normalized Schema
 
-> Status: DRAFT — sequencing plan for closing the gap between the live schema (Hibernate `ddl-auto: update`, 9 tables) and the normalized design in [`schema-definition.md`](./schema-definition.md) (19 tables).
-> Companion: [ADR-0005 (Flyway)](../adr/0005-flyway-for-migrations.md), [`migration-strategy.md`](./migration-strategy.md).
-> Live snapshot: 2026-05-21 — 9 tables: `users, events, event_seats, orders, order_items, payments, tickets, notifications, feedbacks`.
+> Status: **IMPLEMENTED (2026-05-22, commit `f6851cb`)** — all 8 slices + E-pre baseline shipped in a single PR. Live schema now matches the 19-table design.
+> Companion: [ADR-0005 (Flyway)](../adr/0005-flyway-for-migrations.md), [`migration-strategy.md`](./migration-strategy.md), [`../tracking/tracking-4.md` §7](../tracking/tracking-4.md).
+> Live snapshot (pre-migration): 2026-05-21 — 9 tables: `users, events, event_seats, orders, order_items, payments, tickets, notifications, feedbacks`.
+> Live snapshot (post-migration): 2026-05-22 — 19 tables matching `schema-definition.md`; `flyway_schema_history` has 11 success rows.
+
+## Slice status snapshot
+
+| Slice | Migration file(s) | Status |
+|---|---|---|
+| E-pre — Flyway wiring + baseline | `V20260521_000000__baseline.sql` | ✅ Implemented |
+| E — `PAYMENT_RETRIES` | `V20260522_100000__add_payment_retries.sql` | ✅ Implemented |
+| F — `CHECK_INS` | `V20260522_110000__add_check_ins.sql` | ✅ Implemented |
+| G — `AUDIT_LOGS` | `V20260522_120000__add_audit_logs.sql` | ✅ Implemented |
+| H — document `feedbacks` | (no SQL) | ✅ Implemented (ERD already aligned) |
+| A — `ROLES` / `USER_ROLES` | `V20260523_100000__add_roles_userroles.sql` + `V20260530_100000__drop_users_role_column.sql` | ✅ Implemented |
+| B — `EVENT_CATEGORIES` / `EVENT_CATEGORY_MAP` (+ `events.created_by`) | `V20260524_100000__add_event_categories.sql` + `V20260531_100000__drop_events_category_column.sql` | ✅ Implemented |
+| C — `VENUES` / `SECTIONS` / `SEATS` | `V20260525_100000__add_venue_section_seat.sql` | ✅ Implemented (NULL `events.location` backfilled with `'TBD'` via `COALESCE`) |
+| D — `TICKET_TYPES` | `V20260526_100000__add_ticket_types.sql` | ✅ Implemented |
+
+Original DRAFT sequencing plan retained below as the historical record. Anything called out as a `Status: …` in the slice sections describes the pre-implementation intent, not the live state.
 
 This doc is the playbook for *evolving* the running schema to the design schema, one slice at a time, without breaking the deployed app. Every slice is a Flyway forward migration (`V<ts>__*.sql`) plus matching entity edits. There is no rollback — per ADR-0005, reversal = a new forward migration.
 

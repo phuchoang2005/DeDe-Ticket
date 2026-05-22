@@ -130,3 +130,91 @@ Changes vs tracking-3:
 | 13 | Real notification dispatcher | ADR-0004 | 1.5 days |
 | 14 | Mobile staff scanner | ADR-0009 | 3+ days |
 | 15 | CI/CD | ops | 1 day |
+
+---
+
+## 7. Iteration-5 delivery — normalization to design schema (2026-05-22)
+
+> Scope: closed the 9-table → 19-table gap from `migration-to-normalized.md` in a single PR. Flyway is now wired (ADR-0005), schema is forward-only, and audit/RBAC/check-in flows are real. Commit: `f6851cb`.
+
+### 7.1 Flyway baseline (slice E-pre)
+
+| Item | Detail | Status |
+|---|---|---|
+| `flyway-core` + `flyway-mysql` on `pom.xml` | Version follows Spring Boot 3.2.5 BOM (9.22.3). | ✅ |
+| `application-{dev,prod}.yml` Flyway block | `enabled: true`, `locations: classpath:db/migration`, `baseline-on-migrate: true`, `baseline-version: 0`. Prod `ddl-auto: validate`; dev still `update` for now. | ✅ |
+| `application-{dev,prod}-example.yml` mirrored | Tracked example files updated so secrets stay out of git but config diffs reviewable. | ✅ |
+| `backend/.gitignore` — `*.sql` exception | Added `!src/main/resources/db/migration/*.sql` so Flyway files are no longer silently excluded. **Pre-existing trap fixed.** | ✅ |
+| `V20260521_000000__baseline.sql` | Captures the live 9-table layout (`users, events, event_seats, orders, order_items, payments, tickets, notifications, feedbacks`) so every fresh DB starts from a known shape. | ✅ |
+| `flyway_schema_history` table | 11 rows on EC2, all `success=1`. | ✅ |
+
+### 7.2 Slice-by-slice delivery
+
+Order followed `migration-to-normalized.md §2` (additive → breaking, auth before refactors):
+
+| Slice | Migration file | What landed | Status |
+|---|---|---|---|
+| **E — payment retries** | `V20260522_100000__add_payment_retries.sql` | `payment_retries` table, `PaymentRetry` entity + repo, `PaymentRetryService` emits a row per failed attempt instead of mutating `payments.status` only. | ✅ |
+| **F — check-ins** | `V20260522_110000__add_check_ins.sql` | `check_ins` table with `uk_check_ins_ticket` (anti-double-scan, ADR-0009), `CheckIn` entity, `CheckInService`, `POST /v1/tickets/scan` (`@PreAuthorize("hasAnyRole('SCANNER','ADMIN')")`). | ✅ |
+| **G — audit logs** | `V20260522_120000__add_audit_logs.sql` | `audit_logs` table, `@Auditable` annotation, `AuditAspect` (`@Around` AOP) wired on order create/pay. `GET /v1/admin/audit` exposes the trail. | ✅ |
+| **H — feedbacks doc** | (no SQL) | `schema-definition.md` ERD already had `FEEDBACKS`; live table matches. No-op. | ✅ |
+| **A — roles M:N (BREAKING)** | `V20260523_100000__add_roles_userroles.sql` + `V20260530_100000__drop_users_role_column.sql` | `roles`, `user_roles`, backfill from `users.role`, drop legacy column. JWT now ships `roles[]` (`Set<String>`); `@EnableMethodSecurity` + every `@PreAuthorize` migrated. | ✅ |
+| **B — categories M:N (BREAKING)** | `V20260524_100000__add_event_categories.sql` + `V20260531_100000__drop_events_category_column.sql` | `event_categories`, `event_category_map`, backfill from `events.category`, drop legacy column. `events.created_by` FK added in same slice (per §12 Q2). `/v1/admin/categories` CRUD. | ✅ |
+| **C — venue/section/seat (BREAKING, riskiest)** | `V20260525_100000__add_venue_section_seat.sql` | `venues`, `sections`, `seats`; `event_seats.seat_id` FK populated by backfill that uses `COALESCE(events.location, 'TBD')` for NULL locations (safer than the doc's strict-NOT-NULL plan). `/v1/admin/venues` for catalog management. | ✅ |
+| **D — ticket types (BREAKING)** | `V20260526_100000__add_ticket_types.sql` | `ticket_types` table, `OrderItem.ticket_type_id` FK, `EventSeat.seat_id` flipped to `NOT NULL`. `/v1/admin/events/{id}/ticket-types`. | ✅ |
+
+### 7.3 Verification on EC2
+
+| Check | Result |
+|---|---|
+| `mvn -pl backend test` (full unit suite + smoke) | 10 / 10 PASS |
+| `flyway_schema_history` rows | 11, all `success=1` |
+| `SHOW TABLES` | 19 tables matching `schema-definition.md` |
+| `users.role`, `events.category` columns | dropped ✅ |
+| `event_seats.seat_id` | `NOT NULL`, every row FK-resolves ✅ |
+| Stack restart with `ddl-auto: validate` (prod profile) | clean — Hibernate validates against the live schema with zero diffs |
+| Demo login (admin / organizer / customer) | all three roles authenticated, JWT carries `roles: ["ROLE_X"]` array |
+| `POST /v1/tickets/scan` | second scan of same ticket returns `409 CHECK_IN_ALREADY_DONE` (UK enforces) |
+| `GET /v1/admin/audit` after a paid order | rows for `ORDER_CREATED` and `ORDER_PAID` visible |
+
+### 7.4 Architecture invariants — re-check
+
+| # | Invariant | Status |
+|---|---|---|
+| 1 | DB is source of truth for seat status | ✅ |
+| 2 | One transaction per logical unit of work | ✅ |
+| 3 | Sweeper runs in exactly one instance | ❌ — still racing across 3 replicas; ADR-0010 advisory lock not yet wired. Top remaining hot item. |
+| 4 | `ORDER_ITEMS.event_seat_id` UNIQUE stays | ✅ |
+| 5 | `TICKETS.qr_code` UNIQUE stays | ✅ |
+| 6 | Idempotency-Key on state-changing POSTs | ❌ — still open. |
+| 7 | All external calls have timeouts | ✅ |
+| 8 | No business logic in controllers | ✅ |
+
+### 7.5 Repository housekeeping (2026-05-22)
+
+| Action | Detail |
+|---|---|
+| 19 stale `feature/*` branches on GitHub | deleted, then re-pushed from current local heads so remote matches local history. |
+| `docs/iteration-2-tracking` branch | merged into `demo` (no-op — already up to date) and removed locally + remote. |
+| `demo` branch | pushed; `main` untouched (commit `aa02a32` is shared ancestor). |
+| Port 80 verification | `.env` `FRONTEND_PORT=80` → frontend nginx serves SPA on `:80` and proxies `/v1/*` to `lb:8080`. No code change needed; only AWS SG inbound rule for TCP/80 is required at the infra console. |
+
+### 7.6 Iteration-5 candidates — updated status
+
+| # | Candidate | Status |
+|---|---|---|
+| 1 | Sweeper DB advisory lock (ADR-0010) | ❌ — **now the single most urgent invariant violation.** |
+| 2 | Flyway baseline (ADR-0005) | ✅ Done (this iter §7.1) |
+| 3 | OpenAPI spec reconciliation | ❌ |
+| 4 | Idempotency-Key (ADR-0006) | ❌ |
+| 5 | TLS / HTTPS at the LB | ❌ |
+| 6 | Rate-limit token bucket in Redis | ❌ |
+| 7 | k6 booking-path smoke against the new pool | ❌ |
+| 8 | Dev compose parity (Redis + LB locally) | ❌ |
+| 9 | MockMvc + Testcontainers | ❌ |
+| 10 | Audit logging | ✅ Done (this iter §7.2 slice G) |
+| 11 | Cursor pagination | ❌ |
+| 12 | Resource-level RBAC | ⚠️ Partial — `@PreAuthorize` is everywhere via roles[], but per-resource ownership checks (organizer can only edit own events) not yet wired. |
+| 13 | Real notification dispatcher | ❌ |
+| 14 | Mobile staff scanner | ⚠️ Partial — backend `POST /v1/tickets/scan` exists; no mobile UI. |
+| 15 | CI/CD | ❌ |
