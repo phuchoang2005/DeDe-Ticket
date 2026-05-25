@@ -1,59 +1,110 @@
 openapi: 3.0.3
 info:
-  title: Dề Dê Event Management & Ticketing System API
-  description: API contract for the Dề Dê Event Management and Ticketing System, directly mapping to the database schema.
-  version: 1.0.0
+  title: De De Event Management & Ticketing System API
+  description: API contract for the implemented Spring Boot backend under `/v1`.
+  version: 1.1.0
 servers:
   - url: https://api.dede-events.com/v1
-    description: Production Server
+    description: Production server
   - url: http://localhost:8080/v1
-    description: Local Development Server
+    description: Local development server
 tags:
+  - name: System
+    description: Health and operational endpoints
   - name: Authentication
-    description: User registration, login, and OTP verification flows
+    description: JWT registration and login
   - name: Users
-    description: User profile management
+    description: Authenticated user profile management
   - name: Events
-    description: Event management and dynamic seating charts
+    description: Public event discovery and seat maps
   - name: Orders
-    description: High-concurrency ticket ordering and simulated payment with retry mechanisms
+    description: Seat locking, checkout, and simulated payment
   - name: Tickets
-    description: QR code generation and mobile check-in
+    description: My Tickets, cancellation, QR details, and staff scan
+  - name: Notifications
+    description: In-app notification inbox
+  - name: Feedback
+    description: Customer feedback submission and admin triage
+  - name: Admin Events
+    description: Organizer/admin event, category, ticket-type, and venue operations
   - name: Analytics
-    description: Sales, revenue, and attendance reporting
+    description: Admin KPI and operational reporting
+  - name: Audit
+    description: Admin-only audit trail
 paths:
+  /health:
+    get:
+      tags: [System]
+      summary: Health check
+      responses:
+        '200':
+          description: Service is up
   /auth/register:
     $ref: './auth/paths.yaml#/register'
   /auth/login:
     $ref: './auth/paths.yaml#/login'
-  /auth/verify-otp:
-    $ref: './auth/paths.yaml#/verifyOtp'
-  /auth/logout:
-    $ref: './auth/paths.yaml#/logout'
   /users/me:
     $ref: './users/paths.yaml#/me'
   /events:
     $ref: './events/paths.yaml#/events'
-  /events/{eventId}:
+  /events/trending:
+    $ref: './events/paths.yaml#/trendingEvents'
+  /events/{id}:
     $ref: './events/paths.yaml#/eventById'
-  /events/{eventId}/ticket-types:
-    $ref: './events/paths.yaml#/eventTicketTypes'
-  /events/{eventId}/seating:
-    $ref: './events/paths.yaml#/eventSeating'
+  /events/{id}/seats:
+    $ref: './events/paths.yaml#/eventSeats'
   /orders:
     $ref: './orders/paths.yaml#/orders'
-  /orders/{orderId}:
+  /orders/{id}:
     $ref: './orders/paths.yaml#/orderById'
-  /orders/{orderId}/pay:
+  /orders/{id}/pay:
     $ref: './orders/paths.yaml#/orderPay'
-  /tickets/my-tickets:
-    $ref: './tickets/paths.yaml#/myTickets'
-  /tickets/checkin:
-    $ref: './tickets/paths.yaml#/checkin'
-  /tickets/sync-offline:
-    $ref: './tickets/paths.yaml#/syncOffline'
-  /reports/analytics:
+  /tickets:
+    $ref: './tickets/paths.yaml#/tickets'
+  /tickets/{id}:
+    $ref: './tickets/paths.yaml#/ticketById'
+  /tickets/scan:
+    $ref: './tickets/paths.yaml#/scan'
+  /notifications:
+    $ref: './notifications/paths.yaml#/notifications'
+  /notifications/unread-count:
+    $ref: './notifications/paths.yaml#/unreadCount'
+  /notifications/{id}/read:
+    $ref: './notifications/paths.yaml#/markRead'
+  /notifications/read-all:
+    $ref: './notifications/paths.yaml#/markAllRead'
+  /feedback:
+    $ref: './feedback/paths.yaml#/feedback'
+  /admin/events:
+    $ref: './admin/paths.yaml#/adminEvents'
+  /admin/events/{id}:
+    $ref: './admin/paths.yaml#/adminEventById'
+  /admin/events/{id}/status:
+    $ref: './admin/paths.yaml#/adminEventStatus'
+  /admin/events/{id}/sections:
+    $ref: './admin/paths.yaml#/adminEventSections'
+  /admin/events/{id}/sections/{section}:
+    $ref: './admin/paths.yaml#/adminEventSectionByName'
+  /admin/events/{eventId}/ticket-types:
+    $ref: './admin/paths.yaml#/adminTicketTypes'
+  /admin/categories:
+    $ref: './admin/paths.yaml#/adminCategories'
+  /admin/venues:
+    $ref: './admin/paths.yaml#/adminVenues'
+  /admin/venues/{id}/sections:
+    $ref: './admin/paths.yaml#/adminVenueSections'
+  /admin/venues/sections/{sectionId}/seats:
+    $ref: './admin/paths.yaml#/adminVenueSectionSeats'
+  /admin/analytics:
     $ref: './analytics/paths.yaml#/analytics'
+  /admin/feedback:
+    $ref: './feedback/paths.yaml#/adminFeedback'
+  /admin/feedback/summary:
+    $ref: './feedback/paths.yaml#/adminFeedbackSummary'
+  /admin/feedback/{id}/status:
+    $ref: './feedback/paths.yaml#/adminFeedbackStatus'
+  /admin/audit:
+    $ref: './admin/paths.yaml#/adminAudit'
 components:
   securitySchemes:
     bearerAuth:

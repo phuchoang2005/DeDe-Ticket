@@ -1,34 +1,55 @@
-Ticket:
+TicketView:
   type: object
   properties:
-    id:
-      type: integer
-    order_item_id:
-      type: integer
-    qr_code:
-      type: string
+    id: { type: integer, format: int64 }
+    qrCode: { type: string }
     status:
       type: string
-      enum: [VALID, USED, REVOKED]
-CheckinRequest:
+      enum: [VALID, USED, CANCELLED]
+    eventId: { type: integer, format: int64 }
+    eventTitle: { type: string }
+    eventLocation: { type: string }
+    eventStartTime: { type: string, format: date-time }
+    rowLabel: { type: string }
+    seatNumber: { type: string }
+    section: { type: string }
+    price: { type: number }
+    issuedAt: { type: string, format: date-time }
+TicketPageMeta:
   type: object
-  required:
-    - qr_code
   properties:
-    qr_code:
-      type: string
-OfflineSyncRequest:
+    page: { type: integer }
+    limit: { type: integer }
+    total: { type: integer, format: int64 }
+    hasMore: { type: boolean }
+TicketPage:
   type: object
-  required:
-    - records
   properties:
-    records:
+    data:
       type: array
       items:
-        type: object
-        properties:
-          qr_code:
-            type: string
-          scanned_at:
-            type: string
-            format: date-time
+        $ref: '#/TicketView'
+    page:
+      $ref: '#/TicketPageMeta'
+    counts:
+      type: object
+      additionalProperties:
+        type: integer
+        format: int64
+ScanRequest:
+  type: object
+  required: [qrCode]
+  properties:
+    qrCode: { type: string }
+    deviceId: { type: string }
+ScanResult:
+  type: object
+  properties:
+    status: { type: string }
+    ticketId: { type: integer, format: int64 }
+    eventId: { type: integer, format: int64 }
+    eventTitle: { type: string }
+    rowLabel: { type: string }
+    seatNumber: { type: string }
+    section: { type: string }
+    checkedInAt: { type: string, format: date-time }

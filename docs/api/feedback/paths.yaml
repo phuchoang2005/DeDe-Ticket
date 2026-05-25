@@ -1,0 +1,86 @@
+feedback:
+  post:
+    tags: [Feedback]
+    summary: Submit customer feedback
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/SubmitFeedbackRequest'
+    responses:
+      '201':
+        description: Feedback submitted
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/FeedbackView'
+adminFeedback:
+  get:
+    tags: [Feedback]
+    summary: List feedback for admin triage
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: page
+        in: query
+        schema: { type: integer, default: 1 }
+      - name: limit
+        in: query
+        schema: { type: integer, default: 20 }
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum: [NEW, READ, RESOLVED]
+      - name: category
+        in: query
+        schema:
+          type: string
+          enum: [GENERAL, EVENT, PAYMENT, BUG_REPORT, SUGGESTION]
+    responses:
+      '200':
+        description: Paged feedback
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/FeedbackPage'
+adminFeedbackSummary:
+  get:
+    tags: [Feedback]
+    summary: Get feedback status counts and average rating
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Feedback summary
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/FeedbackSummary'
+adminFeedbackStatus:
+  patch:
+    tags: [Feedback]
+    summary: Update feedback status and admin note
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/UpdateStatusRequest'
+    responses:
+      '200':
+        description: Updated feedback
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/FeedbackView'

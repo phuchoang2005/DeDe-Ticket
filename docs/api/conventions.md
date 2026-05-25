@@ -1,6 +1,6 @@
 # API Conventions
 
-> Status: DRAFT — applies to every endpoint in `openapi.yaml` and any new endpoint added after this date.
+> Status: implementation snapshot — updated 2026-05-25. Applies to every implemented endpoint in `openapi.yaml` and any new endpoint added after this date.
 > Owner: backend team. Reviewers must reject PRs that deviate without an ADR.
 
 This document specifies the cross-cutting contract that sits *above* per-endpoint definitions: error shape, idempotency, pagination, rate-limit headers, naming, dates. The OpenAPI spec is the source of truth for endpoints; this document is the source of truth for **how** endpoints behave.
@@ -30,7 +30,7 @@ This document specifies the cross-cutting contract that sits *above* per-endpoin
 | `Content-Type: application/json` | Bodies present | |
 | `Accept: application/json` | Optional | Default. |
 | `X-Request-Id` | Optional | Client-supplied trace id. If absent, server generates one. Echoed in every response. |
-| `Idempotency-Key` | Required on POST `/orders`, `/orders/{id}/pay`, `/events/{id}/seats/lock`. Optional elsewhere on state-changing methods. | UUID v4. See §5. |
+| `Idempotency-Key` | Not implemented yet. | ADR-0006 is accepted, but the backend currently does not enforce or replay idempotency keys. |
 
 ---
 
@@ -63,8 +63,8 @@ Every non-2xx response (except 401 / 429 which may be plain) returns:
 | Status | Used when | Common codes |
 |---|---|---|
 | `400 Bad Request` | Client request malformed | `VALIDATION_FAILED`, `MISSING_REQUIRED_FIELD`, `IDEMPOTENCY_KEY_REQUIRED` |
-| `401 Unauthorized` | Token missing / invalid / expired | `AUTH_REQUIRED`, `TOKEN_EXPIRED`, `TOKEN_INVALID` |
-| `403 Forbidden` | Authenticated but lacks permission | `INSUFFICIENT_ROLE`, `RESOURCE_FORBIDDEN` |
+| `401 Unauthorized` | Token missing / invalid / expired | `UNAUTHENTICATED`, `TOKEN_EXPIRED`, `TOKEN_INVALID` |
+| `403 Forbidden` | Authenticated but lacks permission | `FORBIDDEN`, `RESOURCE_FORBIDDEN` |
 | `404 Not Found` | Resource doesn't exist (or user can't see it) | `RESOURCE_NOT_FOUND` |
 | `409 Conflict` | Concurrency / state conflict | `SEAT_TAKEN`, `ORDER_STATE_INVALID`, `IDEMPOTENCY_KEY_REUSE` |
 | `422 Unprocessable Entity` | Body parsed, semantics invalid | `SEMANTIC_ERROR` |
@@ -79,10 +79,12 @@ Maintain alphabetical. Add new codes as constants in `web/ErrorCodes.java`; neve
 
 ```
 AUTH_REQUIRED
+CHECK_IN_ALREADY_DONE
 DEPENDENCY_UNAVAILABLE
 DUPLICATE_OFFLINE_CHECKIN
 EVENT_NOT_PUBLISHED
 EVENT_PUBLISHED_NOT_DELETABLE
+FORBIDDEN
 IDEMPOTENCY_KEY_REQUIRED
 IDEMPOTENCY_KEY_REUSE
 INSUFFICIENT_ROLE
@@ -101,39 +103,36 @@ TICKET_ALREADY_USED
 TICKET_NOT_FOUND
 TOKEN_EXPIRED
 TOKEN_INVALID
+UNAUTHENTICATED
 VALIDATION_FAILED
 ```
 
 ---
 
-## 4. Success envelope
+## 4. Success responses
 
-Single resource:
+Current controllers return DTOs directly rather than a universal success envelope. Collection endpoints use one of these implemented shapes:
 
 ```json
-{ "data": { "id": 42, "title": "..." } }
+[
+  { "id": 42, "title": "..." }
+]
 ```
-
-Collection:
 
 ```json
 {
   "data": [ {...}, {...} ],
-  "page": { "cursor": "opaque-cursor-string", "hasMore": true, "limit": 24 }
+  "page": { "page": 1, "limit": 12, "total": 34, "hasMore": true }
 }
 ```
 
-Action responses (e.g., seat lock) may return a flat `data` object — they are not collections.
-
-We deliberately wrap responses in `data` so that:
-- Adding metadata fields (`page`, `warnings`) is non-breaking.
-- Error and success shapes are mirror images of each other.
+`GET /v1/tickets` is intentionally dual-shape for back-compat: no query string returns a bare array, while `page`, `limit`, or `status` returns `{ data, page, counts }`.
 
 ---
 
 ## 5. Idempotency
 
-See ADR-0006 for the decision; this section is the wire contract.
+See ADR-0006 for the intended decision. This section is not implemented yet and should not be treated as current behavior.
 
 ### Client behavior
 
@@ -157,18 +156,19 @@ SHA-256 of canonical JSON (sorted keys, no whitespace). The hash is stored in `I
 
 ## 6. Pagination
 
-Cursor-based. Reasons: stable across inserts during golden hour; works well with our typical `ORDER BY id` queries.
+Current implemented pagination is page-based.
 
 ### Request
 
 ```
-GET /v1/events?limit=24&cursor=eyJpZCI6MTAyM30
+GET /v1/events?page=2&limit=12&q=workshop
 ```
 
 | Param | Required | Notes |
 |---|---|---|
-| `limit` | optional | Default 24. Max 100. Out of range → `400 VALIDATION_FAILED`. |
-| `cursor` | optional | Opaque string. Server-generated. Clients must not parse. |
+| `page` | optional | 1-based for most public/admin list endpoints; `GET /v1/admin/audit` uses Spring's 0-based page index. |
+| `limit` | optional | Endpoint-specific default (`12` for events, `10` for tickets, `20` for feedback). |
+| `status`, `category`, `q`, `type` | optional | Endpoint-specific filters. |
 
 ### Response
 
@@ -176,29 +176,28 @@ GET /v1/events?limit=24&cursor=eyJpZCI6MTAyM30
 {
   "data": [...],
   "page": {
-    "cursor": "eyJpZCI6MTA0N30",
-    "hasMore": true,
-    "limit": 24
+    "page": 1,
+    "limit": 12,
+    "total": 42,
+    "hasMore": true
   }
 }
 ```
 
-When `hasMore: false`, `cursor` is `null`.
-
-Offset-based pagination (`page=2&size=24`) is **not** used. Reviewers must reject it.
+Cursor pagination remains a future improvement.
 
 ---
 
 ## 7. Rate limiting
 
-Two tiers (see `design-supplement.md` §5):
+Rate limiting is planned but not implemented in the Spring Boot app yet. The target two-tier model remains:
 
 | Tier | Where | Default budget |
 |---|---|---|
 | IP | Edge proxy | burst 30 / sustained 10 rps |
 | User | API (after JWT validation) | burst 10 / sustained 3 rps on write paths |
 
-### Headers on every response
+### Planned headers
 
 ```
 X-RateLimit-Limit: 10
@@ -224,8 +223,9 @@ Content-Type: application/json
 
 - `Authorization: Bearer <jwt>`. Token shape and key strategy: ADR-0007.
 - Endpoint-level role requirements declared in `openapi.yaml` via `security` blocks and documented per-path.
-- Role enum (Sprint 1): `CUSTOMER`, `ORGANIZER`, `STAFF`, `ADMIN`. Maps to `ROLES` table.
-- Resource-level checks happen in services with `@PreAuthorize("hasRole('ORGANIZER') and @eventAccess.canEdit(#eventId, authentication)")` — never in controllers.
+- Implemented roles use Spring Security authority names such as `ROLE_USER`, `ROLE_ORGANIZER`, `ROLE_ADMIN`, and `ROLE_SCANNER`.
+- Admin endpoints under `/v1/admin/**` require `ROLE_ADMIN` or `ROLE_ORGANIZER`, except `/v1/admin/audit`, which requires `ROLE_ADMIN`.
+- Resource-level organizer ownership checks are not fully implemented yet.
 
 ---
 
@@ -257,7 +257,7 @@ Out of scope for Sprint 1. Add when caching layers need them.
 
 ## 10. Filtering, sorting, search
 
-- Filters: `?status=PUBLISHED&category=42&from=2026-05-01&to=2026-05-31`.
+- Filters: `?status=PUBLISHED&category=Music&from=2026-05-01&to=2026-05-31`.
 - Search: `?q=<query>` — server-side LIKE / FULLTEXT, scope documented per-endpoint.
 - Sort: `?sort=startTime,-createdAt`. Prefix `-` for descending. Whitelist of sortable fields enforced server-side.
 
@@ -286,11 +286,9 @@ or COMPLETED (post-event cleanup), then delete.
 
 | Path | Purpose | Auth |
 |---|---|---|
-| `GET /actuator/health` | Spring Boot liveness | none |
-| `GET /actuator/health/readiness` | Readiness probe | none |
-| `GET /v1/info` | Build version, git SHA | none |
+| `GET /v1/health` | Application liveness | none |
 
-These are **not** versioned under `/v1` for the actuator routes; they live at root.
+Actuator endpoints and `/v1/info` are not part of the current implemented contract.
 
 ---
 

@@ -88,3 +88,33 @@ After execution, the following must be performed:
 ## ⚠️ Troubleshooting / Edge Cases (Xử lý sự cố)
 - If encountering `rtk: command not found` error: Verify the installation directory of rtk on the local machine. Resolve quickly by appending it to the system PATH or invoking the absolute binary path directly, e.g., `/usr/local/bin/rtk ssh my-ec2 "command"`.
 - If encountering `rtk proxy connection refused` error: The local rtk service proxy daemon might be asleep or blocking local ports. Restart the local rtk background service manager before retrying the SSH pipeline.
+
+--
+
+# SKILL: Documentation-First Updates for Flow and Logic Changes
+
+## 🎯 Purpose
+- Enforce a strict "Documentation-First" architectural pattern. Any modifications, refactoring, or additions to system flows, backend logic, and business rules must first be captured, detailed, and updated within the `docs/` directory at the project root before any source code is touched.
+
+## ⚡ Triggers
+Claude will automatically apply this skill when the user requests:
+- "Modify the checkout logic" or "Change the user authentication flow".
+- "Add a new feature / system flow" or "Refactor the processing logic".
+- Any request that involves structural, behavioral, or logical shifts in the application.
+
+## 🛠 Prerequisites & Context
+- A dedicated `docs/` folder must exist at the project root directory.
+- Core configuration and architecture files to read beforehand: Existing markdown architecture specs or system design blueprints located under `docs/*.md`.
+
+## 📝 Execution Steps
+1. **Step 1**: [Locate or create the relevant system design document inside the root `docs/` folder, and write or update the flowcharts, sequences, or markdown explanations to reflect the new logic/flow]
+2. **Step 2**: [Present the updated documentation diff or content to the user for structural approval before proceeding with any code implementation]
+3. **Step 3**: [Implement the code changes strictly adhering to the finalized logic defined in the updated documentation, ensuring no architectural deviations occur]
+
+## ✅ Validation
+After execution, the following must be performed:
+- Run command: `git status docs/`
+- Check if [The documentation files inside `docs/` show pending changes or a modified status, proving the spec was updated alongside the codebase] appears.
+
+## ⚠️ Troubleshooting / Edge Cases
+- If trying to write code immediately without a documentation draft: Stop implementation instantly. Remind yourself of this skill constraint and prompt the user: "Let's update the relevant system flow specification in the `docs/` directory first before rewriting any logic."

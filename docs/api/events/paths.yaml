@@ -1,127 +1,77 @@
 events:
   get:
-    tags:
-      - Events
-    summary: List all upcoming events
+    tags: [Events]
+    summary: List published events
+    description: Returns a paged envelope used by the public event listing.
     parameters:
       - name: page
         in: query
-        schema:
-          type: integer
-          default: 1
+        schema: { type: integer, default: 1 }
       - name: limit
         in: query
-        schema:
-          type: integer
-          default: 20
+        schema: { type: integer, default: 12 }
+      - name: category
+        in: query
+        schema: { type: string }
+      - name: q
+        in: query
+        description: Case-insensitive title/location search.
+        schema: { type: string }
     responses:
       '200':
-        description: A paginated list of events
+        description: Paged event summaries
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                data:
-                  type: array
-                  items:
-                    $ref: '../events/schemas.yaml#/Event'
-                total:
-                  type: integer
-  post:
-    tags:
-      - Events
-    summary: Create a new event (Organizer)
-    security:
-      - bearerAuth: []
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '../events/schemas.yaml#/EventCreateRequest'
-    responses:
-      '201':
-        description: Event created successfully
+              $ref: './schemas.yaml#/EventPage'
 trendingEvents:
   get:
-    tags:
-      - Events
-    summary: List trending PUBLISHED events
-    description: |
-      Returns up to `limit` published upcoming events ranked by total seat
-      capacity (DESC) then start time (ASC). Used by the home page to surface
-      large-scale events that are happening soonest.
+    tags: [Events]
+    summary: List trending published events
+    description: PUBLISHED future events ranked by total capacity descending, then start time ascending.
     parameters:
       - name: limit
         in: query
-        required: false
-        schema:
-          type: integer
-          default: 6
-          maximum: 20
+        schema: { type: integer, default: 6 }
     responses:
       '200':
-        description: List of trending event summaries
+        description: Event summaries
         content:
           application/json:
             schema:
               type: array
               items:
-                $ref: '../events/schemas.yaml#/Event'
+                $ref: './schemas.yaml#/EventSummary'
 eventById:
   get:
-    tags:
-      - Events
-    summary: Get event details
+    tags: [Events]
+    summary: Get public event detail
     parameters:
-      - name: eventId
+      - name: id
         in: path
         required: true
-        schema:
-          type: integer
+        schema: { type: integer, format: int64 }
     responses:
       '200':
-        description: Event details
+        description: Event detail
         content:
           application/json:
             schema:
-              $ref: '../events/schemas.yaml#/Event'
-eventTicketTypes:
+              $ref: './schemas.yaml#/EventDetail'
+eventSeats:
   get:
-    tags:
-      - Events
-    summary: Get ticket types for an event
+    tags: [Events]
+    summary: Get event seat map
+    description: Includes seat status and `lockedUntil` so the frontend can render hold countdowns.
     parameters:
-      - name: eventId
+      - name: id
         in: path
         required: true
-        schema:
-          type: integer
+        schema: { type: integer, format: int64 }
     responses:
       '200':
-        description: List of ticket types
+        description: Seat map
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '../events/schemas.yaml#/TicketType'
-eventSeating:
-  get:
-    tags:
-      - Events
-    summary: Get event seating chart mapped to venue
-    parameters:
-      - name: eventId
-        in: path
-        required: true
-        schema:
-          type: integer
-    responses:
-      '200':
-        description: Seating chart layout and availability
-        content:
-          application/json:
-            schema:
-              $ref: '../events/schemas.yaml#/SeatingChart'
+              $ref: './schemas.yaml#/SeatMap'

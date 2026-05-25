@@ -1,0 +1,413 @@
+adminEvents:
+  get:
+    tags: [Admin Events]
+    summary: List admin event rows
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Event management rows
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './schemas.yaml#/AdminEventRow'
+  post:
+    tags: [Admin Events]
+    summary: Create a draft event
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/AdminEventUpsertRequest'
+    responses:
+      '200':
+        description: Created event detail
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/AdminEventDetail'
+adminEventById:
+  get:
+    tags: [Admin Events]
+    summary: Get admin event detail
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    responses:
+      '200':
+        description: Admin event detail
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/AdminEventDetail'
+  put:
+    tags: [Admin Events]
+    summary: Update event fields
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/AdminEventUpsertRequest'
+    responses:
+      '200':
+        description: Updated event detail
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/AdminEventDetail'
+  delete:
+    tags: [Admin Events]
+    summary: Delete an event
+    description: Current policy rejects PUBLISHED events with 409 `EVENT_PUBLISHED_NOT_DELETABLE`; DRAFT, CANCELLED, and COMPLETED events cascade-delete associated event data.
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    responses:
+      '204':
+        description: Event deleted
+adminEventStatus:
+  post:
+    tags: [Admin Events]
+    summary: Change event status
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/StatusChangeRequest'
+    responses:
+      '200':
+        description: Updated event detail
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/AdminEventDetail'
+adminEventSections:
+  post:
+    tags: [Admin Events]
+    summary: Add a priced seat section to an event
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/SectionUpsertRequest'
+    responses:
+      '200':
+        description: Event detail with new section
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/AdminEventDetail'
+adminEventSectionByName:
+  put:
+    tags: [Admin Events]
+    summary: Rename and reprice an event section
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+      - name: section
+        in: path
+        required: true
+        schema: { type: string }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/SectionUpdateRequest'
+    responses:
+      '200':
+        description: Event detail with updated section
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/AdminEventDetail'
+  delete:
+    tags: [Admin Events]
+    summary: Delete an event section
+    description: Refuses sections containing LOCKED or SOLD seats.
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+      - name: section
+        in: path
+        required: true
+        schema: { type: string }
+    responses:
+      '200':
+        description: Event detail after deletion
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/AdminEventDetail'
+adminTicketTypes:
+  get:
+    tags: [Admin Events]
+    summary: List ticket types for an event
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    responses:
+      '200':
+        description: Ticket types
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './schemas.yaml#/TicketTypeView'
+  post:
+    tags: [Admin Events]
+    summary: Create a ticket type for an event
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/CreateTicketTypeRequest'
+    responses:
+      '200':
+        description: Created ticket type
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/TicketTypeView'
+adminCategories:
+  get:
+    tags: [Admin Events]
+    summary: List event categories
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Categories
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './schemas.yaml#/CategoryView'
+  post:
+    tags: [Admin Events]
+    summary: Create an event category
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/CreateCategoryRequest'
+    responses:
+      '200':
+        description: Created category
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/CategoryView'
+adminVenues:
+  get:
+    tags: [Admin Events]
+    summary: List venues
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Venues
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './schemas.yaml#/VenueView'
+  post:
+    tags: [Admin Events]
+    summary: Create or reuse a venue by name/address
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/VenueRequest'
+    responses:
+      '200':
+        description: Venue
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/VenueView'
+adminVenueSections:
+  get:
+    tags: [Admin Events]
+    summary: List catalog sections for a venue
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    responses:
+      '200':
+        description: Venue sections
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './schemas.yaml#/VenueSectionView'
+  post:
+    tags: [Admin Events]
+    summary: Create or reuse a catalog section
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/VenueSectionRequest'
+    responses:
+      '200':
+        description: Venue section
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/VenueSectionView'
+adminVenueSectionSeats:
+  get:
+    tags: [Admin Events]
+    summary: List catalog seats for a section
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: sectionId
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    responses:
+      '200':
+        description: Seats
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './schemas.yaml#/VenueSeatView'
+  post:
+    tags: [Admin Events]
+    summary: Create or reuse a catalog seat
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: sectionId
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/VenueSeatRequest'
+    responses:
+      '200':
+        description: Seat
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/VenueSeatView'
+adminAudit:
+  get:
+    tags: [Audit]
+    summary: List audit rows
+    description: Requires `ROLE_ADMIN`.
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: entity
+        in: query
+        schema: { type: string }
+      - name: entityId
+        in: query
+        schema: { type: integer, format: int64 }
+      - name: userId
+        in: query
+        schema: { type: integer, format: int64 }
+      - name: page
+        in: query
+        schema: { type: integer, default: 0 }
+      - name: size
+        in: query
+        schema: { type: integer, default: 50, maximum: 200 }
+    responses:
+      '200':
+        description: Audit rows
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './schemas.yaml#/AuditView'

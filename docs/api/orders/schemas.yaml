@@ -1,54 +1,44 @@
-OrderItemRequest:
+CreateOrderRequest:
   type: object
-  required:
-    - ticket_type_id
+  required: [eventId, seatIds]
   properties:
-    ticket_type_id:
-      type: integer
-    event_seat_id:
-      type: integer
-      description: Required if the ticket type is for assigned seating
-OrderRequest:
+    eventId: { type: integer, format: int64 }
+    seatIds:
+      type: array
+      items: { type: integer, format: int64 }
+PayRequest:
   type: object
-  required:
-    - event_id
-    - items
+  required: [method]
   properties:
-    event_id:
-      type: integer
+    method:
+      type: string
+      enum: [MOMO, VNPAY, MOCK]
+OrderItemView:
+  type: object
+  properties:
+    id: { type: integer, format: int64 }
+    eventSeatId: { type: integer, format: int64 }
+    rowLabel: { type: string }
+    seatNumber: { type: string }
+    section: { type: string }
+    price: { type: number }
+OrderView:
+  type: object
+  properties:
+    id: { type: integer, format: int64 }
+    eventId: { type: integer, format: int64 }
+    eventTitle: { type: string }
+    status:
+      type: string
+      enum: [PENDING_PAYMENT, PAID, CANCELLED, EXPIRED]
+    paymentMethod: { type: string, nullable: true }
+    totalAmount: { type: number }
+    createdAt: { type: string, format: date-time }
+    paidAt:
+      type: string
+      format: date-time
+      nullable: true
     items:
       type: array
       items:
-        $ref: '#/OrderItemRequest'
-OrderQueuedResponse:
-  type: object
-  properties:
-    order_id:
-      type: integer
-    status:
-      type: string
-      example: QUEUED
-OrderStatusResponse:
-  type: object
-  properties:
-    id:
-      type: integer
-    total_amount:
-      type: number
-    status:
-      type: string
-      enum: [QUEUED, PENDING_PAYMENT, EXPIRED, COMPLETED]
-    created_at:
-      type: string
-      format: date-time
-PaymentRequest:
-  type: object
-  required:
-    - provider
-    - amount
-  properties:
-    provider:
-      type: string
-      example: MoMo
-    amount:
-      type: number
+        $ref: '#/OrderItemView'

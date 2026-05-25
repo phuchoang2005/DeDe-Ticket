@@ -1,0 +1,63 @@
+notifications:
+  get:
+    tags: [Notifications]
+    summary: Get my notification inbox
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: type
+        in: query
+        schema: { type: string }
+    responses:
+      '200':
+        description: Inbox with unread count and type counts
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/InboxResponse'
+unreadCount:
+  get:
+    tags: [Notifications]
+    summary: Get my unread notification count
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Unread count
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/UnreadCountResponse'
+markRead:
+  post:
+    tags: [Notifications]
+    summary: Mark one notification as read
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    responses:
+      '200':
+        description: Updated notification
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/NotificationView'
+markAllRead:
+  post:
+    tags: [Notifications]
+    summary: Mark all my notifications as read
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Number of rows updated
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                updated: { type: integer }
