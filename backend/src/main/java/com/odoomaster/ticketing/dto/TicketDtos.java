@@ -2,6 +2,8 @@ package com.odoomaster.ticketing.dto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 public class TicketDtos {
 
@@ -11,6 +13,13 @@ public class TicketDtos {
             Instant eventStartTime,
             String rowLabel, String seatNumber, String section,
             BigDecimal price, Instant issuedAt) {}
+
+    public record TicketPageMeta(int page, int limit, long total, boolean hasMore) {}
+
+    public record TicketPage(
+            List<TicketView> data,
+            TicketPageMeta page,
+            Map<String, Long> counts) {}
 
     public record ScanRequest(String qrCode, String deviceId) {}
 

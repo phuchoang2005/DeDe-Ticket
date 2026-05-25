@@ -2,6 +2,7 @@ package com.odoomaster.ticketing.controller;
 
 import com.odoomaster.ticketing.dto.TicketDtos.ScanRequest;
 import com.odoomaster.ticketing.dto.TicketDtos.ScanResult;
+import com.odoomaster.ticketing.dto.TicketDtos.TicketPage;
 import com.odoomaster.ticketing.dto.TicketDtos.TicketView;
 import com.odoomaster.ticketing.security.CurrentUser;
 import com.odoomaster.ticketing.service.CheckInService;
@@ -26,8 +27,17 @@ public class TicketController {
     }
 
     @GetMapping
-    public List<TicketView> list() {
-        return service.listMine(current.require().userId());
+    public Object list(@org.springframework.web.bind.annotation.RequestParam(required = false) Integer page,
+                       @org.springframework.web.bind.annotation.RequestParam(required = false) Integer limit,
+                       @org.springframework.web.bind.annotation.RequestParam(required = false) String status) {
+        Long userId = current.require().userId();
+        if (page == null && limit == null && status == null) {
+            return service.listMine(userId);
+        }
+        return service.listMinePaged(userId,
+                page == null ? 1 : page,
+                limit == null ? 10 : limit,
+                status);
     }
 
     @GetMapping("/{id}")

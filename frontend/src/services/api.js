@@ -26,7 +26,7 @@ export const orderApi = {
 };
 
 export const ticketApi = {
-  list: () => apiClient.get('/v1/tickets'),
+  list: (params) => apiClient.get('/v1/tickets', params ? { params } : undefined),
   get: (id) => apiClient.get(`/v1/tickets/${id}`),
   delete: (id) => apiClient.delete(`/v1/tickets/${id}`),
 };

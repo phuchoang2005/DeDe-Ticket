@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ticketApi } from '../services/api';
 import { dayCard, formatVND } from '../utils/format';
+import Pagination from '../components/Pagination';
 
 const TABS = [
   { key: 'all', label: 'Tất cả' },
@@ -10,24 +11,35 @@ const TABS = [
   { key: 'CANCELLED', label: 'Đã hủy' },
 ];
 
+const PAGE_SIZE = 8;
+
 export default function MyTicketsPage() {
   const [tickets, setTickets] = useState([]);
+  const [counts, setCounts] = useState({ all: 0, VALID: 0, USED: 0, CANCELLED: 0 });
+  const [meta, setMeta] = useState({ page: 1, limit: PAGE_SIZE, total: 0, hasMore: false });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('all');
+  const [page, setPage] = useState(1);
   const location = useLocation();
   const justPaid = location.state?.justPaidOrder;
 
   const reload = () => {
     setLoading(true);
+    const params = { page, limit: PAGE_SIZE };
+    if (tab !== 'all') params.status = tab;
     ticketApi
-      .list()
-      .then(setTickets)
+      .list(params)
+      .then((r) => {
+        setTickets(r.data || []);
+        if (r.page) setMeta(r.page);
+        if (r.counts) setCounts(r.counts);
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { reload(); }, []);
+  useEffect(() => { reload(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [page, tab]);
 
   const remove = async (id) => {
     if (!window.confirm('Xoá vé này? Ghế sẽ được trả về kho và đơn vé sẽ chuyển sang trạng thái "Đã huỷ".')) return;
@@ -39,22 +51,17 @@ export default function MyTicketsPage() {
     }
   };
 
-  const counts = useMemo(() => {
-    const c = { all: tickets.length, VALID: 0, USED: 0, CANCELLED: 0 };
-    for (const t of tickets) if (c[t.status] != null) c[t.status]++;
-    return c;
-  }, [tickets]);
+  const setTabAndReset = (t) => { setTab(t); setPage(1); };
 
-  const filtered = useMemo(
-    () => (tab === 'all' ? tickets : tickets.filter((t) => t.status === tab)),
-    [tickets, tab],
-  );
+  const totalPages = Math.max(1, Math.ceil(meta.total / meta.limit));
 
   return (
     <div className="space-y-5">
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-ink">Vé của tôi</h1>
-        <p className="text-sm text-ink-subtle mt-1">Tất cả vé đã mua từ tài khoản của bạn</p>
+        <p className="text-sm text-ink-subtle mt-1">
+          Tất cả vé đã mua từ tài khoản của bạn · {counts.all || 0} vé
+        </p>
       </div>
 
       {justPaid && (
@@ -68,11 +75,11 @@ export default function MyTicketsPage() {
           {TABS.map((t) => (
             <button
               key={t.key}
-              onClick={() => setTab(t.key)}
+              onClick={() => setTabAndReset(t.key)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap ${
                 tab === t.key ? 'bg-brand-600 text-white' : 'text-ink-muted hover:bg-surface-alt'
               }`}>
-              {t.label} ({t.key === 'all' ? counts.all : counts[t.key] || 0})
+              {t.label} ({counts[t.key] ?? 0})
             </button>
           ))}
         </div>
@@ -80,15 +87,17 @@ export default function MyTicketsPage() {
 
       {loading && <div className="text-ink-subtle">Đang tải…</div>}
       {error && <div className="text-danger-600">Lỗi: {error}</div>}
-      {!loading && !error && filtered.length === 0 && (
+      {!loading && !error && tickets.length === 0 && (
         <div className="text-ink-subtle">Chưa có vé nào trong mục này.</div>
       )}
 
       <div className="space-y-4">
-        {filtered.map((t) => (
+        {tickets.map((t) => (
           <TicketRow key={t.id} ticket={t} onDelete={() => remove(t.id)} />
         ))}
       </div>
+
+      <Pagination page={meta.page} totalPages={totalPages} onChange={(n) => { setPage(n); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
     </div>
   );
 }
