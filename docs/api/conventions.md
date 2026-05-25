@@ -82,6 +82,7 @@ AUTH_REQUIRED
 DEPENDENCY_UNAVAILABLE
 DUPLICATE_OFFLINE_CHECKIN
 EVENT_NOT_PUBLISHED
+EVENT_PUBLISHED_NOT_DELETABLE
 IDEMPOTENCY_KEY_REQUIRED
 IDEMPOTENCY_KEY_REUSE
 INSUFFICIENT_ROLE
@@ -96,6 +97,8 @@ RESOURCE_FORBIDDEN
 RESOURCE_NOT_FOUND
 SEAT_TAKEN
 SEMANTIC_ERROR
+TICKET_ALREADY_USED
+TICKET_NOT_FOUND
 TOKEN_EXPIRED
 TOKEN_INVALID
 VALIDATION_FAILED
@@ -257,6 +260,25 @@ Out of scope for Sprint 1. Add when caching layers need them.
 - Filters: `?status=PUBLISHED&category=42&from=2026-05-01&to=2026-05-31`.
 - Search: `?q=<query>` — server-side LIKE / FULLTEXT, scope documented per-endpoint.
 - Sort: `?sort=startTime,-createdAt`. Prefix `-` for descending. Whitelist of sortable fields enforced server-side.
+
+---
+
+## 10a. Event lifecycle & deletion rules
+
+Events move through `DRAFT → PUBLISHED → (CANCELLED|COMPLETED)`. The
+admin delete endpoint (`DELETE /v1/admin/events/{id}`) enforces:
+
+| Current status | Delete allowed? | Notes |
+|---|---|---|
+| DRAFT       | ✅ | Cascade removes seats, ticket types, audit traces. |
+| CANCELLED   | ✅ | Cascade as above; any historical orders/tickets also purged. |
+| COMPLETED   | ✅ | Cascade as above; intended for end-of-life cleanup. |
+| PUBLISHED   | ❌ → 409 `EVENT_PUBLISHED_NOT_DELETABLE` | Must first transition the event to CANCELLED or COMPLETED. |
+
+The PUBLISHED guard exists because deleting an actively-listed event
+would yank tickets out from under customers without any visible
+state change first. Transition to CANCELLED (which notifies holders)
+or COMPLETED (post-event cleanup), then delete.
 
 ---
 

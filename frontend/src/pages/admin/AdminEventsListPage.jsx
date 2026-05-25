@@ -114,7 +114,15 @@ export default function AdminEventsListPage() {
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={(e) => { e.stopPropagation(); remove(r); }}
-                    className="px-2 py-1 rounded-md text-xs text-danger-600 hover:bg-danger-50">
+                    disabled={r.status === 'PUBLISHED'}
+                    title={r.status === 'PUBLISHED'
+                      ? 'Không thể xoá sự kiện đang công bố. Huỷ hoặc kết thúc trước.'
+                      : 'Xoá sự kiện'}
+                    className={`px-2 py-1 rounded-md text-xs ${
+                      r.status === 'PUBLISHED'
+                        ? 'text-ink-faint cursor-not-allowed'
+                        : 'text-danger-600 hover:bg-danger-50'
+                    }`}>
                     Xoá
                   </button>
                 </td>

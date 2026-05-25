@@ -265,20 +265,10 @@ public class AdminEventService {
     public void delete(Long id) {
         Event e = events.findById(id)
                 .orElseThrow(() -> new AppException("EVENT_NOT_FOUND", "Event not found.", HttpStatus.NOT_FOUND));
-        boolean force = "COMPLETED".equals(e.getStatus());
-        if (!force) {
-            long ticketCount = tickets.countByEventId(id);
-            if (ticketCount > 0) {
-                throw new AppException("EVENT_HAS_TICKETS",
-                        "Cannot delete: event has " + ticketCount + " issued tickets. Mark it COMPLETED first.",
-                        HttpStatus.CONFLICT);
-            }
-            long activeOrders = orders.countByEventIdAndStatusNotIn(id, List.of("CANCELLED", "EXPIRED"));
-            if (activeOrders > 0) {
-                throw new AppException("EVENT_HAS_ORDERS",
-                        "Cannot delete: event has active orders. Mark it COMPLETED first or cancel them.",
-                        HttpStatus.CONFLICT);
-            }
+        if ("PUBLISHED".equals(e.getStatus())) {
+            throw new AppException("EVENT_PUBLISHED_NOT_DELETABLE",
+                    "Cannot delete a PUBLISHED event. Cancel or complete it first.",
+                    HttpStatus.CONFLICT);
         }
         cascadeDeleteEvent(id);
         events.delete(e);

@@ -117,7 +117,17 @@ export default function AdminEventEditorPage() {
           {event.status === 'DRAFT' && (
             <button onClick={publish} className="btn-primary text-sm">Xuất bản</button>
           )}
-          <button onClick={removeEvent} className="px-3 py-2 rounded-lg text-sm text-danger-600 bg-danger-50 border border-danger-200 hover:bg-danger-100">
+          <button
+            onClick={removeEvent}
+            disabled={event.status === 'PUBLISHED'}
+            title={event.status === 'PUBLISHED'
+              ? 'Không thể xoá sự kiện đang công bố. Huỷ hoặc kết thúc trước.'
+              : 'Xoá sự kiện'}
+            className={`px-3 py-2 rounded-lg text-sm border ${
+              event.status === 'PUBLISHED'
+                ? 'text-ink-faint bg-surface-panel border-line cursor-not-allowed'
+                : 'text-danger-600 bg-danger-50 border-danger-200 hover:bg-danger-100'
+            }`}>
             Xoá sự kiện
           </button>
         </div>
