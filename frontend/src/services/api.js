@@ -28,6 +28,7 @@ export const orderApi = {
 export const ticketApi = {
   list: () => apiClient.get('/v1/tickets'),
   get: (id) => apiClient.get(`/v1/tickets/${id}`),
+  delete: (id) => apiClient.delete(`/v1/tickets/${id}`),
 };
 
 export const adminApi = {

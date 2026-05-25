@@ -14,6 +14,31 @@ myTickets:
               type: array
               items:
                 $ref: '../tickets/schemas.yaml#/Ticket'
+ticketById:
+  delete:
+    tags:
+      - Tickets
+    summary: Cancel (soft-delete) one of my tickets
+    description: |
+      Cancels a ticket the caller owns and releases the underlying seat back
+      to AVAILABLE. Allowed for tickets in status VALID. Returns 409
+      `TICKET_ALREADY_USED` if the ticket has already been checked in
+      (status USED). Already-cancelled tickets succeed as a no-op (idempotent).
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      '204':
+        description: Ticket cancelled, seat released
+      '404':
+        description: Ticket not found or not owned by caller
+      '409':
+        description: Ticket already used and cannot be cancelled
 checkin:
   post:
     tags:

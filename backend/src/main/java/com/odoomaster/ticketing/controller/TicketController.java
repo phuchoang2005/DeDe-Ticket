@@ -35,6 +35,12 @@ public class TicketController {
         return service.getMine(current.require().userId(), id);
     }
 
+    @DeleteMapping("/{id}")
+    @org.springframework.web.bind.annotation.ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.cancelMine(current.require().userId(), id);
+    }
+
     @PostMapping("/scan")
     @PreAuthorize("hasAnyRole('SCANNER','ADMIN')")
     public ScanResult scan(@RequestBody ScanRequest req) {

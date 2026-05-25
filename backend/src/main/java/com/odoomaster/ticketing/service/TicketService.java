@@ -38,6 +38,30 @@ public class TicketService {
         return view(t);
     }
 
+    @Transactional
+    public void cancelMine(Long userId, Long ticketId) {
+        Ticket t = tickets.findByIdAndUserId(ticketId, userId)
+                .orElseThrow(() -> new AppException("TICKET_NOT_FOUND", "Ticket not found.", HttpStatus.NOT_FOUND));
+        if ("USED".equals(t.getStatus())) {
+            throw new AppException("TICKET_ALREADY_USED",
+                    "Cannot delete a ticket that has already been checked in.",
+                    HttpStatus.CONFLICT);
+        }
+        if ("CANCELLED".equals(t.getStatus())) {
+            return;
+        }
+        t.setStatus("CANCELLED");
+        tickets.save(t);
+        seats.findById(t.getEventSeatId()).ifPresent(s -> {
+            if ("SOLD".equals(s.getStatus())) {
+                s.setStatus("AVAILABLE");
+                s.setLockedBy(null);
+                s.setLockedUntil(null);
+                seats.save(s);
+            }
+        });
+    }
+
     private TicketView view(Ticket t) {
         Event ev = events.findById(t.getEventId()).orElse(null);
         EventSeat s = seats.findById(t.getEventSeatId()).orElse(null);

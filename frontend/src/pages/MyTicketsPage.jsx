@@ -18,13 +18,26 @@ export default function MyTicketsPage() {
   const location = useLocation();
   const justPaid = location.state?.justPaidOrder;
 
-  useEffect(() => {
+  const reload = () => {
+    setLoading(true);
     ticketApi
       .list()
       .then(setTickets)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => { reload(); }, []);
+
+  const remove = async (id) => {
+    if (!window.confirm('Xoá vé này? Ghế sẽ được trả về kho và đơn vé sẽ chuyển sang trạng thái "Đã huỷ".')) return;
+    try {
+      await ticketApi.delete(id);
+      reload();
+    } catch (err) {
+      window.alert('Không thể xoá vé: ' + (err.message || 'lỗi không xác định'));
+    }
+  };
 
   const counts = useMemo(() => {
     const c = { all: tickets.length, VALID: 0, USED: 0, CANCELLED: 0 };
@@ -73,16 +86,22 @@ export default function MyTicketsPage() {
 
       <div className="space-y-4">
         {filtered.map((t) => (
-          <TicketRow key={t.id} ticket={t} />
+          <TicketRow key={t.id} ticket={t} onDelete={() => remove(t.id)} />
         ))}
       </div>
     </div>
   );
 }
 
-function TicketRow({ ticket }) {
+function TicketRow({ ticket, onDelete }) {
   const d = dayCard(ticket.eventStartTime);
   const isValid = ticket.status === 'VALID';
+  const canDelete = ticket.status !== 'USED' && ticket.status !== 'CANCELLED';
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete?.();
+  };
   return (
     <Link
       to={`/tickets/${ticket.id}`}
@@ -109,8 +128,16 @@ function TicketRow({ ticket }) {
           QR: <code className="font-mono">{ticket.qrCode.slice(0, 16)}…</code>
         </div>
       </div>
-      <div className="hidden sm:flex items-center pr-6">
-        <div className="text-brand-700 text-sm font-semibold">Xem vé →</div>
+      <div className="flex flex-col items-end justify-between p-3 sm:p-4 gap-2">
+        <div className="hidden sm:block text-brand-700 text-sm font-semibold">Xem vé →</div>
+        {canDelete && (
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="text-xs text-danger-600 border border-danger-200 hover:bg-danger-50 px-2 py-1 rounded font-semibold whitespace-nowrap">
+            Xoá vé
+          </button>
+        )}
       </div>
     </Link>
   );
