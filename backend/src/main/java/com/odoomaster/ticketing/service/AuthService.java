@@ -58,7 +58,8 @@ public class AuthService {
     public AuthResponse login(LoginRequest req) {
         String email = req.email().trim().toLowerCase();
         User u = users.findByEmail(email)
-                .orElseThrow(() -> new AppException("INVALID_CREDENTIALS", "Email or password is incorrect.", HttpStatus.UNAUTHORIZED));
+                .orElseThrow(() -> new AppException("INVALID_CREDENTIALS",
+                        "Email hoặc mật khẩu không đúng.", HttpStatus.UNAUTHORIZED));
         if (!encoder.matches(req.password(), u.getPasswordHash())) {
             throw new AppException("INVALID_CREDENTIALS",
                     "Email hoặc mật khẩu không đúng.", HttpStatus.UNAUTHORIZED);
