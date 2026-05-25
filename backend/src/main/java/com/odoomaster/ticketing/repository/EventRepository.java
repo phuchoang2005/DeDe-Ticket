@@ -1,9 +1,11 @@
 package com.odoomaster.ticketing.repository;
 
 import com.odoomaster.ticketing.domain.Event;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
@@ -19,4 +21,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "ORDER BY e.startTime ASC")
     org.springframework.data.domain.Page<Event> findPublished(String status, String category, String q,
                                                               org.springframework.data.domain.Pageable pageable);
+
+    @Query("SELECT e FROM Event e LEFT JOIN com.odoomaster.ticketing.domain.EventSeat s ON s.eventId = e.id " +
+            "WHERE e.status = :status AND e.startTime >= :now " +
+            "GROUP BY e " +
+            "ORDER BY COUNT(s.id) DESC, e.startTime ASC")
+    List<Event> findTrending(String status, Instant now, Pageable pageable);
 }

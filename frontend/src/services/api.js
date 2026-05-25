@@ -12,6 +12,7 @@ export const userApi = {
 
 export const eventApi = {
   list: (params = {}) => apiClient.get('/v1/events', { params }),
+  trending: (limit = 6) => apiClient.get('/v1/events/trending', { params: { limit } }),
   detail: (id) => apiClient.get(`/v1/events/${id}`),
   seats: (id) => apiClient.get(`/v1/events/${id}/seats`),
 };

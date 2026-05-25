@@ -43,6 +43,32 @@ events:
     responses:
       '201':
         description: Event created successfully
+trendingEvents:
+  get:
+    tags:
+      - Events
+    summary: List trending PUBLISHED events
+    description: |
+      Returns up to `limit` published upcoming events ranked by total seat
+      capacity (DESC) then start time (ASC). Used by the home page to surface
+      large-scale events that are happening soonest.
+    parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 6
+          maximum: 20
+    responses:
+      '200':
+        description: List of trending event summaries
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../events/schemas.yaml#/Event'
 eventById:
   get:
     tags:

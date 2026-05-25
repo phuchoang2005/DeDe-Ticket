@@ -22,6 +22,11 @@ public class EventController {
         return events.listPaged(page, limit, category, q);
     }
 
+    @GetMapping("/trending")
+    public java.util.List<EventSummary> trending(@RequestParam(defaultValue = "6") int limit) {
+        return events.listTrending(limit);
+    }
+
     @GetMapping("/{id}")
     public EventDetail detail(@PathVariable Long id) {
         return events.detail(id);

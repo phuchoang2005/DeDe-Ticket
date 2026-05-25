@@ -15,18 +15,24 @@ const CATEGORIES = [
 
 export default function HomePage() {
   const [events, setEvents] = useState([]);
+  const [trending, setTrending] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    eventApi
-      .list({ limit: 12 })
-      .then((r) => setEvents(r.data || []))
+    Promise.all([
+      eventApi.list({ limit: 12 }).then((r) => r.data || []),
+      eventApi.trending(6).catch(() => []),
+    ])
+      .then(([list, trend]) => {
+        setEvents(list);
+        setTrending(trend || []);
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
-  const featured = events[0];
+  const featured = trending[0] || events[0];
   const upcoming = events.slice(0, 6);
 
   const categoryCounts = useMemo(() => {
@@ -90,6 +96,18 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Trending */}
+      {trending.length > 0 && (
+        <section>
+          <SectionHeader title="🔥 Sự kiện xu hướng" subtitle="Quy mô lớn nhất · sắp diễn ra sớm" linkTo="/events" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
+            {trending.map((e) => (
+              <EventCard key={e.id} event={e} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Upcoming */}
       <section>

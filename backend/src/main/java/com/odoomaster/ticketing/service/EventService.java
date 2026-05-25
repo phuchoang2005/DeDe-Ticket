@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.util.Comparator;
 import java.util.List;
 
@@ -25,10 +26,18 @@ public class EventService {
 
     private final EventRepository events;
     private final EventSeatRepository seats;
+    private final Clock clock;
 
-    public EventService(EventRepository events, EventSeatRepository seats) {
+    public EventService(EventRepository events, EventSeatRepository seats, Clock clock) {
         this.events = events;
         this.seats = seats;
+        this.clock = clock;
+    }
+
+    public List<EventSummary> listTrending(int limit) {
+        int safeLimit = Math.min(20, Math.max(1, limit));
+        return events.findTrending("PUBLISHED", clock.instant(), PageRequest.of(0, safeLimit))
+                .stream().map(this::toSummary).toList();
     }
 
     public EventPage listPaged(int page, int limit, String category, String q) {
