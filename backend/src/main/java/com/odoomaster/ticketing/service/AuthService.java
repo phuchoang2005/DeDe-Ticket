@@ -34,7 +34,8 @@ public class AuthService {
     public AuthResponse register(RegisterRequest req) {
         String email = req.email().trim().toLowerCase();
         if (users.existsByEmail(email)) {
-            throw new AppException("EMAIL_ALREADY_REGISTERED", "Email is already registered.", HttpStatus.CONFLICT);
+            throw new AppException("EMAIL_ALREADY_REGISTERED",
+                    "Email đã được đăng ký.", HttpStatus.CONFLICT);
         }
         Role userRole = roles.findByName("USER")
                 .orElseThrow(() -> new AppException("ROLE_NOT_SEEDED", "USER role missing.", HttpStatus.INTERNAL_SERVER_ERROR));
@@ -59,7 +60,8 @@ public class AuthService {
         User u = users.findByEmail(email)
                 .orElseThrow(() -> new AppException("INVALID_CREDENTIALS", "Email or password is incorrect.", HttpStatus.UNAUTHORIZED));
         if (!encoder.matches(req.password(), u.getPasswordHash())) {
-            throw new AppException("INVALID_CREDENTIALS", "Email or password is incorrect.", HttpStatus.UNAUTHORIZED);
+            throw new AppException("INVALID_CREDENTIALS",
+                    "Email hoặc mật khẩu không đúng.", HttpStatus.UNAUTHORIZED);
         }
         if (!"ACTIVE".equals(u.getStatus())) {
             throw new AppException("ACCOUNT_INACTIVE", "Account is not active.", HttpStatus.FORBIDDEN);

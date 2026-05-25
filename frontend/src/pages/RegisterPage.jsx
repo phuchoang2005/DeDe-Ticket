@@ -47,7 +47,16 @@ export default function RegisterPage() {
         </div>
         <div>
           <label className="field-label">Mật khẩu (≥ 6 ký tự)</label>
-          <input type="password" required minLength={6} value={form.password} onChange={update('password')} className="field-input" />
+          <input
+            type="password"
+            required
+            minLength={6}
+            value={form.password}
+            onChange={update('password')}
+            onInvalid={(e) => e.target.setCustomValidity('Mật khẩu phải có từ 6 đến 100 ký tự.')}
+            onInput={(e) => e.target.setCustomValidity('')}
+            className="field-input"
+          />
         </div>
         {error && <div className="text-danger-600 text-sm">{error}</div>}
         <button type="submit" disabled={busy} className="btn-primary w-full">

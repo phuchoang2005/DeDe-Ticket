@@ -29,7 +29,8 @@ public class GlobalExceptionHandler {
         List<ApiErrorEnvelope.FieldDetail> details = ex.getBindingResult().getFieldErrors().stream()
                 .map(fe -> new ApiErrorEnvelope.FieldDetail(fe.getField(), fe.getDefaultMessage()))
                 .toList();
-        return build(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", "Validation failed.", details);
+        String firstMsg = details.isEmpty() ? "Dữ liệu không hợp lệ." : details.get(0).reason();
+        return build(HttpStatus.BAD_REQUEST, "VALIDATION_FAILED", firstMsg, details);
     }
 
     @ExceptionHandler(AuthenticationException.class)
