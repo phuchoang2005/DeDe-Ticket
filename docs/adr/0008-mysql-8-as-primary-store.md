@@ -6,7 +6,7 @@
 
 ## Context
 
-The schema (`docs/database-setup/schema-definition.md`) is heavily relational: USERS ↔ ROLES, EVENTS ↔ SEATS ↔ TICKETS ↔ ORDERS ↔ PAYMENTS, with explicit foreign keys and uniqueness constraints. Several correctness properties depend on:
+The schema (`docs/engineering/database/schema-definition.md`) is heavily relational: USERS ↔ ROLES, EVENTS ↔ SEATS ↔ TICKETS ↔ ORDERS ↔ PAYMENTS, with explicit foreign keys and uniqueness constraints. Several correctness properties depend on:
 
 - `UNIQUE` constraints (`ORDER_ITEMS.event_seat_id`, `TICKETS.qr_code`, `CHECK_INS.ticket_id`).
 - `SELECT … FOR UPDATE SKIP LOCKED` for queue draining (ADR-0004).

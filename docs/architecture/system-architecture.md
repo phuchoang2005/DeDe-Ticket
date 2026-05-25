@@ -2,7 +2,7 @@
 
 > Status: Implementation snapshot — updated 2026-05-25.
 > Audience: every contributor before they touch code.
-> Companion docs: [`design-supplement.md`](../design-is/design-supplement.md) (flow detail), [`schema-definition.md`](../database-setup/schema-definition.md) (data), [`api/openapi.yaml`](../api/openapi.yaml) (contract), [`adr/`](../adr/) (decisions).
+> Companion docs: [`design-supplement.md`](../design/system-flows/design-supplement.md) (flow detail), [`schema-definition.md`](../engineering/database/schema-definition.md) (data), [`api/openapi.yaml`](../api/openapi.yaml) (contract), [`adr/`](../adr/) (decisions).
 
 This document gives the single top-level picture of the system. Per-flow detail lives in `design-supplement.md`; decisions live in `adr/`. When those disagree with this doc, the ADRs win — this doc is a snapshot.
 
@@ -190,7 +190,11 @@ flowchart TB
 | Response time p95 | < 2 s | NFR §2.4 |
 | Availability | 99.5 % | NFR §2.4 |
 
-Verification belongs to the [load-test plan](../nfr-load-test-plan.md), not this document.
+Verification belongs to the [load-test plan](../quality/nfr-load-test-plan.md), not this document.
+
+### Current Docker load-balancing topology
+
+`docker-compose.yml` runs four Spring Boot backend containers (`backend1` through `backend4`) behind `lb/nginx.conf`. Nginx uses `least_conn`, backend health checks, keepalive upstream connections, and bounded upstream retries for transient 502/503/504 errors. State-changing requests are not silently replayed by nginx; client-visible retries must use the application idempotency contract.
 
 ---
 
@@ -203,7 +207,7 @@ Verification belongs to the [load-test plan](../nfr-load-test-plan.md), not this
 | `staging` | Pre-prod, load-test target | `prod` | Managed MySQL | Mirrors prod config; payment in sandbox mode |
 | `prod` | Live | `prod` | Managed MySQL + replica | `ddl-auto: validate`; migrations only via Flyway |
 
-See `docs/environment.md` for env-var details and `docs/database-setup/migration-strategy.md` for the migration tool decision.
+See `docs/engineering/environment.md` for env-var details and `docs/engineering/database/migration-strategy.md` for the migration tool decision.
 
 ---
 

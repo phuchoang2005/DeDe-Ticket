@@ -1,7 +1,7 @@
 # Definition of Done
 
 > Status: DRAFT — applies to every PR targeting `develop` or above.
-> Companion: [`coding-standards.md`](coding-standards.md), [`test-strategy.md`](test-strategy.md).
+> Companion: [`coding-standards.md`](coding-standards.md), [`test-strategy.md`](../quality/test-strategy.md).
 
 A change is "done" when **all** of the following are true. If any item is N/A for a given PR, the author states why in the PR description.
 

@@ -22,13 +22,13 @@ This repository contains a Spring Boot backend and Vite/React frontend.
 
 ## Coding Style & Naming Conventions
 
-Follow `docs/coding-standards.md`. Java uses 4-space indentation, constructor injection, service-level `@Transactional`, and layered dependencies: controllers call services, services call repositories. Java classes use `PascalCase`, members use `camelCase`, constants use `SCREAMING_SNAKE_CASE`, packages are lowercase, and DB columns are `snake_case`.
+Follow `docs/engineering/coding-standards.md`. Java uses 4-space indentation, constructor injection, service-level `@Transactional`, and layered dependencies: controllers call services, services call repositories. Java classes use `PascalCase`, members use `camelCase`, constants use `SCREAMING_SNAKE_CASE`, packages are lowercase, and DB columns are `snake_case`.
 
 Frontend code uses functional React components. Name components and pages `PascalCase.jsx`; name services, hooks, and utilities `camelCase.js`. Route HTTP through `frontend/src/services/` and configure API URLs with `VITE_API_BASE_URL`.
 
 ## Testing Guidelines
 
-Backend tests use JUnit 5 with Spring Boot Test; place them in `backend/src/test/java`. Name unit tests `<Subject>Test` and integration tests `<Feature>IntegrationTest`; prefer names like `methodName_givenCondition_expectedOutcome`. Business-critical flows such as seat locking, idempotency, QR uniqueness, and auth need real tests, not only mocks. Frontend test tooling is planned in `docs/test-strategy.md`.
+Backend tests use JUnit 5 with Spring Boot Test; place them in `backend/src/test/java`. Name unit tests `<Subject>Test` and integration tests `<Feature>IntegrationTest`; prefer names like `methodName_givenCondition_expectedOutcome`. Business-critical flows such as seat locking, idempotency, QR uniqueness, and auth need real tests, not only mocks. Frontend test tooling is planned in `docs/quality/test-strategy.md`.
 
 ## Commit & Pull Request Guidelines
 

@@ -2,7 +2,7 @@
 
 > Status: DRAFT — replaces the `init_schema.py` workflow.
 > Owner: DB owner + backend team.
-> Companion: [ADR-0005](../adr/0005-flyway-for-migrations.md).
+> Companion: [ADR-0005](../../adr/0005-flyway-for-migrations.md).
 
 This document is the operations playbook for the decision in ADR-0005 (Flyway). Read the ADR first for the "why"; this doc covers the "how".
 
@@ -76,7 +76,7 @@ backend/src/main/resources/
 
 ## 4. Converting `init_schema.py`
 
-`docs/database-setup/init_schema.py` becomes the first migration:
+`docs/engineering/database/init_schema.py` becomes the first migration:
 
 1. Generate `V20260515_120000__initial_schema.sql` containing every CREATE TABLE / INDEX / CONSTRAINT from the Python script, in dependency order.
 2. Remove the hardcoded password (line 10 in the Python script) — it's no longer needed.
@@ -135,7 +135,7 @@ Every prod migration follows this procedure:
 5. **Smoke test**: hit five core endpoints (`/health`, `/events`, `/auth/login`, an order creation, a ticket check-in). Confirm success.
 6. **Open the gate**.
 7. **Watch**: keep the deployer on shift for 30 min; review `AUDIT_LOGS` and 5xx rates.
-8. **Document**: append a line to `docs/database-setup/migration-log.md` with date, migration IDs, runtime, anomalies.
+8. **Document**: append a line to `docs/engineering/database/migration-log.md` with date, migration IDs, runtime, anomalies.
 
 If step 5 fails: roll back the application image (Flyway has already run; the schema is forward-compatible by design). If the schema itself is broken: restore from snapshot per the rollback section.
 

@@ -1,11 +1,11 @@
 # Design Supplement — flows missing from the draw.io diagrams
 
-> **Status:** Required reading before implementation. The existing `ActivityDiagramQLDA.drawio.xml` and `SequenceDiagramQLDA.drawio.xml` cover the user-facing happy paths (register, login, profile, basic booking, payment retry loop, QR generation, check-in). The flows below close the gaps identified in the audit against `GE-REQUIREMENT.md` and `docs/database-setup/schema-definition.md`, and **must be reflected in code** even if they are added to the drawio files later.
+> **Status:** Required reading before implementation. The existing `ActivityDiagramQLDA.drawio.xml` and `SequenceDiagramQLDA.drawio.xml` cover the user-facing happy paths (register, login, profile, basic booking, payment retry loop, QR generation, check-in). The flows below close the gaps identified in the audit against `GE-REQUIREMENT.md` and `docs/engineering/database/schema-definition.md`, and **must be reflected in code** even if they are added to the drawio files later.
 >
 > **Conventions used in this document**
 > - **Optimistic lock** ⇒ `EVENT_SEATS.version`. Every UPDATE includes `WHERE version = :expected`; affected-rows = 0 ⇒ retry.
 > - **Idempotency key** ⇒ client-generated UUID stored against the operation (order, payment attempt). Server is required to return the cached result on replay.
-> - **Schema source of truth** ⇒ `docs/database-setup/init_schema.py` and `schema-definition.md`. Field names below are exact column names.
+> - **Schema source of truth** ⇒ `docs/engineering/database/init_schema.py` and `schema-definition.md`. Field names below are exact column names.
 
 ---
 
