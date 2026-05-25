@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # tests/smoke/main.sh — happy-path smoke for the live `demo` deployment.
 #
-# Assertions land here (not in scratch) per docs/database-setup/migration-to-normalized.md §11.
+# Assertions land here (not in scratch) per docs/engineering/database/migration-to-normalized.md §11.
 # Each slice updates this script in the same PR that ships the breaking change.
 #
 # Usage:

@@ -1,6 +1,6 @@
 # Implemented Feature & Flow Reference
 
-> Status: current implementation snapshot as of 2026-05-25. For endpoint-level request/response details, see [`api/openapi.yaml`](./api/openapi.yaml). For schema/database detail, see [`database-setup/schema-definition.md`](./database-setup/schema-definition.md).
+> Status: current implementation snapshot as of 2026-05-25. For endpoint-level request/response details, see [`api/openapi.yaml`](../api/openapi.yaml). For schema/database detail, see [`database-setup/schema-definition.md`](../engineering/database/schema-definition.md).
 
 This document summarizes the features that are implemented in the Spring Boot backend and React frontend. It is intended as the quick project-flow index; iteration tracking files remain historical notes.
 
@@ -105,7 +105,7 @@ Resource-level ownership restrictions are partial: admin endpoints are role-gate
 | Database | MySQL 8 with Flyway migrations under `backend/src/main/resources/db/migration`. |
 | Cache | Redis for advisory cache and durability settings in the scaled compose topology. |
 | Load balancing | Production compose topology runs `backend1`, `backend2`, `backend3` behind nginx `lb` using `least_conn`; frontend nginx proxies `/v1/` to the load balancer. |
-| Error shape | `GlobalExceptionHandler` emits the standard envelope described in [`api/conventions.md`](./api/conventions.md). Validation errors promote the first field message to the top-level message. |
+| Error shape | `GlobalExceptionHandler` emits the standard envelope described in [`api/conventions.md`](../api/conventions.md). Validation errors promote the first field message to the top-level message. |
 | Tests | Current backend tests cover feedback service/controller smoke and seat-lock sweeper behavior. Broader MockMvc/Testcontainers coverage is still a backlog item. |
 
 ---

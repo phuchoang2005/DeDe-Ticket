@@ -6,7 +6,7 @@
 
 ## Context
 
-The current schema lives in `docs/database-setup/init_schema.py` — an imperative Python script with a hardcoded password (`init_schema.py:10`). JPA is set to `ddl-auto: update` in dev. Neither is acceptable for a production deployment: there is no versioning, no rollback story, no controlled prod migration path, and CI cannot start from a clean DB deterministically.
+The current schema lives in `docs/engineering/database/init_schema.py` — an imperative Python script with a hardcoded password (`init_schema.py:10`). JPA is set to `ddl-auto: update` in dev. Neither is acceptable for a production deployment: there is no versioning, no rollback story, no controlled prod migration path, and CI cannot start from a clean DB deterministically.
 
 ## Decision
 
@@ -37,4 +37,4 @@ Adopt **Flyway** as the single schema-migration tool.
 - Every migration must be reviewable as plain SQL — no shell scripts, no Python, no Liquibase-style abstraction.
 - Destructive changes (DROP TABLE, DROP COLUMN) require an explicit sign-off in the PR description.
 - Data migrations that may take > 30s on prod size data must be staged: a non-blocking online step first, then a fast cutover.
-- See [`database-setup/migration-strategy.md`](../database-setup/migration-strategy.md) for the operations playbook.
+- See [`database-setup/migration-strategy.md`](../engineering/database/migration-strategy.md) for the operations playbook.

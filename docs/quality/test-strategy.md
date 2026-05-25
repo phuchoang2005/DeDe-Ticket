@@ -152,6 +152,47 @@ A PR cannot merge to `main` (release) unless:
 6. E2E suite passes against staging.
 7. Load scenarios A + B + C pass against staging.
 
+### 7.1 Implemented QA/QC pipeline
+
+The repository pipeline is implemented as GitHub Actions workflow `.github/workflows/qa-qc.yml` plus local helper scripts. It is intentionally split into independent jobs so failures point to the correct quality layer.
+
+| Job | Trigger | Command | Blocks |
+|---|---|---|---|
+| Backend QA | Pull request and pushes to `main`, `develop`, `demo`, `feature/**` | `cd backend && mvn verify` | Compile, unit tests, integration tests that do not require external staging |
+| Frontend QA | Same | `cd frontend && npm ci && npm run test && npm run build` | Component/utility tests and production build regressions |
+| Smoke scripts | Same | `bash tests/smoke/main.sh` when `BASE_URL` is configured | Deployed API health and critical routes |
+| Load smoke | Manual workflow dispatch | `k6 run tests/load/scenario-a-browse.js` | NFR scenario A baseline on staging |
+
+Local developers should run the same commands before opening a PR:
+
+```bash
+bash tests/ci/local-qa.sh
+```
+
+The local script runs backend verification, frontend tests, and frontend build. When `mvn` or `npm` are not installed on the host, it falls back to the repository Docker runtime images (`maven:3.9.6-eclipse-temurin-21` and `node:20-alpine`). It skips deployed smoke and load checks because those require a running staging target.
+
+### 7.2 Pipeline failure policy
+
+- A failing backend or frontend QA job is a merge blocker.
+- A failing manual load-smoke job is a release blocker when preparing `main` or a tagged release.
+- Smoke tests are skipped only when `BASE_URL` is absent; they fail fast when the variable is present and the target is unhealthy.
+- CI must not use production data or production payment integrations.
+
+### 7.3 Expanded reliability test target
+
+The fast PR suite should contain roughly 500 executable cases, weighted toward the product owner's reliability risks:
+
+| Area | Target cases | Reliability purpose |
+|---|---:|---|
+| Seat/order contention | 120+ | Validate duplicate seat requests, taken seats, expired locks, payment state transitions, and concurrent ticket issuance assumptions |
+| Ticket check-in | 80+ | Validate duplicate QR scans, invalid states, missing QR payloads, device payloads, and conflict mapping |
+| Payment retry | 40+ | Validate retry attempt sequencing under repeated and concurrent attempts |
+| Notification/user feedback | 50+ | Validate customer-facing reliability signals after payment, feedback, and system events |
+| Frontend utility behavior | 160+ | Validate stable formatting, grouping, and inventory labels used across high-traffic browse and checkout screens |
+| Load-test script guardrails | 50+ | Validate Scenario A checks for event list, detail, seat map, thresholds, and environment overrides |
+
+These tests do not replace staging concurrency and load tests. They are the quick regression net that prevents known reliability mistakes from reaching the heavier staging gates.
+
 ---
 
 ## 8. Anti-patterns the reviewer rejects
