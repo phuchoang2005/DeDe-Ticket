@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { eventApi } from '../services/api';
 import EventCard from '../components/EventCard';
+import Pagination from '../components/Pagination';
 
 const CATEGORIES = [
   { key: 'all', label: 'Tất cả' },
@@ -140,50 +141,4 @@ export default function EventListPage() {
       )}
     </div>
   );
-}
-
-function Pagination({ page, totalPages, onChange }) {
-  const numbers = pageNumbers(page, totalPages);
-  return (
-    <nav className="flex justify-center items-center gap-1.5 pt-2" aria-label="Phân trang">
-      <PageBtn disabled={page <= 1} onClick={() => onChange(page - 1)}>‹ Trước</PageBtn>
-      {numbers.map((n, i) =>
-        n === '…' ? (
-          <span key={`g${i}`} className="px-2 text-ink-subtle">…</span>
-        ) : (
-          <PageBtn key={n} active={n === page} onClick={() => onChange(n)}>{n}</PageBtn>
-        ),
-      )}
-      <PageBtn disabled={page >= totalPages} onClick={() => onChange(page + 1)}>Sau ›</PageBtn>
-    </nav>
-  );
-}
-
-function PageBtn({ active, disabled, onClick, children }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`min-w-[36px] h-9 px-3 rounded-lg text-sm border transition ${
-        active
-          ? 'bg-brand-600 text-white border-brand-600 font-bold'
-          : disabled
-            ? 'bg-white text-ink-faint border-line cursor-not-allowed'
-            : 'bg-white text-ink-muted border-line hover:border-brand-600 hover:text-brand-700'
-      }`}>
-      {children}
-    </button>
-  );
-}
-
-function pageNumbers(current, total) {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-  const out = [1];
-  const lo = Math.max(2, current - 1);
-  const hi = Math.min(total - 1, current + 1);
-  if (lo > 2) out.push('…');
-  for (let i = lo; i <= hi; i++) out.push(i);
-  if (hi < total - 1) out.push('…');
-  out.push(total);
-  return out;
 }
