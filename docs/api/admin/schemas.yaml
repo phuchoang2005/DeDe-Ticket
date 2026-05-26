@@ -1,0 +1,146 @@
+AdminEventRow:
+  type: object
+  properties:
+    id: { type: integer, format: int64 }
+    title: { type: string }
+    location: { type: string }
+    categories:
+      type: array
+      items:
+        $ref: '../events/schemas.yaml#/CategoryRef'
+    organizer: { type: string }
+    status: { type: string }
+    startTime: { type: string, format: date-time }
+    endTime: { type: string, format: date-time }
+    createdAt: { type: string, format: date-time }
+    totalSeats: { type: integer }
+    availableSeats: { type: integer }
+    soldSeats: { type: integer }
+    revenue: { type: number }
+SectionSummary:
+  type: object
+  properties:
+    name: { type: string }
+    price: { type: number }
+    rowCount: { type: integer }
+    seatCount: { type: integer }
+    availableCount: { type: integer }
+    soldCount: { type: integer }
+AdminEventDetail:
+  allOf:
+    - $ref: '#/AdminEventRow'
+    - type: object
+      properties:
+        description: { type: string }
+        imageUrl: { type: string }
+        sections:
+          type: array
+          items:
+            $ref: '#/SectionSummary'
+AdminEventUpsertRequest:
+  type: object
+  required: [title, startTime, endTime]
+  properties:
+    title: { type: string, maxLength: 255 }
+    description: { type: string, maxLength: 4000 }
+    location: { type: string, maxLength: 255 }
+    categories:
+      type: array
+      items: { type: string }
+    organizer: { type: string, maxLength: 255 }
+    imageUrl: { type: string, maxLength: 500 }
+    startTime: { type: string, format: date-time }
+    endTime: { type: string, format: date-time }
+StatusChangeRequest:
+  type: object
+  required: [status]
+  properties:
+    status:
+      type: string
+      enum: [DRAFT, PUBLISHED, CANCELLED, COMPLETED]
+SectionUpsertRequest:
+  type: object
+  required: [name, price, rows, seatsPerRow]
+  properties:
+    name: { type: string, maxLength: 32 }
+    price: { type: number, minimum: 0, exclusiveMinimum: true }
+    rows: { type: integer, minimum: 1 }
+    seatsPerRow: { type: integer, minimum: 1 }
+SectionUpdateRequest:
+  type: object
+  required: [name, price]
+  properties:
+    name: { type: string, maxLength: 32 }
+    price: { type: number, minimum: 0, exclusiveMinimum: true }
+CategoryView:
+  type: object
+  properties:
+    id: { type: integer, format: int64 }
+    name: { type: string }
+CreateCategoryRequest:
+  type: object
+  required: [name]
+  properties:
+    name: { type: string, maxLength: 64 }
+TicketTypeView:
+  type: object
+  properties:
+    id: { type: integer, format: int64 }
+    eventId: { type: integer, format: int64 }
+    name: { type: string }
+    price: { type: number }
+    quantity: { type: integer }
+    soldQuantity: { type: integer }
+CreateTicketTypeRequest:
+  type: object
+  required: [name, price, quantity]
+  properties:
+    name: { type: string, maxLength: 64 }
+    price: { type: number, minimum: 0, exclusiveMinimum: true }
+    quantity: { type: integer, minimum: 1 }
+VenueView:
+  type: object
+  properties:
+    id: { type: integer, format: int64 }
+    name: { type: string }
+    address: { type: string }
+VenueRequest:
+  type: object
+  required: [name]
+  properties:
+    name: { type: string, maxLength: 255 }
+    address: { type: string, maxLength: 255 }
+VenueSectionView:
+  type: object
+  properties:
+    id: { type: integer, format: int64 }
+    venueId: { type: integer, format: int64 }
+    name: { type: string }
+VenueSectionRequest:
+  type: object
+  required: [name]
+  properties:
+    name: { type: string, maxLength: 64 }
+VenueSeatView:
+  type: object
+  properties:
+    id: { type: integer, format: int64 }
+    sectionId: { type: integer, format: int64 }
+    rowLabel: { type: string }
+    seatNumber: { type: string }
+VenueSeatRequest:
+  type: object
+  required: [rowLabel, seatNumber]
+  properties:
+    rowLabel: { type: string, maxLength: 8 }
+    seatNumber: { type: string, maxLength: 8 }
+AuditView:
+  type: object
+  properties:
+    id: { type: integer, format: int64 }
+    userId: { type: integer, format: int64 }
+    action: { type: string }
+    entity: { type: string }
+    entityId: { type: integer, format: int64 }
+    traceId: { type: string }
+    createdAt: { type: string, format: date-time }

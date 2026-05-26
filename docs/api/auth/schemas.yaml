@@ -1,26 +1,24 @@
 RegisterRequest:
   type: object
-  required:
-    - full_name
-    - email
-    - phone
-    - password
+  required: [email, password, fullName]
   properties:
-    full_name:
-      type: string
     email:
       type: string
       format: email
+    password:
+      type: string
+      format: password
+      minLength: 6
+      maxLength: 100
+    fullName:
+      type: string
+      maxLength: 255
     phone:
       type: string
-    password:
-      type: string
-      format: password
+      maxLength: 50
 LoginRequest:
   type: object
-  required:
-    - email
-    - password
+  required: [email, password]
   properties:
     email:
       type: string
@@ -28,13 +26,31 @@ LoginRequest:
     password:
       type: string
       format: password
-VerifyOTPRequest:
+UserResponse:
   type: object
-  required:
-    - userId
-    - otpCode
   properties:
-    userId:
+    id:
+      type: integer
+      format: int64
+    email:
       type: string
-    otpCode:
+      format: email
+    fullName:
       type: string
+    phone:
+      type: string
+    roles:
+      type: array
+      items:
+        type: string
+        example: ROLE_USER
+AuthResponse:
+  type: object
+  properties:
+    token:
+      type: string
+    expiresInMinutes:
+      type: integer
+      format: int64
+    user:
+      $ref: '#/UserResponse'

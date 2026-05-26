@@ -84,6 +84,9 @@ services:
   backend3:
     <<: *backend
     container_name: backend3_prod
+  backend4:
+    <<: *backend
+    container_name: backend4_prod
 
   lb:
     image: nginx:alpine
@@ -95,6 +98,8 @@ services:
       backend2:
         condition: service_healthy
       backend3:
+        condition: service_healthy
+      backend4:
         condition: service_healthy
     volumes:
       - ./lb/nginx.conf:/etc/nginx/conf.d/default.conf:ro

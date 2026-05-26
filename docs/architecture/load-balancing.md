@@ -36,7 +36,7 @@ Only `frontend` exposes a host port. `lb` and `backend*` are reachable only insi
 | `max_fails` / `fail_timeout` | `3` / `10s`                                   | One slow GC pause shouldn't eject a replica; three consecutive failures should. |
 | Connect timeout              | `2s`                                          | Matches the external-call connect timeout in `system-architecture.md` §7. |
 | Read timeout                 | `15s`                                         | Absorbs cold-cache + payment-mock spikes; well below the LB's own client cutoff. |
-| `proxy_next_upstream`        | `error timeout http_502 http_503 http_504`    | Idempotent retries only — `non_idempotent` is **not** set, so POSTs do not silently replay. Clients use `Idempotency-Key` (ADR-0006) for safe retries on state-changing routes. |
+| `proxy_next_upstream`        | `error timeout http_502 http_503 http_504`    | Idempotent retries only — `non_idempotent` is **not** set, so POSTs do not silently replay. Client-visible Idempotency-Key support is still a backend follow-up from ADR-0006. |
 | Keepalive                    | `32` per upstream                             | Reuses TCP connections across many requests; cuts handshake cost during bursts. |
 
 ### Health endpoints

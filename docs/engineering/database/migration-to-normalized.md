@@ -1,7 +1,7 @@
 # Migration Plan: As-Built → Normalized Schema
 
 > Status: **IMPLEMENTED (2026-05-22, commit `f6851cb`)** — all 8 slices + E-pre baseline shipped in a single PR. Live schema now matches the 19-table design.
-> Companion: [ADR-0005 (Flyway)](../adr/0005-flyway-for-migrations.md), [`migration-strategy.md`](./migration-strategy.md), [`../tracking/tracking-4.md` §7](../tracking/tracking-4.md).
+> Companion: [ADR-0005 (Flyway)](../../adr/0005-flyway-for-migrations.md), [`migration-strategy.md`](./migration-strategy.md), [`../../tracking/tracking-4.md` §7](../../tracking/tracking-4.md).
 > Live snapshot (pre-migration): 2026-05-21 — 9 tables: `users, events, event_seats, orders, order_items, payments, tickets, notifications, feedbacks`.
 > Live snapshot (post-migration): 2026-05-22 — 19 tables matching `schema-definition.md`; `flyway_schema_history` has 11 success rows.
 

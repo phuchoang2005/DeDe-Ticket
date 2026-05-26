@@ -1,20 +1,17 @@
 analytics:
   get:
-    tags:
-      - Analytics
-    summary: Retrieve business analytics
+    tags: [Analytics]
+    summary: Retrieve admin analytics report
     security:
       - bearerAuth: []
     parameters:
-      - name: eventId
+      - name: days
         in: query
-        schema:
-          type: string
-          format: uuid
+        schema: { type: integer, default: 14 }
     responses:
       '200':
-        description: Sales, revenue, and attendance analytics
+        description: KPI summary, charts, funnel, category mix, and operational signals
         content:
           application/json:
             schema:
-              $ref: '../analytics/schemas.yaml#/AnalyticsReport'
+              $ref: './schemas.yaml#/AnalyticsReport'

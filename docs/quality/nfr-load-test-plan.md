@@ -2,7 +2,7 @@
 
 > Status: DRAFT — required reading before any performance claim is made.
 > Owner: tech lead + QA.
-> Companion docs: [`architecture/system-architecture.md`](architecture/system-architecture.md), [`design-supplement.md`](design-is/design-supplement.md), `GE-REQUIREMENT.md`.
+> Companion docs: [`system-architecture.md`](../architecture/system-architecture.md), [`design-supplement.md`](../design/system-flows/design-supplement.md), `GE-REQUIREMENT.md`.
 
 This document turns the qualitative NFRs in `GE-REQUIREMENT.md` into measurable targets and a concrete test plan. If the system fails any of these checks, it does not meet the project requirements — regardless of feature completeness.
 
@@ -42,7 +42,9 @@ Load tests run against **staging**, not prod, not dev.
 
 **Payment gateway**: a deterministic stub (configurable success / failure rate) running in the same network as staging, never the real provider. The stub records every call so we can assert idempotency on retries.
 
-**Test data**: pre-seeded event with 50 000 `EVENT_SEATS`, 20 000 dummy customer accounts, 5 ticket types, mixed sections. Seeding lives in `docs/database-setup/` and runs in < 5 minutes.
+**Test data**: pre-seeded event with 50 000 `EVENT_SEATS`, 20 000 dummy customer accounts, 5 ticket types, mixed sections. Seeding lives in `docs/engineering/database/` and runs in < 5 minutes.
+
+Current Docker production topology mirrors the minimum API-pool target with four backend containers (`backend1` through `backend4`) behind nginx `least_conn` load balancing. The load balancer retries only safe upstream failures and deliberately does not replay non-idempotent state-changing requests.
 
 ---
 
@@ -120,6 +122,28 @@ Load tests run against **staging**, not prod, not dev.
 | Redis ops/sec, hit rate | Redis INFO |
 | API pod CPU / memory / GC | container metrics |
 | Sweeper backlog | custom Prom gauge from sweeper |
+
+### 4.1 Implemented load-test entrypoints
+
+The first executable load-test asset is `tests/load/scenario-a-browse.js`. It implements Scenario A as a CI/staging smoke profile and accepts configuration through environment variables:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `BASE_URL` | `http://localhost:8080` | API base URL under test |
+| `EVENT_ID` | `1` | Event used for detail and seat-map reads |
+| `VUS` | `20` | Local/default virtual users |
+| `RAMP_DURATION` | `30s` | Ramp-up duration |
+| `HOLD_DURATION` | `1m` | Sustained load duration |
+| `P95_MS` | `800` | Scenario A p95 threshold |
+| `ERROR_RATE` | `0.001` | Scenario A failed-request threshold |
+
+Run locally against a running stack:
+
+```bash
+BASE_URL=http://localhost:8080 k6 run tests/load/scenario-a-browse.js
+```
+
+The GitHub Actions workflow exposes a manual `load-smoke` dispatch path. Full golden-hour Scenario C remains a staging/pre-release activity because it requires the staging hardware and seeded 50 000-seat event described in §2.
 
 ---
 

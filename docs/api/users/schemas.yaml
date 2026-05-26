@@ -1,24 +1,9 @@
-User:
-  type: object
-  properties:
-    id:
-      type: integer
-    email:
-      type: string
-      format: email
-    full_name:
-      type: string
-    phone:
-      type: string
-    status:
-      type: string
-    created_at:
-      type: string
-      format: date-time
 UserUpdateRequest:
   type: object
   properties:
-    full_name:
+    fullName:
       type: string
+      maxLength: 255
     phone:
       type: string
+      maxLength: 50

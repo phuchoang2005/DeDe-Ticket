@@ -1,70 +1,34 @@
 register:
   post:
-    tags:
-      - Authentication
-    summary: Register a new user
+    tags: [Authentication]
+    summary: Register and issue a JWT
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: '../auth/schemas.yaml#/RegisterRequest'
+            $ref: './schemas.yaml#/RegisterRequest'
     responses:
-      '201':
-        description: Registration successful, OTP sent
+      '200':
+        description: User registered and authenticated
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/AuthResponse'
 login:
   post:
-    tags:
-      - Authentication
-    summary: User login
+    tags: [Authentication]
+    summary: Login and issue a JWT
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: '../auth/schemas.yaml#/LoginRequest'
+            $ref: './schemas.yaml#/LoginRequest'
     responses:
       '200':
-        description: Credentials valid, requires OTP verification
+        description: Credentials accepted
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                userId:
-                  type: string
-                requireOtp:
-                  type: boolean
-verifyOtp:
-  post:
-    tags:
-      - Authentication
-    summary: Verify OTP
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '../auth/schemas.yaml#/VerifyOTPRequest'
-    responses:
-      '200':
-        description: OTP verified successfully, returns session token
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                accessToken:
-                  type: string
-                refreshToken:
-                  type: string
-logout:
-  post:
-    tags:
-      - Authentication
-    summary: Logout user
-    security:
-      - bearerAuth: []
-    responses:
-      '200':
-        description: Logged out successfully
+              $ref: './schemas.yaml#/AuthResponse'

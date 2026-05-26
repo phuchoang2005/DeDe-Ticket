@@ -1,21 +1,19 @@
 me:
   get:
-    tags:
-      - Users
-    summary: Get current user profile
+    tags: [Users]
+    summary: Get the authenticated profile
     security:
       - bearerAuth: []
     responses:
       '200':
-        description: User profile retrieved
+        description: Current user
         content:
           application/json:
             schema:
-              $ref: '../users/schemas.yaml#/User'
+              $ref: '../auth/schemas.yaml#/UserResponse'
   put:
-    tags:
-      - Users
-    summary: Update current user profile
+    tags: [Users]
+    summary: Update the authenticated profile
     security:
       - bearerAuth: []
     requestBody:
@@ -23,11 +21,11 @@ me:
       content:
         application/json:
           schema:
-            $ref: '../users/schemas.yaml#/UserUpdateRequest'
+            $ref: './schemas.yaml#/UserUpdateRequest'
     responses:
       '200':
-        description: Profile updated
+        description: Updated user
         content:
           application/json:
             schema:
-              $ref: '../users/schemas.yaml#/User'
+              $ref: '../auth/schemas.yaml#/UserResponse'

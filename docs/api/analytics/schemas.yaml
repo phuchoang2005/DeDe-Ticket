@@ -1,11 +1,73 @@
+KpiSummary:
+  type: object
+  properties:
+    totalRevenue: { type: number }
+    ticketsSold: { type: integer, format: int64 }
+    totalSeats: { type: integer, format: int64 }
+    capacityFillRate: { type: number }
+    paymentSuccessRate: { type: number }
+    checkinCount: { type: integer, format: int64 }
+    checkinRate: { type: number }
+    totalEvents: { type: integer, format: int64 }
+    publishedEvents: { type: integer, format: int64 }
+RevenuePoint:
+  type: object
+  properties:
+    date: { type: string, format: date }
+    revenue: { type: number }
+    orderCount: { type: integer, format: int64 }
+EventLeaderboardRow:
+  type: object
+  properties:
+    eventId: { type: integer, format: int64 }
+    title: { type: string }
+    category: { type: string }
+    status: { type: string }
+    ticketsSold: { type: integer, format: int64 }
+    revenue: { type: number }
+    checkinRate: { type: number }
+PaymentFunnel:
+  type: object
+  properties:
+    succeeded: { type: integer, format: int64 }
+    pending: { type: integer, format: int64 }
+    failed: { type: integer, format: int64 }
+    refundPending: { type: integer, format: int64 }
+    refunded: { type: integer, format: int64 }
+CategoryBreakdownRow:
+  type: object
+  properties:
+    category: { type: string }
+    eventCount: { type: integer, format: int64 }
+    ticketsSold: { type: integer, format: int64 }
+    revenue: { type: number }
+SecuritySignal:
+  type: object
+  properties:
+    code: { type: string }
+    label: { type: string }
+    count: { type: integer, format: int64 }
+    severity: { type: string }
 AnalyticsReport:
   type: object
   properties:
-    totalRevenue:
-      type: number
-    ticketsSold:
-      type: integer
-    checkinCount:
-      type: integer
-    conversionRate:
-      type: number
+    kpis:
+      $ref: '#/KpiSummary'
+    revenueByDay:
+      type: array
+      items:
+        $ref: '#/RevenuePoint'
+    topEvents:
+      type: array
+      items:
+        $ref: '#/EventLeaderboardRow'
+    paymentFunnel:
+      $ref: '#/PaymentFunnel'
+    categoryBreakdown:
+      type: array
+      items:
+        $ref: '#/CategoryBreakdownRow'
+    securitySignals:
+      type: array
+      items:
+        $ref: '#/SecuritySignal'

@@ -1,93 +1,70 @@
-myTickets:
+tickets:
   get:
-    tags:
-      - Tickets
-    summary: Get tickets for the authenticated user
-    description: |
-      With no query string this returns the legacy bare array (kept for
-      back-compat). When `page`, `limit`, or `status` are supplied, the
-      response switches to a paged envelope with status counts so the
-      My Tickets UI can render tabs and pagination from a single call.
+    tags: [Tickets]
+    summary: List tickets for the authenticated user
+    description: With no query string the backend keeps the legacy bare array. Supplying `page`, `limit`, or `status` returns a paged envelope with status counts.
     security:
       - bearerAuth: []
     parameters:
       - name: page
         in: query
-        required: false
-        schema:
-          type: integer
-          default: 1
+        schema: { type: integer, default: 1 }
       - name: limit
         in: query
-        required: false
-        schema:
-          type: integer
-          default: 10
-          maximum: 50
+        schema: { type: integer, default: 10 }
       - name: status
         in: query
-        required: false
-        description: One of VALID, USED, CANCELLED. Omit for all statuses.
         schema:
           type: string
           enum: [VALID, USED, CANCELLED]
     responses:
       '200':
-        description: List of tickets (bare array OR paged envelope, see description)
+        description: Ticket list or paged ticket envelope
         content:
           application/json:
             schema:
               oneOf:
                 - type: array
                   items:
-                    $ref: '../tickets/schemas.yaml#/Ticket'
-                - type: object
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: '../tickets/schemas.yaml#/Ticket'
-                    page:
-                      type: object
-                      properties:
-                        page: { type: integer }
-                        limit: { type: integer }
-                        total: { type: integer }
-                        hasMore: { type: boolean }
-                    counts:
-                      type: object
-                      additionalProperties:
-                        type: integer
+                    $ref: './schemas.yaml#/TicketView'
+                - $ref: './schemas.yaml#/TicketPage'
 ticketById:
-  delete:
-    tags:
-      - Tickets
-    summary: Cancel (soft-delete) one of my tickets
-    description: |
-      Cancels a ticket the caller owns and releases the underlying seat back
-      to AVAILABLE. Allowed for tickets in status VALID. Returns 409
-      `TICKET_ALREADY_USED` if the ticket has already been checked in
-      (status USED). Already-cancelled tickets succeed as a no-op (idempotent).
+  get:
+    tags: [Tickets]
+    summary: Get one of my tickets
     security:
       - bearerAuth: []
     parameters:
       - name: id
         in: path
         required: true
-        schema:
-          type: integer
+        schema: { type: integer, format: int64 }
+    responses:
+      '200':
+        description: Ticket detail
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/TicketView'
+  delete:
+    tags: [Tickets]
+    summary: Cancel one of my tickets
+    description: Cancels a VALID ticket owned by the caller and releases the underlying seat. USED tickets return 409 `TICKET_ALREADY_USED`; already-cancelled tickets are a no-op.
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
     responses:
       '204':
-        description: Ticket cancelled, seat released
-      '404':
-        description: Ticket not found or not owned by caller
-      '409':
-        description: Ticket already used and cannot be cancelled
-checkin:
+        description: Ticket cancelled
+scan:
   post:
-    tags:
-      - Tickets
-    summary: Validate a ticket at the gate
+    tags: [Tickets]
+    summary: Scan a ticket at the gate
+    description: Requires `ROLE_SCANNER` or `ROLE_ADMIN`. A second scan returns 409 `CHECK_IN_ALREADY_DONE`.
     security:
       - bearerAuth: []
     requestBody:
@@ -95,23 +72,11 @@ checkin:
       content:
         application/json:
           schema:
-            $ref: '../tickets/schemas.yaml#/CheckinRequest'
+            $ref: './schemas.yaml#/ScanRequest'
     responses:
       '200':
-        description: Check-in successful
-syncOffline:
-  post:
-    tags:
-      - Tickets
-    summary: Sync offline check-in data
-    security:
-      - bearerAuth: []
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '../tickets/schemas.yaml#/OfflineSyncRequest'
-    responses:
-      '200':
-        description: Sync completed successfully
+        description: Scan accepted
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/ScanResult'

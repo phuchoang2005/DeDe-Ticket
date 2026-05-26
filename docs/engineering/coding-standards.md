@@ -162,7 +162,7 @@ frontend/src/
 
 ## 4. Tests
 
-See [`test-strategy.md`](test-strategy.md). Key style points:
+See [`test-strategy.md`](../quality/test-strategy.md). Key style points:
 
 - One assertion per test ideally; up to three when they verify a single behavior together.
 - Use AssertJ for backend: `assertThat(x).isEqualTo(y)`, never `assertEquals`.
