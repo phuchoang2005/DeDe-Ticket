@@ -118,3 +118,34 @@ After execution, the following must be performed:
 
 ## ⚠️ Troubleshooting / Edge Cases
 - If trying to write code immediately without a documentation draft: Stop implementation instantly. Remind yourself of this skill constraint and prompt the user: "Let's update the relevant system flow specification in the `docs/` directory first before rewriting any logic."
+
+--
+
+# SKILL: Feature-Branch Git Workflow with Demo Merges
+
+## 🎯 Purpose
+- Enforce a strict Git branching strategy. All new product features, enhancements, and logical updates must be committed and pushed to their respective, dedicated `feature/` branches. Once validated, they must be merged into the `demo` branch for staging, rather than committing directly to main or testing branches.
+
+## ⚡ Triggers
+Claude will automatically apply this skill when the user requests:
+- "Create a new branch for the ticketing feature" or "Push this new feature to GitHub".
+- "Merge the completed feature into the demo branch".
+- Any request involving saving, pushing, or publishing newly developed product capabilities.
+
+## 🛠 Prerequisites & Context
+- The repository must have an established `demo` branch tracking the remote origin.
+- Current active branch identity must be checked before making any structural pushes (`git branch --show-current`).
+- Core configuration files to read beforehand: `.git/config` and existing branch topologies.
+
+## 📝 Execution Steps
+1. **Step 1**: [Ensure the current working branch is isolated and explicitly named under the `feature/` namespace] -> Command to run: `git checkout -b feature/[feature-name]` (or verify using `git branch --show-current`)
+2. **Step 2**: [Commit changes and push the isolated feature branch to the remote repository using the user's authentic identity] -> Command to run: `git push origin feature/[feature-name]`
+3. **Step 3**: [Switch to the target deployment staging environment branch, pull updates, and pull/merge the remote feature updates securely] -> Command to run: `git checkout demo && git pull origin demo && git merge feature/[feature-name] && git push origin demo`
+
+## ✅ Validation
+After execution, the following must be performed:
+- Run command: `git log demo -n 3 --oneline`
+- Check if [The log sequence explicitly contains the merge commit history transitioning from the designated `feature/` branch directly into the `demo` branch] appears.
+
+## ⚠️ Troubleshooting / Edge Cases
+- If trying to push directly to `main`, `master`, or `demo` without an intermediate feature branch: Halt operations immediately. Prompt the user: "To protect the development pipeline, I must move these updates into a dedicated `feature/` branch first before staging them into `demo`. What should we name this feature branch?"
