@@ -12,9 +12,9 @@ This document summarizes the features that are implemented in the Spring Boot ba
 |---|---|
 | Anonymous | Browse home, event list, event detail, and live seat availability. Register or login. |
 | `ROLE_USER` | Checkout, pay mock orders, view/cancel tickets, view ticket QR detail, manage profile, read notifications, submit feedback. |
-| `ROLE_ORGANIZER` | All admin event, category, ticket-type, venue, feedback, and analytics routes. |
-| `ROLE_ADMIN` | Organizer access plus staff ticket scan and audit-log access. |
-| `ROLE_SCANNER` | Staff scan endpoint (`POST /v1/tickets/scan`). No dedicated scanner UI is currently present in the React app. |
+| `ROLE_ORGANIZER` | All admin event, category, ticket-type, venue, feedback, and analytics routes, plus staff ticket scan and check-in history. |
+| `ROLE_ADMIN` | Organizer access plus staff ticket scan, check-in history, and audit-log access. |
+| `ROLE_SCANNER` | Staff scan + check-in history (`POST /v1/tickets/scan`, `GET /v1/tickets/scans`) and the in-browser scanner UI at `/scan`. |
 
 Authentication is stateless JWT. The frontend stores the token in `localStorage`, loads `/v1/users/me` on boot, and gates protected routes with `RequireAuth` / `RequireRole`.
 
@@ -37,6 +37,7 @@ Important rules:
 
 - Orders can only be created for `PUBLISHED` events.
 - Seat state in MySQL is the source of truth; Redis is advisory cache only.
+- Leaving checkout without paying (SPA navigation away) eagerly releases the seats via `DELETE /v1/orders/{id}`; the cleanup is deferred so React StrictMode's dev-only remount does not cancel a live order. Browser close / hard refresh falls back to the sweeper TTL.
 - Expired locks are released by `SeatLockSweeperJob`.
 - The sweeper is currently scheduled in every backend replica in the scaled compose topology; the operation is idempotent, but ADR-0010's DB advisory-lock guard is still a known follow-up.
 - Idempotency-Key support is documented as an ADR but not implemented yet.
@@ -50,8 +51,10 @@ Important rules:
 | My tickets | `GET /v1/tickets` returns a legacy bare array with no query string; with `page`, `limit`, or `status` it returns `{ data, page, counts }`. |
 | Ticket detail | `GET /v1/tickets/{id}` returns owner-only ticket detail used by `/tickets/{id}`. |
 | Cancellation | `DELETE /v1/tickets/{id}` cancels a caller-owned `VALID` ticket and releases the seat. A `USED` ticket returns `TICKET_ALREADY_USED`. |
-| QR display | The React ticket detail page renders QR images using `api.qrserver.com` from the stored `qrCode`. |
-| Staff scan | `POST /v1/tickets/scan` accepts `qrCode` and optional `deviceId`, requires `ROLE_SCANNER` or `ROLE_ADMIN`, writes `check_ins`, and prevents duplicate check-in with `CHECK_IN_ALREADY_DONE`. |
+| QR display | The React ticket detail page renders QR images using `api.qrserver.com` from the stored `qrCode`, plus a "Tải QR về máy" button that composes a PNG (QR + event name, location, time, seat) on a canvas for download. |
+| Staff scan | `POST /v1/tickets/scan` accepts `qrCode` and optional `deviceId`, requires `ROLE_SCANNER`, `ROLE_ADMIN`, or `ROLE_ORGANIZER`, writes `check_ins` (recording the scanning account and device), and rejects duplicate check-in with `ALREADY_USED`. |
+| Scanner UI | `/scan` is an in-browser camera scanner (route gated to SCANNER/ADMIN/ORGANIZER) using `@yudiel/react-qr-scanner`; the camera opens only on the page, constrained to 640×640, rear camera on mobile, preview-mirrored on laptops. |
+| Check-in history | `GET /v1/tickets/scans` returns most-recent-first successful check-ins with scanning account, device id, event and seat; surfaced at `/scan/history`. Same roles as staff scan. |
 | Offline scanner | Database and ADR support exist, but there is no offline mobile scanner UI or offline sync endpoint in the current backend. |
 
 ---

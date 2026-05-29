@@ -78,8 +78,8 @@ Every non-2xx response (except 401 / 429 which may be plain) returns:
 Maintain alphabetical. Add new codes as constants in `web/ErrorCodes.java`; never inline strings.
 
 ```
+ALREADY_USED
 AUTH_REQUIRED
-CHECK_IN_ALREADY_DONE
 DEPENDENCY_UNAVAILABLE
 DUPLICATE_OFFLINE_CHECKIN
 EVENT_NOT_PUBLISHED
@@ -101,6 +101,7 @@ SEAT_TAKEN
 SEMANTIC_ERROR
 TICKET_ALREADY_USED
 TICKET_NOT_FOUND
+TICKET_NOT_VALID
 TOKEN_EXPIRED
 TOKEN_INVALID
 UNAUTHENTICATED
@@ -225,6 +226,7 @@ Content-Type: application/json
 - Endpoint-level role requirements declared in `openapi.yaml` via `security` blocks and documented per-path.
 - Implemented roles use Spring Security authority names such as `ROLE_USER`, `ROLE_ORGANIZER`, `ROLE_ADMIN`, and `ROLE_SCANNER`.
 - Admin endpoints under `/v1/admin/**` require `ROLE_ADMIN` or `ROLE_ORGANIZER`, except `/v1/admin/audit`, which requires `ROLE_ADMIN`.
+- Staff scan endpoints `POST /v1/tickets/scan` and `GET /v1/tickets/scans` require `ROLE_SCANNER`, `ROLE_ADMIN`, or `ROLE_ORGANIZER`.
 - Resource-level organizer ownership checks are not fully implemented yet.
 
 ---

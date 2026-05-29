@@ -65,6 +65,8 @@ paths:
     $ref: './tickets/paths.yaml#/ticketById'
   /tickets/scan:
     $ref: './tickets/paths.yaml#/scan'
+  /tickets/scans:
+    $ref: './tickets/paths.yaml#/scanHistory'
   /notifications:
     $ref: './notifications/paths.yaml#/notifications'
   /notifications/unread-count:

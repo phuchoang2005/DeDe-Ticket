@@ -88,6 +88,7 @@ This document captures the threats we have considered and the mitigations we hav
 |---|---|
 | Forged QR | `qr_code` is a UUID v4 — unguessable. Optional HMAC signing (Sprint 2) for defense in depth. |
 | Replayed QR at the gate | `CHECK_INS.ticket_id UNIQUE` enforces single check-in. |
+| Repudiation of a check-in by staff | Each scan records `CHECK_INS.checked_in_by` (account) + `device_id`; reviewable via `GET /v1/tickets/scans` (SCANNER/ADMIN/ORGANIZER). Note: only successful check-ins are logged — failed attempts need the planned `scan_attempts` table. |
 | Lost / stolen scanner phone | Local SQLite is SQLCipher-encrypted; remote-wipe via MDM (Sprint 2). |
 | Offline duplicate scan across devices | Server keeps earliest scan; later scan logged as `DUPLICATE_OFFLINE_CHECKIN`. |
 | Scanner pre-fetch leaks ticket manifest | Pre-fetch contains only `qr_code`, `ticket_id`, `order_item_id`, `status` — no PII. |

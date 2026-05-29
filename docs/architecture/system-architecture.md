@@ -93,7 +93,7 @@ flowchart TB
 |---|---|---|
 | **CDN / Edge proxy** | Static asset serving and reverse proxy today; TLS, IP-tier rate limiting, and HMAC challenge gate are planned | Managed (Cloudflare / nginx) |
 | **Web App** | Customer-facing SPA, organizer dashboard, admin console | Static, served from CDN |
-| **Staff Mobile App** | Planned offline QR scan + sync; not present in the current React frontend | One install per staff device |
+| **Staff Mobile App** | An in-browser camera scanner page (`/scan` in the React SPA, for SCANNER/ADMIN/ORGANIZER) now covers online check-in; a native offline scan + sync app is still planned | One install per staff device |
 | **Backend API** | All HTTP request handling; stateless except for Redis token-bucket cache | Horizontal — N replicas behind LB |
 | **Sweeper** | Releases expired `EVENT_SEATS` locks every 30s | Currently scheduled in each API replica; duplicate sweeps are idempotent, but ADR-0010's DB advisory lock is not implemented yet |
 | **Notification Dispatcher** | Planned drain of `NOTIFICATIONS` table to email/SMS/push | Not implemented; notifications are currently stored as in-app rows |
@@ -153,8 +153,8 @@ These are the paths that drive most architectural choices. Each has a detailed s
 | Seat lock acquisition | Golden-hour race-loser correctness | §1 in design-supplement |
 | Seat-lock expiry sweep | Prevents oversell / undersell from abandoned carts | §2 |
 | Order → Payment → Ticket | "Charged but no ticket" is the highest-risk failure mode | §3 |
-| Staff check-in scan | Prevents duplicate QR use at the gate | §4 |
-| Offline check-in sync | Planned mobile flow; backend currently exposes online `POST /v1/tickets/scan` only | §4 |
+| Staff check-in scan | Prevents duplicate QR use at the gate; `POST /v1/tickets/scan` records the scanning account + `deviceId`, readable via `GET /v1/tickets/scans` | §4 |
+| Offline check-in sync | Planned mobile flow; backend currently exposes online `POST /v1/tickets/scan` (+ `GET /v1/tickets/scans` history) only | §4 |
 | Rate-limit + HMAC challenge | Planned bot mitigation during sales open | §5 |
 
 ---

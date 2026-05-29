@@ -53,3 +53,20 @@ ScanResult:
     seatNumber: { type: string }
     section: { type: string }
     checkedInAt: { type: string, format: date-time }
+ScanHistoryView:
+  type: object
+  description: One check-in record joined with its event, seat and scanning account.
+  properties:
+    id: { type: integer, format: int64 }
+    ticketId: { type: integer, format: int64 }
+    checkedInAt: { type: string, format: date-time }
+    status: { type: string }
+    deviceId: { type: string, nullable: true }
+    eventId: { type: integer, format: int64 }
+    eventTitle: { type: string }
+    section: { type: string }
+    rowLabel: { type: string }
+    seatNumber: { type: string }
+    scannedById: { type: integer, format: int64 }
+    scannedByName: { type: string, nullable: true }
+    scannedByEmail: { type: string }
