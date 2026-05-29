@@ -54,7 +54,7 @@ Important rules:
 | QR display | The React ticket detail page renders QR images using `api.qrserver.com` from the stored `qrCode`, plus a "Tải QR về máy" button that composes a PNG (QR + event name, location, time, seat) on a canvas for download. |
 | Staff scan | `POST /v1/tickets/scan` accepts `qrCode` and optional `deviceId`, requires `ROLE_SCANNER`, `ROLE_ADMIN`, or `ROLE_ORGANIZER`, writes `check_ins` (recording the scanning account and device), and rejects duplicate check-in with `ALREADY_USED`. |
 | Scanner UI | `/scan` is an in-browser camera scanner (route gated to SCANNER/ADMIN/ORGANIZER) using `@yudiel/react-qr-scanner`; the camera opens only on the page, constrained to 640×640, rear camera on mobile, preview-mirrored on laptops. |
-| Check-in history | `GET /v1/tickets/scans` returns most-recent-first successful check-ins with scanning account, device id, event and seat; surfaced at `/scan/history`. Same roles as staff scan. |
+| Check-in history | `GET /v1/tickets/scans` returns most-recent-first successful check-ins with scanning account, device id, event and seat; surfaced at `/scan/history`. Role-scoped: `SCANNER` sees only their own check-ins, `ADMIN`/`ORGANIZER` see all. The page filters by time, event, scanner, and device client-side. |
 | Offline scanner | Database and ADR support exist, but there is no offline mobile scanner UI or offline sync endpoint in the current backend. |
 
 ---

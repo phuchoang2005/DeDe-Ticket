@@ -91,9 +91,12 @@ scanHistory:
     description: >
       Most-recent-first log of successful check-ins, each with the scanning
       account, device id, ticket, event and seat. Requires `ROLE_SCANNER`,
-      `ROLE_ADMIN`, or `ROLE_ORGANIZER`. Only successful check-ins are recorded
-      (one row per ticket, enforced by `uk_check_ins_ticket`); failed/duplicate
-      scan attempts are not logged.
+      `ROLE_ADMIN`, or `ROLE_ORGANIZER`. Access is role-scoped: `ROLE_SCANNER`
+      sees only their own check-ins; `ROLE_ADMIN` / `ROLE_ORGANIZER` see every
+      scanner's. Only successful check-ins are recorded (one row per ticket,
+      enforced by `uk_check_ins_ticket`); failed/duplicate scan attempts are not
+      logged. Filtering by time, event, scanner and device is applied client-side
+      over the returned rows.
     security:
       - bearerAuth: []
     parameters:
