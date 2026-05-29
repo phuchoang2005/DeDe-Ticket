@@ -5,6 +5,7 @@ import { useAuth } from '../store/AuthContext';
 const DEMO_ACCOUNTS = [
   { role: 'Người dùng', email: 'demo@dede.test', password: 'demo1234', tag: 'bg-brand-100 text-brand-700' },
   { role: 'Ban tổ chức', email: 'organizer@dede.test', password: 'org12345', tag: 'bg-warn-50 text-warn-700' },
+  { role: 'Soát vé', email: 'scanner@dede.test', password: 'scan1234', tag: 'bg-brand-200 text-brand-900' },
   { role: 'Quản trị viên', email: 'admin@dede.test', password: 'admin1234', tag: 'bg-danger-50 text-danger-600' },
 ];
 

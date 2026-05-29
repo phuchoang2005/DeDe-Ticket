@@ -88,6 +88,9 @@ export default function AppLayout() {
                 Phản hồi
               </Link>
             )}
+            {user && (user.roles?.includes('ADMIN') || user.roles?.includes('ORGANIZER') || user.roles?.includes('SCANNER')) && (
+              <NavLink to="/scan" className={desktopNavLink}>Quét vé</NavLink>
+            )}
             {user && (user.roles?.includes('ADMIN') || user.roles?.includes('ORGANIZER')) && (
               <>
                 <NavLink to="/admin/events" className={desktopNavLink}>Quản trị sự kiện</NavLink>
@@ -191,6 +194,9 @@ export default function AppLayout() {
                       className="block px-4 py-3 text-base font-semibold rounded-lg text-brand-700 bg-brand-50 hover:bg-brand-100">
                   💬 Gửi phản hồi
                 </Link>
+              )}
+              {user && (user.roles?.includes('ADMIN') || user.roles?.includes('ORGANIZER') || user.roles?.includes('SCANNER')) && (
+                <NavLink to="/scan" className={drawerNavLink}>📷 Quét vé</NavLink>
               )}
               {user && (user.roles?.includes('ADMIN') || user.roles?.includes('ORGANIZER')) && (
                 <>

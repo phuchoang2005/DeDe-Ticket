@@ -29,6 +29,8 @@ export const ticketApi = {
   list: (params) => apiClient.get('/v1/tickets', params ? { params } : undefined),
   get: (id) => apiClient.get(`/v1/tickets/${id}`),
   delete: (id) => apiClient.delete(`/v1/tickets/${id}`),
+  scan: (qrCode, deviceId) => apiClient.post('/v1/tickets/scan', { qrCode, deviceId }),
+  scanHistory: (limit) => apiClient.get('/v1/tickets/scans', limit ? { params: { limit } } : undefined),
 };
 
 export const adminApi = {

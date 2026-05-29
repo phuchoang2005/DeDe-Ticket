@@ -2,15 +2,33 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ticketApi } from '../services/api';
 import { dayCard, formatDateTime, formatVND } from '../utils/format';
+import { buildTicketImage, downloadBlob } from '../utils/ticketImage';
 
 export default function TicketDetailPage() {
   const { id } = useParams();
   const [ticket, setTicket] = useState(null);
   const [error, setError] = useState(null);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState(null);
 
   useEffect(() => {
     ticketApi.get(id).then(setTicket).catch((err) => setError(err.message));
   }, [id]);
+
+  const handleDownload = async () => {
+    if (!ticket) return;
+    setDownloading(true);
+    setDownloadError(null);
+    try {
+      const blob = await buildTicketImage(ticket);
+      const safeTitle = (ticket.eventTitle || 'ticket').replace(/[^a-zA-Z0-9-_]+/g, '-').slice(0, 40);
+      downloadBlob(blob, `${safeTitle}-${ticket.id}.png`);
+    } catch (e) {
+      setDownloadError(e.message || 'Không tải được ảnh QR');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   if (error) return <div className="text-danger-600">Lỗi: {error}</div>;
   if (!ticket) return <div className="text-ink-subtle">Đang tải…</div>;
@@ -55,6 +73,16 @@ export default function TicketDetailPage() {
           <img src={qrUrl} alt="QR code" className="mx-auto rounded-lg border border-line shadow-sm max-w-full h-auto" />
           <div className="font-mono text-xs text-ink-muted mt-3 break-all">{ticket.qrCode}</div>
           <div className="text-xs text-ink-subtle mt-1">Phát hành: {formatDateTime(ticket.issuedAt)}</div>
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={downloading}
+            className="btn-primary text-sm px-4 py-2 mt-4 disabled:opacity-60">
+            {downloading ? 'Đang tạo ảnh…' : 'Tải QR về máy'}
+          </button>
+          {downloadError && (
+            <div className="text-xs text-danger-600 mt-2">{downloadError}</div>
+          )}
         </div>
       </div>
     </div>

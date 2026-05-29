@@ -20,8 +20,11 @@ import AdminVenueEditorPage from './pages/admin/AdminVenueEditorPage';
 import AnalyticsDashboardPage from './pages/admin/AnalyticsDashboardPage';
 import AdminFeedbackReportPage from './pages/admin/AdminFeedbackReportPage';
 import FeedbackPage from './pages/FeedbackPage';
+import ScanPage from './pages/ScanPage';
+import ScanHistoryPage from './pages/ScanHistoryPage';
 
 const adminRoles = ['ADMIN', 'ORGANIZER'];
+const scannerRoles = ['ADMIN', 'ORGANIZER', 'SCANNER'];
 
 export default function App() {
   return (
@@ -45,6 +48,8 @@ export default function App() {
             <Route path="admin/analytics" element={<RequireRole roles={adminRoles}><AnalyticsDashboardPage /></RequireRole>} />
             <Route path="admin/feedback" element={<RequireRole roles={adminRoles}><AdminFeedbackReportPage /></RequireRole>} />
             <Route path="feedback" element={<RequireAuth><FeedbackPage /></RequireAuth>} />
+            <Route path="scan" element={<RequireRole roles={scannerRoles}><ScanPage /></RequireRole>} />
+            <Route path="scan/history" element={<RequireRole roles={scannerRoles}><ScanHistoryPage /></RequireRole>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

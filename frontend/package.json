@@ -13,6 +13,7 @@
     "setup": "cp .env.example .env && npm install"
   },
   "dependencies": {
+    "@yudiel/react-qr-scanner": "^2.6.0",
     "axios": "^1.7.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
