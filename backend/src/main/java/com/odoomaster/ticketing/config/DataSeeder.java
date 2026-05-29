@@ -1,14 +1,22 @@
 package com.odoomaster.ticketing.config;
 
+import com.odoomaster.ticketing.domain.CheckIn;
 import com.odoomaster.ticketing.domain.Event;
 import com.odoomaster.ticketing.domain.EventCategory;
 import com.odoomaster.ticketing.domain.EventSeat;
+import com.odoomaster.ticketing.domain.Order;
+import com.odoomaster.ticketing.domain.OrderItem;
 import com.odoomaster.ticketing.domain.Role;
+import com.odoomaster.ticketing.domain.Ticket;
 import com.odoomaster.ticketing.domain.User;
+import com.odoomaster.ticketing.repository.CheckInRepository;
 import com.odoomaster.ticketing.repository.EventCategoryRepository;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
+import com.odoomaster.ticketing.repository.OrderItemRepository;
+import com.odoomaster.ticketing.repository.OrderRepository;
 import com.odoomaster.ticketing.repository.RoleRepository;
+import com.odoomaster.ticketing.repository.TicketRepository;
 import com.odoomaster.ticketing.repository.TicketTypeRepository;
 import com.odoomaster.ticketing.repository.UserRepository;
 import com.odoomaster.ticketing.domain.TicketType;
@@ -28,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
@@ -41,6 +50,10 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository users;
     private final RoleRepository roles;
     private final TicketTypeRepository ticketTypes;
+    private final OrderRepository orders;
+    private final OrderItemRepository orderItems;
+    private final TicketRepository tickets;
+    private final CheckInRepository checkIns;
     private final PasswordEncoder encoder;
     private final NotificationService notifications;
     private final SeatCatalogService catalog;
@@ -48,6 +61,8 @@ public class DataSeeder implements CommandLineRunner {
     public DataSeeder(EventRepository events, EventCategoryRepository eventCategories,
                       EventSeatRepository seats, UserRepository users,
                       RoleRepository roles, TicketTypeRepository ticketTypes,
+                      OrderRepository orders, OrderItemRepository orderItems,
+                      TicketRepository tickets, CheckInRepository checkIns,
                       PasswordEncoder encoder, NotificationService notifications,
                       SeatCatalogService catalog) {
         this.events = events;
@@ -56,6 +71,10 @@ public class DataSeeder implements CommandLineRunner {
         this.users = users;
         this.roles = roles;
         this.ticketTypes = ticketTypes;
+        this.orders = orders;
+        this.orderItems = orderItems;
+        this.tickets = tickets;
+        this.checkIns = checkIns;
         this.encoder = encoder;
         this.notifications = notifications;
         this.catalog = catalog;
@@ -67,6 +86,7 @@ public class DataSeeder implements CommandLineRunner {
         User demo = ensureUser("demo@dede.test", "demo1234", "Người Dùng", "0900000000", "USER");
         ensureUser("admin@dede.test", "admin1234", "Quản Trị Viên", "0900000001", "ADMIN");
         ensureUser("organizer@dede.test", "org12345", "Ban Tổ Chức", "0900000002", "ORGANIZER");
+        User scanner = ensureUser("scanner@dede.test", "scan1234", "Nhân Viên Soát Vé", "0900000003", "SCANNER");
 
         if (demo != null && notifications.unreadCount(demo.getId()).unreadCount() == 0) {
             notifications.create(demo.getId(), "WELCOME",
@@ -129,6 +149,86 @@ public class DataSeeder implements CommandLineRunner {
             seedBulkExtra();
             log.info("Seeded {} demo events", events.count());
         }
+
+        seedScanDemo(demo, scanner);
+    }
+
+    // Seeds a small but faithful purchase + check-in chain so a fresh database
+    // (e.g. after `docker compose down -v`) shows sample data on /tickets and on
+    // the check-in history page /scan/history. Writes rows directly via repos
+    // (not OrderService/CheckInService) to avoid their audit/cache AOP at boot.
+    // Idempotent: only runs when no tickets/check-ins exist yet.
+    private void seedScanDemo(User demo, User scanner) {
+        if (demo == null || scanner == null) return;
+        if (tickets.count() > 0 || checkIns.count() > 0) return;
+
+        Event ev = events.findAll().stream().findFirst().orElse(null);
+        if (ev == null) return;
+
+        List<EventSeat> picked = seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(ev.getId()).stream()
+                .filter(s -> "AVAILABLE".equals(s.getStatus()))
+                .limit(6)
+                .toList();
+        if (picked.size() < 2) return;
+
+        BigDecimal total = picked.stream().map(EventSeat::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        Instant now = Instant.now();
+        Order order = orders.save(Order.builder()
+                .userId(demo.getId())
+                .eventId(ev.getId())
+                .totalAmount(total)
+                .status("PAID")
+                .paymentMethod("MOMO")
+                .paidAt(now)
+                .build());
+
+        List<Ticket> issued = new ArrayList<>();
+        for (EventSeat s : picked) {
+            OrderItem item = orderItems.save(OrderItem.builder()
+                    .orderId(order.getId())
+                    .eventSeatId(s.getId())
+                    .ticketTypeId(s.getTicketTypeId())
+                    .price(s.getPrice())
+                    .build());
+            s.setStatus("SOLD");
+            s.setLockedBy(null);
+            s.setLockedUntil(null);
+            issued.add(tickets.save(Ticket.builder()
+                    .orderItemId(item.getId())
+                    .userId(demo.getId())
+                    .eventId(ev.getId())
+                    .eventSeatId(s.getId())
+                    .qrCode(newQrCode())
+                    .status("VALID")
+                    .build()));
+            ticketTypes.findById(s.getTicketTypeId()).ifPresent(tt -> {
+                tt.setSoldQuantity(tt.getSoldQuantity() + 1);
+                ticketTypes.save(tt);
+            });
+        }
+        seats.saveAll(picked);
+
+        // Check in all but the last two so the history has rows while leaving a
+        // couple of VALID tickets for a live scan during a demo.
+        String[] devices = {"gate-lobby-01", "gate-vip-02"};
+        int toScan = Math.min(4, Math.max(0, issued.size() - 2));
+        for (int i = 0; i < toScan; i++) {
+            Ticket t = issued.get(i);
+            checkIns.save(CheckIn.builder()
+                    .ticketId(t.getId())
+                    .checkedInBy(scanner.getId())
+                    .status("OK")
+                    .deviceId(devices[i % devices.length])
+                    .checkedInAt(now.minus(45L - i * 10L, ChronoUnit.MINUTES))
+                    .build());
+            t.setStatus("USED");
+            tickets.save(t);
+        }
+        log.info("Seeded scan demo: {} tickets, {} check-ins for event {}", issued.size(), toScan, ev.getId());
+    }
+
+    private static String newQrCode() {
+        return UUID.randomUUID().toString().replace("-", "").toUpperCase();
     }
 
     private static final String[] IMG_CONCERT = {

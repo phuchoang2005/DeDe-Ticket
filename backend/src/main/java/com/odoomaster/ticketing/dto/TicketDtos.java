@@ -26,4 +26,11 @@ public class TicketDtos {
     public record ScanResult(String status, Long ticketId, Long eventId,
                              String eventTitle, String rowLabel, String seatNumber,
                              String section, Instant checkedInAt) {}
+
+    // One row of check-in history: who scanned which ticket, on what device, when.
+    public record ScanHistoryView(
+            Long id, Long ticketId, Instant checkedInAt, String status, String deviceId,
+            Long eventId, String eventTitle,
+            String section, String rowLabel, String seatNumber,
+            Long scannedById, String scannedByName, String scannedByEmail) {}
 }

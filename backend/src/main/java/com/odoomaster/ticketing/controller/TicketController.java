@@ -1,5 +1,6 @@
 package com.odoomaster.ticketing.controller;
 
+import com.odoomaster.ticketing.dto.TicketDtos.ScanHistoryView;
 import com.odoomaster.ticketing.dto.TicketDtos.ScanRequest;
 import com.odoomaster.ticketing.dto.TicketDtos.ScanResult;
 import com.odoomaster.ticketing.dto.TicketDtos.TicketPage;
@@ -52,8 +53,14 @@ public class TicketController {
     }
 
     @PostMapping("/scan")
-    @PreAuthorize("hasAnyRole('SCANNER','ADMIN')")
+    @PreAuthorize("hasAnyRole('SCANNER','ADMIN','ORGANIZER')")
     public ScanResult scan(@RequestBody ScanRequest req) {
         return checkInService.scan(current.require().userId(), req);
+    }
+
+    @GetMapping("/scans")
+    @PreAuthorize("hasAnyRole('SCANNER','ADMIN','ORGANIZER')")
+    public List<ScanHistoryView> scans(@RequestParam(required = false) Integer limit) {
+        return checkInService.history(limit == null ? 100 : limit);
     }
 }

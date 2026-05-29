@@ -4,6 +4,7 @@ import com.odoomaster.ticketing.domain.CheckIn;
 import com.odoomaster.ticketing.domain.Event;
 import com.odoomaster.ticketing.domain.EventSeat;
 import com.odoomaster.ticketing.domain.Ticket;
+import com.odoomaster.ticketing.dto.TicketDtos.ScanHistoryView;
 import com.odoomaster.ticketing.dto.TicketDtos.ScanRequest;
 import com.odoomaster.ticketing.dto.TicketDtos.ScanResult;
 import com.odoomaster.ticketing.exception.AppException;
@@ -12,9 +13,12 @@ import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
 import com.odoomaster.ticketing.repository.TicketRepository;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class CheckInService {
@@ -73,5 +77,17 @@ public class CheckInService {
                 s != null ? s.getSeatNumber() : null,
                 s != null ? s.getSection() : null,
                 ci.getCheckedInAt());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ScanHistoryView> history(int limit) {
+        int capped = Math.min(Math.max(limit, 1), 500);
+        return checkIns.findHistory(PageRequest.of(0, capped)).stream()
+                .map(r -> new ScanHistoryView(
+                        r.getId(), r.getTicketId(), r.getCheckedInAt(), r.getStatus(), r.getDeviceId(),
+                        r.getEventId(), r.getEventTitle(),
+                        r.getSection(), r.getRowLabel(), r.getSeatNumber(),
+                        r.getScannedById(), r.getScannedByName(), r.getScannedByEmail()))
+                .toList();
     }
 }
