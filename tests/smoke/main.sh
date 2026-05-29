@@ -127,17 +127,23 @@ if [[ -n "$ORDER_ID" && "$ORDER_ID" != "null" ]]; then
   assert "POST /v1/tickets/scan authorizes SCANNER role (not 403) (scan feature)" \
          test "$SCAN_SCANNER" = "409"
 
-  # Check-in history endpoint returns the scan with its scanner + device id
+  # Admin has full-history access: sees the admin scan with its scanner + device id
   SCANS=$(curl -fsS "${BASE_URL}/v1/tickets/scans?limit=50" \
-               -H "Authorization: Bearer ${SCANNER_TOKEN}" || true)
+               -H "Authorization: Bearer ${ADMIN_TOKEN}" || true)
   assert "GET /v1/tickets/scans returns array (scan feature)" \
          test "$(jq -r 'type' <<<"$SCANS")" = "array"
-  assert "GET /v1/tickets/scans records the smoke deviceId (scan feature)" \
+  assert "GET /v1/tickets/scans (admin) records the smoke deviceId (scan feature)" \
          test "$(jq -r --arg d "$SMOKE_DEVICE" 'map(select(.deviceId==$d)) | length' <<<"$SCANS")" -ge 1
   assert "GET /v1/tickets/scans rows expose scannedByEmail (scan feature)" \
          test -n "$(jq -r '.[0].scannedByEmail // empty' <<<"$SCANS")"
 
-  # A normal USER must not read the audit/history surface → 403
+  # Scope: a SCANNER only sees their own check-ins (never the admin's scan above).
+  SCANS_SCANNER=$(curl -fsS "${BASE_URL}/v1/tickets/scans?limit=50" \
+               -H "Authorization: Bearer ${SCANNER_TOKEN}" || true)
+  assert "GET /v1/tickets/scans scopes SCANNER to own rows (scan feature)" \
+         test "$(jq -r --arg e "$SCANNER_EMAIL" 'map(select(.scannedByEmail!=$e)) | length' <<<"$SCANS_SCANNER")" = "0"
+
+  # A normal USER must not read the history surface → 403
   SCANS_FORBIDDEN=$(curl -s -o /dev/null -w "%{http_code}" "${BASE_URL}/v1/tickets/scans" \
                -H "Authorization: Bearer ${DEMO_TOKEN}" || true)
   assert "GET /v1/tickets/scans denies USER role → 403 (scan feature)" \

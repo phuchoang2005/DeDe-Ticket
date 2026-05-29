@@ -166,9 +166,9 @@ class CheckInServiceReliabilityTest {
     void history_mapsProjectionRowsToDtoPreservingFields() {
         CheckInService service = new CheckInService(tickets, checkIns, events, seats);
         ScanHistoryRow row0 = historyRow();
-        when(checkIns.findHistory(any(Pageable.class))).thenReturn(List.of(row0));
+        when(checkIns.findHistory(any(), any(Pageable.class))).thenReturn(List.of(row0));
 
-        var rows = service.history(50);
+        var rows = service.history(null, 50);
 
         assertThat(rows).hasSize(1);
         var row = rows.get(0);
@@ -186,17 +186,41 @@ class CheckInServiceReliabilityTest {
     @ValueSource(ints = {0, -5, 1, 100, 500, 999})
     void history_clampsLimitToOneFiveHundred(int requested) {
         CheckInService service = new CheckInService(tickets, checkIns, events, seats);
-        when(checkIns.findHistory(any(Pageable.class))).thenReturn(List.of());
+        when(checkIns.findHistory(any(), any(Pageable.class))).thenReturn(List.of());
 
-        service.history(requested);
+        service.history(null, requested);
 
         ArgumentCaptor<Pageable> page = ArgumentCaptor.forClass(Pageable.class);
-        verify(checkIns).findHistory(page.capture());
+        verify(checkIns).findHistory(any(), page.capture());
         int size = page.getValue().getPageSize();
         assertThat(size).isBetween(1, 500);
         int expected = Math.min(Math.max(requested, 1), 500);
         assertThat(size).isEqualTo(expected);
         assertThat(page.getValue().getPageNumber()).isZero();
+    }
+
+    @Test
+    void history_scopedToScanner_forwardsScannerId() {
+        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        when(checkIns.findHistory(any(), any(Pageable.class))).thenReturn(List.of());
+
+        service.history(42L, 100);
+
+        ArgumentCaptor<Long> scanner = ArgumentCaptor.forClass(Long.class);
+        verify(checkIns).findHistory(scanner.capture(), any(Pageable.class));
+        assertThat(scanner.getValue()).isEqualTo(42L);
+    }
+
+    @Test
+    void history_fullAccess_forwardsNullScannerId() {
+        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        when(checkIns.findHistory(any(), any(Pageable.class))).thenReturn(List.of());
+
+        service.history(null, 100);
+
+        ArgumentCaptor<Long> scanner = ArgumentCaptor.forClass(Long.class);
+        verify(checkIns).findHistory(scanner.capture(), any(Pageable.class));
+        assertThat(scanner.getValue()).isNull();
     }
 
     private static ScanHistoryRow historyRow() {
