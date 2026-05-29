@@ -14,12 +14,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import com.odoomaster.ticketing.repository.CheckInRepository.ScanHistoryRow;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -30,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -156,6 +160,61 @@ class CheckInServiceReliabilityTest {
 
         assertThat(ok).isEqualTo(1);
         assertThat(conflict).isEqualTo(1);
+    }
+
+    @Test
+    void history_mapsProjectionRowsToDtoPreservingFields() {
+        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        ScanHistoryRow row0 = historyRow();
+        when(checkIns.findHistory(any(Pageable.class))).thenReturn(List.of(row0));
+
+        var rows = service.history(50);
+
+        assertThat(rows).hasSize(1);
+        var row = rows.get(0);
+        assertThat(row.id()).isEqualTo(7L);
+        assertThat(row.ticketId()).isEqualTo(1L);
+        assertThat(row.deviceId()).isEqualTo("gate-a");
+        assertThat(row.eventTitle()).isEqualTo("Gate reliability");
+        assertThat(row.section()).isEqualTo("VIP");
+        assertThat(row.rowLabel()).isEqualTo("B");
+        assertThat(row.scannedByName()).isEqualTo("Staff One");
+        assertThat(row.scannedByEmail()).isEqualTo("staff@dede.test");
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, -5, 1, 100, 500, 999})
+    void history_clampsLimitToOneFiveHundred(int requested) {
+        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        when(checkIns.findHistory(any(Pageable.class))).thenReturn(List.of());
+
+        service.history(requested);
+
+        ArgumentCaptor<Pageable> page = ArgumentCaptor.forClass(Pageable.class);
+        verify(checkIns).findHistory(page.capture());
+        int size = page.getValue().getPageSize();
+        assertThat(size).isBetween(1, 500);
+        int expected = Math.min(Math.max(requested, 1), 500);
+        assertThat(size).isEqualTo(expected);
+        assertThat(page.getValue().getPageNumber()).isZero();
+    }
+
+    private static ScanHistoryRow historyRow() {
+        ScanHistoryRow row = mock(ScanHistoryRow.class);
+        when(row.getId()).thenReturn(7L);
+        when(row.getTicketId()).thenReturn(1L);
+        when(row.getCheckedInAt()).thenReturn(Instant.now());
+        when(row.getStatus()).thenReturn("OK");
+        when(row.getDeviceId()).thenReturn("gate-a");
+        when(row.getEventId()).thenReturn(2L);
+        when(row.getEventTitle()).thenReturn("Gate reliability");
+        when(row.getSection()).thenReturn("VIP");
+        when(row.getRowLabel()).thenReturn("B");
+        when(row.getSeatNumber()).thenReturn("12");
+        when(row.getScannedById()).thenReturn(9L);
+        when(row.getScannedByName()).thenReturn("Staff One");
+        when(row.getScannedByEmail()).thenReturn("staff@dede.test");
+        return row;
     }
 
     private static Ticket ticket(String status) {

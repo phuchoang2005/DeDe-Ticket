@@ -15,6 +15,8 @@ DEMO_EMAIL="${DEMO_EMAIL:-demo@dede.test}"
 DEMO_PASS="${DEMO_PASS:-demo1234}"
 ADMIN_EMAIL="${ADMIN_EMAIL:-admin@dede.test}"
 ADMIN_PASS="${ADMIN_PASS:-admin1234}"
+SCANNER_EMAIL="${SCANNER_EMAIL:-scanner@dede.test}"
+SCANNER_PASS="${SCANNER_PASS:-scan1234}"
 
 PASS=0
 FAIL=0
@@ -45,8 +47,10 @@ login() {
 echo "== auth =="
 DEMO_RESP=$(login "$DEMO_EMAIL" "$DEMO_PASS" || true)
 ADMIN_RESP=$(login "$ADMIN_EMAIL" "$ADMIN_PASS" || true)
+SCANNER_RESP=$(login "$SCANNER_EMAIL" "$SCANNER_PASS" || true)
 DEMO_TOKEN=$(jq_get '.token' "$DEMO_RESP")
 ADMIN_TOKEN=$(jq_get '.token' "$ADMIN_RESP")
+SCANNER_TOKEN=$(jq_get '.token' "$SCANNER_RESP")
 
 # Slice A assertion: login payload now has roles[] instead of role
 assert "login returns roles array (slice A)" \
@@ -55,6 +59,11 @@ assert "login returns roles array (slice A)" \
 USER_HAS_ROLE=$(jq -r '.user.roles | index("USER") // "absent"' <<<"$DEMO_RESP")
 assert "login roles contains USER (slice A)" \
        test "$USER_HAS_ROLE" != "absent"
+
+# Scanner demo account is seeded with the SCANNER role (scan feature)
+SCANNER_HAS_ROLE=$(jq -r '.user.roles | index("SCANNER") // "absent"' <<<"$SCANNER_RESP")
+assert "scanner demo account has SCANNER role (scan feature)" \
+       test "$SCANNER_HAS_ROLE" != "absent"
 
 echo "== events browse =="
 LIST=$(curl -fsS "${BASE_URL}/v1/events?limit=5")
@@ -91,12 +100,13 @@ if [[ -n "$ORDER_ID" && "$ORDER_ID" != "null" ]]; then
 
   TICKETS=$(curl -fsS "${BASE_URL}/v1/tickets" -H "Authorization: Bearer ${DEMO_TOKEN}")
   QR=$(jq -r '.[0].qrCode' <<<"$TICKETS")
+  SMOKE_DEVICE="smoke-device-$$"
 
-  # 1st scan with admin → 200
+  # 1st scan with admin → 200; deviceId is recorded on check_ins for forensics
   SCAN1=$(curl -fsS -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/v1/tickets/scan" \
                -H "Authorization: Bearer ${ADMIN_TOKEN}" \
                -H 'Content-Type: application/json' \
-               -d "{\"qrCode\":\"${QR}\"}" || true)
+               -d "{\"qrCode\":\"${QR}\",\"deviceId\":\"${SMOKE_DEVICE}\"}" || true)
   assert "POST /v1/tickets/scan → 200 first time (slice F)" \
          test "$SCAN1" = "200"
 
@@ -107,6 +117,31 @@ if [[ -n "$ORDER_ID" && "$ORDER_ID" != "null" ]]; then
                -d "{\"qrCode\":\"${QR}\"}" || true)
   assert "POST /v1/tickets/scan → 409 duplicate (slice F)" \
          test "$SCAN2" = "409"
+
+  # SCANNER role is authorized on the scan endpoint: reusing the now-USED QR
+  # yields 409 (authorized but already used), never 403 (would mean denied).
+  SCAN_SCANNER=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE_URL}/v1/tickets/scan" \
+               -H "Authorization: Bearer ${SCANNER_TOKEN}" \
+               -H 'Content-Type: application/json' \
+               -d "{\"qrCode\":\"${QR}\"}" || true)
+  assert "POST /v1/tickets/scan authorizes SCANNER role (not 403) (scan feature)" \
+         test "$SCAN_SCANNER" = "409"
+
+  # Check-in history endpoint returns the scan with its scanner + device id
+  SCANS=$(curl -fsS "${BASE_URL}/v1/tickets/scans?limit=50" \
+               -H "Authorization: Bearer ${SCANNER_TOKEN}" || true)
+  assert "GET /v1/tickets/scans returns array (scan feature)" \
+         test "$(jq -r 'type' <<<"$SCANS")" = "array"
+  assert "GET /v1/tickets/scans records the smoke deviceId (scan feature)" \
+         test "$(jq -r --arg d "$SMOKE_DEVICE" 'map(select(.deviceId==$d)) | length' <<<"$SCANS")" -ge 1
+  assert "GET /v1/tickets/scans rows expose scannedByEmail (scan feature)" \
+         test -n "$(jq -r '.[0].scannedByEmail // empty' <<<"$SCANS")"
+
+  # A normal USER must not read the audit/history surface → 403
+  SCANS_FORBIDDEN=$(curl -s -o /dev/null -w "%{http_code}" "${BASE_URL}/v1/tickets/scans" \
+               -H "Authorization: Bearer ${DEMO_TOKEN}" || true)
+  assert "GET /v1/tickets/scans denies USER role → 403 (scan feature)" \
+         test "$SCANS_FORBIDDEN" = "403"
 fi
 
 echo "== audit (slice G) =="
