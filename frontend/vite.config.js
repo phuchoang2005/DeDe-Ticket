@@ -11,6 +11,14 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
+    proxy: {
+      '/v1': {
+        target: process.env.VITE_DEV_API_PROXY || 'http://backend:8080',
+        changeOrigin: true,
+      },
+    },
+    // VSCode dev tunnels rewrite the Host header; allow any so HMR/preflight don't 400.
+    allowedHosts: true,
   },
   preview: {
     host: true,
