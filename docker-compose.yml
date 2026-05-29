@@ -17,6 +17,9 @@ x-backend: &backend
     APP_JWT_SECRET: ${APP_JWT_SECRET}
     APP_JWT_TTL_MINUTES: ${APP_JWT_TTL_MINUTES:-1440}
     SERVER_PORT: 8080
+    # Default off for the pool; only backend1 (below) seeds, so the 4 replicas
+    # don't race on UNIQUE constraints while booting concurrently.
+    APP_SEED_ENABLED: "false"
   expose:
     - "8080"
   healthcheck:
@@ -78,6 +81,10 @@ services:
   backend1:
     <<: *backend
     container_name: backend1_prod
+    # Single designated seeder for the pool.
+    environment:
+      <<: *backend-env
+      APP_SEED_ENABLED: "true"
   backend2:
     <<: *backend
     container_name: backend2_prod

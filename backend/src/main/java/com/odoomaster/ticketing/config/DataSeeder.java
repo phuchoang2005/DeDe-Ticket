@@ -24,6 +24,7 @@ import com.odoomaster.ticketing.service.NotificationService;
 import com.odoomaster.ticketing.service.SeatCatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,6 +58,11 @@ public class DataSeeder implements CommandLineRunner {
     private final PasswordEncoder encoder;
     private final NotificationService notifications;
     private final SeatCatalogService catalog;
+    // When false, this replica skips all seeding. In the 4-replica prod compose
+    // only backend1 sets it true, so concurrent boots can't collide on the UNIQUE
+    // constraints the seed chain writes (qr_code, event_seat_id, check_ins.ticket_id).
+    // Defaults true so dev/single-instance runs seed without extra config.
+    private final boolean seedEnabled;
 
     public DataSeeder(EventRepository events, EventCategoryRepository eventCategories,
                       EventSeatRepository seats, UserRepository users,
@@ -64,7 +70,8 @@ public class DataSeeder implements CommandLineRunner {
                       OrderRepository orders, OrderItemRepository orderItems,
                       TicketRepository tickets, CheckInRepository checkIns,
                       PasswordEncoder encoder, NotificationService notifications,
-                      SeatCatalogService catalog) {
+                      SeatCatalogService catalog,
+                      @Value("${app.seed.enabled:true}") boolean seedEnabled) {
         this.events = events;
         this.eventCategories = eventCategories;
         this.seats = seats;
@@ -78,11 +85,16 @@ public class DataSeeder implements CommandLineRunner {
         this.encoder = encoder;
         this.notifications = notifications;
         this.catalog = catalog;
+        this.seedEnabled = seedEnabled;
     }
 
     @Override
     @Transactional
     public void run(String... args) {
+        if (!seedEnabled) {
+            log.info("Seeding disabled on this instance (app.seed.enabled=false); skipping DataSeeder");
+            return;
+        }
         User demo = ensureUser("demo@dede.test", "demo1234", "Người Dùng", "0900000000", "USER");
         ensureUser("admin@dede.test", "admin1234", "Quản Trị Viên", "0900000001", "ADMIN");
         ensureUser("organizer@dede.test", "org12345", "Ban Tổ Chức", "0900000002", "ORGANIZER");
