@@ -4,6 +4,7 @@ import com.odoomaster.ticketing.domain.CheckIn;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
 import java.util.List;
@@ -15,6 +16,8 @@ public interface CheckInRepository extends JpaRepository<CheckIn, Long> {
     long countByTicketIdIn(java.util.List<Long> ticketIds);
 
     // Most-recent-first check-in history with the joined event, seat and scanner.
+    // A null scannerId returns every scanner's rows (full access); a non-null
+    // value scopes to that scanner — SCANNER staff only see their own check-ins.
     @Query(value = """
             SELECT ci.id AS id, ci.ticket_id AS ticketId, ci.checked_in_at AS checkedInAt,
                    ci.status AS status, ci.device_id AS deviceId,
@@ -26,9 +29,10 @@ public interface CheckInRepository extends JpaRepository<CheckIn, Long> {
             JOIN events e ON e.id = t.event_id
             JOIN event_seats es ON es.id = t.event_seat_id
             JOIN users u ON u.id = ci.checked_in_by
+            WHERE (:scannerId IS NULL OR ci.checked_in_by = :scannerId)
             ORDER BY ci.checked_in_at DESC
             """, nativeQuery = true)
-    List<ScanHistoryRow> findHistory(Pageable pageable);
+    List<ScanHistoryRow> findHistory(@Param("scannerId") Long scannerId, Pageable pageable);
 
     // Native-query projection; getter names match the SELECT aliases.
     interface ScanHistoryRow {

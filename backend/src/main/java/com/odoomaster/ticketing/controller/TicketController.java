@@ -61,6 +61,11 @@ public class TicketController {
     @GetMapping("/scans")
     @PreAuthorize("hasAnyRole('SCANNER','ADMIN','ORGANIZER')")
     public List<ScanHistoryView> scans(@RequestParam(required = false) Integer limit) {
-        return checkInService.history(limit == null ? 100 : limit);
+        var principal = current.require();
+        // ADMIN/ORGANIZER see every scanner's history; a plain SCANNER is scoped
+        // to their own check-ins.
+        boolean fullAccess = principal.hasRole("ADMIN") || principal.hasRole("ORGANIZER");
+        Long scannerScope = fullAccess ? null : principal.userId();
+        return checkInService.history(scannerScope, limit == null ? 100 : limit);
     }
 }

@@ -79,10 +79,12 @@ public class CheckInService {
                 ci.getCheckedInAt());
     }
 
+    // scannerId == null means full access (ADMIN/ORGANIZER); a non-null value
+    // scopes the history to that scanner's own check-ins.
     @Transactional(readOnly = true)
-    public List<ScanHistoryView> history(int limit) {
+    public List<ScanHistoryView> history(Long scannerId, int limit) {
         int capped = Math.min(Math.max(limit, 1), 500);
-        return checkIns.findHistory(PageRequest.of(0, capped)).stream()
+        return checkIns.findHistory(scannerId, PageRequest.of(0, capped)).stream()
                 .map(r -> new ScanHistoryView(
                         r.getId(), r.getTicketId(), r.getCheckedInAt(), r.getStatus(), r.getDeviceId(),
                         r.getEventId(), r.getEventTitle(),
