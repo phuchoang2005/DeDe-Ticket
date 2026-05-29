@@ -17,18 +17,27 @@ export default function CheckoutPage() {
   const [busy, setBusy] = useState(false);
   const [method, setMethod] = useState('MOMO');
   const paidRef = useRef(false);
+  const cancelTimerRef = useRef(null);
 
   useEffect(() => {
     orderApi.get(id).then(setOrder).catch((err) => setError(err.message));
   }, [id]);
 
-  // Release seat locks when user navigates away (SPA navigation) without paying.
-  // Browser close / hard refresh: sweeper releases after 10-min TTL.
+  // Release seat locks when the user leaves checkout without paying.
+  // StrictMode runs setup -> cleanup -> setup synchronously in dev, so we
+  // defer the cancel and let the immediate re-setup abort it; a real unmount
+  // has no following setup, so the cancel fires. Browser close / hard refresh
+  // is covered by SeatLockSweeperJob's TTL.
   useEffect(() => {
+    if (cancelTimerRef.current) {
+      clearTimeout(cancelTimerRef.current);
+      cancelTimerRef.current = null;
+    }
     return () => {
-      if (!paidRef.current) {
+      if (paidRef.current) return;
+      cancelTimerRef.current = setTimeout(() => {
         orderApi.cancel(id).catch(() => {});
-      }
+      }, 0);
     };
   }, [id]);
 
