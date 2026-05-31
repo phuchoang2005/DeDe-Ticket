@@ -59,6 +59,24 @@ Important rules:
 
 ---
 
+## Mobile scanner app (`mobile/`, MVP complete)
+
+A standalone Expo (managed workflow) React Native app for staff scanning — Expo SDK 54 / RN 0.81 / React 19, with `expo-camera`, `expo-secure-store`, React Navigation, and axios. It is **online-first** and reuses the existing backend unchanged; scope is log in/out + scan QR (or manual code entry) + show validation. The decision and phased plan are in [`adr/0011-expo-online-first-staff-scanner.md`](../adr/0011-expo-online-first-staff-scanner.md); offline-first remains deferred to ADR-0009.
+
+| Phase | Status | Implemented |
+|---|---|---|
+| 0 — Foundations | Done | API config without a hardcoded host: `EXPO_PUBLIC_API_BASE_URL` (see `.env.example`) → `app.config.js` `extra.apiBaseUrl` → `src/config/env.js` (resolution order env var, then `Constants` extra, then fallback; runtime override hook for Phase 3). `src/storage/secureStore.js` (JWT) and `src/storage/deviceId.js` (persistent per-device UUID) on `expo-secure-store`. `src/services/apiClient.js` (axios + `Authorization: Bearer` interceptor + 10s timeout + error-envelope → `ApiError` mapping for `ALREADY_USED` / `TICKET_NOT_FOUND` / `TICKET_NOT_VALID`). `src/store/AuthContext.js` (token/user/roles, `signIn`/`signOut`, boot rehydrate, `hasScannerRole`) + token-gated navigator (`RootNavigator` → `AppStack`/`AuthStack`) wired in `App.js`; screens are placeholders. Unit-tested under `mobile/tests/` via `jest-expo` (`npm test`). |
+| 1 — Auth | Done | `src/services/authService.js` (`login` → `POST /v1/auth/login`) and a real `src/screens/LoginScreen.js` (email/password inputs, submit with loading/error, demo-account quick-fill). Role gate: a successful login for an account without a scanner role (`hasScannerRole`) is rejected in-app with `Bạn không có quyền truy cập ứng dụng này` and the token is never persisted; allowed roles call `signIn`. Auto-login: a stored token boots straight into `ScanScreen` (verified by a `RootNavigator` render test). Tested under `mobile/tests/` (`authService`, `loginScreen`, `rootNavigator`). |
+| 2 — Scan | Done | `src/screens/ScanScreen.js` uses `expo-camera` `CameraView` (`barcodeScannerSettings={{ barcodeTypes: ['qr'] }}`, `onBarcodeScanned`) with a ref-based scanning lock so one QR hits the API once. `src/services/scanService.js` calls `POST /v1/tickets/scan {qrCode, deviceId}`; a prominent notice maps OK plus `ALREADY_USED` / `TICKET_NOT_FOUND` / `TICKET_NOT_VALID` (via `src/utils/scanOutcome.js`) with a "Quét vé khác" button that clears the lock. Camera permission via `useCameraPermissions`; seamless front/back facing toggle. Preview is a centered 1:1 square (capped at 640px), freezes via `active={false}` while a result is shown, and beeps (`expo-audio`) on success. Tested under `mobile/tests/` (`scanService`, `scanOutcome`, `scanScreen`). |
+| 3 — Resilience | Done | In-app server-URL setting: a modal on `LoginScreen` updates the API base URL at runtime (`config/env.js` `setApiBaseUrl`) and persists it via `src/storage/serverConfig.js`; `AuthContext` re-applies it on boot. `src/utils/errorMessage.js` maps `NETWORK_ERROR` / `TIMEOUT` / `HTTP_502/503/504` to friendly copy shown inline; `src/components/ErrorBoundary.js` guards against render crashes. Manual code entry: `ScanScreen` has a text input + submit that runs the same scan path as the camera (lock, freeze, `POST /v1/tickets/scan`); "Quét vé khác" clears the result, input, and lock. Tested under `mobile/tests/` (`serverConfig`, `errorMessage`, plus login/auth/scan cases). |
+| 4 — Build + docs | Done | Native stack headers hidden; screens render edge-to-edge in `SafeAreaView` with the camera box directly below the facing buttons. `mobile/eas.json` (development / preview-APK / production profiles), `mobile/README.md` (setup, `.env` LAN IP, Expo Go, tests, EAS build, manual device matrix), and a `mobile-qa` CI job (`npm ci` + `npm test`). Operator-only steps: running the on-device matrix and the cloud `eas build`. |
+| Polish (device testing) | Done | `ScanScreen` content is wrapped in `KeyboardAvoidingView` + `ScrollView` (`keyboardShouldPersistTaps="handled"`) so the on-screen keyboard no longer covers the manual code input. The check-in time renders through `src/utils/datetime.js` `formatDateTime` as local `HH:mm:ss dd/MM/yyyy` instead of the raw backend ISO string. Tested under `mobile/tests/` (`datetime`, plus `scanScreen` layout/format cases). |
+| 4 — QA & build | Planned | Device matrix, EAS build, mobile docs, optional CI job. |
+
+The mobile app mirrors the web SPA patterns deliberately: one shared `apiClient`, an `AuthContext`, secure-store-persisted JWT + `deviceId`, and a token-gated navigator standing in for the SPA's `RequireRole`. UI styling also follows the web: `src/theme.js` mirrors the `frontend/tailwind.config.js` color tokens, and each screen matches the layout of its web counterpart.
+
+---
+
 ## Admin and organizer flow
 
 The React admin routes are:
