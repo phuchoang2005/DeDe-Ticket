@@ -13,6 +13,10 @@ import { getStoredApiBaseUrl } from '../src/storage/serverConfig';
 const TOKEN_KEY = 'dede.auth.token';
 const METRICS = { frame: { x: 0, y: 0, width: 320, height: 640 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } };
 
+// Resource-constrained CI runners can take longer than the 5s default to finish
+// the async React Native render + mock setup, so give this suite extra headroom.
+jest.setTimeout(20000);
+
 beforeEach(() => {
   if (SecureStore.__reset) SecureStore.__reset();
   login.mockReset();
