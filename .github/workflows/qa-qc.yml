@@ -70,6 +70,29 @@ jobs:
       - name: Build frontend
         run: npm run build
 
+  mobile-qa:
+    name: Mobile QA
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run mobile tests
+        run: npm test
+
   smoke:
     name: Deployed Smoke
     runs-on: ubuntu-latest
