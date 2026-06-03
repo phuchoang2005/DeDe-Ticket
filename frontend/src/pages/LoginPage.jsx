@@ -43,7 +43,7 @@ export default function LoginPage() {
   return (
     <div className="max-w-md mx-auto card p-6 sm:p-8 mt-4 sm:mt-8">
       <div className="text-center mb-6">
-        <div className="inline-block w-12 h-12 rounded-xl bg-brand-600 mb-3" />
+        <img src="/icon-on-green.png" alt="Dề Dê" className="inline-block w-12 h-12 rounded-xl object-cover mb-3" />
         <h1 className="text-2xl font-bold text-ink">Chào mừng trở lại</h1>
         <p className="text-sm text-ink-subtle mt-1">Đăng nhập để đặt vé hoặc quản trị sự kiện</p>
       </div>

@@ -73,7 +73,7 @@ export default function AppLayout() {
           </button>
 
           <Link to="/" className="flex items-center gap-2 min-w-0">
-            <span className="inline-block w-8 h-8 rounded-lg bg-brand-600 shrink-0" />
+            <img src="/icon-on-green.png" alt="Dề Dê" className="w-8 h-8 rounded-lg shrink-0 object-cover" />
             <span className="text-base font-bold text-ink truncate">Dề Dê</span>
           </Link>
 
@@ -166,7 +166,7 @@ export default function AppLayout() {
           <aside className="md:hidden fixed top-0 left-0 bottom-0 w-72 max-w-[85vw] bg-white z-50 shadow-pop p-4 flex flex-col">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <span className="inline-block w-8 h-8 rounded-lg bg-brand-600" />
+                <img src="/icon-on-green.png" alt="Dề Dê" className="w-8 h-8 rounded-lg object-cover" />
                 <span className="font-bold text-ink">Dề Dê</span>
               </div>
               <button onClick={() => setDrawerOpen(false)} aria-label="Close menu"
