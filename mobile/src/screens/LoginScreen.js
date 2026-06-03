@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   Modal,
   Pressable,
   ScrollView,
@@ -87,7 +88,7 @@ export default function LoginScreen() {
     <ScrollView style={styles.page} contentContainerStyle={styles.pageContent} keyboardShouldPersistTaps="handled">
       <View style={styles.card}>
         <View style={styles.header}>
-          <View style={styles.logo} />
+          <Image source={require('../../assets/icon.png')} style={styles.logo} />
           <Text style={styles.title}>Chào mừng trở lại</Text>
           <Text style={styles.subtitle}>Đăng nhập để soát vé sự kiện</Text>
         </View>
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   header: { alignItems: 'center', marginBottom: 24 },
-  logo: { width: 48, height: 48, borderRadius: 12, backgroundColor: theme.brand600, marginBottom: 12 },
+  logo: { width: 48, height: 48, borderRadius: 12, marginBottom: 12 },
   title: { fontSize: 22, fontWeight: '700', color: theme.ink },
   subtitle: { fontSize: 14, color: theme.inkSubtle, marginTop: 4 },
 
