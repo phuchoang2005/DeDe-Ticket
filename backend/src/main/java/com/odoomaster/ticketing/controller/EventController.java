@@ -4,6 +4,9 @@ import com.odoomaster.ticketing.dto.EventDtos.*;
 import com.odoomaster.ticketing.service.EventService;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for the public event browse/detail/seat endpoints under {@code /v1/events}.
+ */
 @RestController
 @RequestMapping("/v1/events")
 public class EventController {

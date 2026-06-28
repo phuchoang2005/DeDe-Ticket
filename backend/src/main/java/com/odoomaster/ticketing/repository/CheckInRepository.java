@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
+/**
+ * Spring Data JPA repository for the CheckIn aggregate.
+ */
 public interface CheckInRepository extends JpaRepository<CheckIn, Long> {
     Optional<CheckIn> findByTicketId(Long ticketId);
     boolean existsByTicketId(Long ticketId);

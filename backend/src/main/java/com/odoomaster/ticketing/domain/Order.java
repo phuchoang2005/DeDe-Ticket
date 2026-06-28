@@ -6,6 +6,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+/**
+ * JPA entity mapping the persistence row for a order.
+ */
 @Entity
 @Table(name = "orders",
         indexes = {

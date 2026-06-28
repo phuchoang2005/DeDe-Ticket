@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * REST controller for the notification inbox/read endpoints under {@code /v1/notifications}.
+ */
 @RestController
 @RequestMapping("/v1/notifications")
 public class NotificationController {

@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * JPA entity mapping the persistence row for a user.
+ */
 @Entity
 @Table(name = "users", indexes = @Index(name = "idx_users_email", columnList = "email", unique = true))
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder

@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * Spring Data JPA repository for the Event aggregate.
+ */
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByStatusOrderByStartTimeAsc(String status);
 

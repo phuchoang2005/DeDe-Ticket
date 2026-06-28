@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Spring Data JPA repository for the Ticket aggregate.
+ */
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByUserIdOrderByIssuedAtDesc(Long userId);
     Page<Ticket> findByUserIdOrderByIssuedAtDesc(Long userId, Pageable pageable);

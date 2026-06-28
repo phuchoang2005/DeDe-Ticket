@@ -20,6 +20,10 @@ import java.time.Clock;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Public, read-only event service: paginated listings, trending, event detail, and the seat
+ * map. Reads are cached (see {@link com.odoomaster.ticketing.config.CacheConfig}) for the browse path.
+ */
 @Service
 @Transactional(readOnly = true)
 public class EventService {

@@ -14,6 +14,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 
+/**
+ * Translates exceptions into the uniform {@link ApiErrorEnvelope} response across all controllers.
+ *
+ * <p>Handles domain {@link AppException}s (using their code + status), bean-validation failures
+ * (field details), authentication/access-denied errors, and any uncaught exception (logged and
+ * returned as {@code INTERNAL_ERROR}). Each response carries the current {@code traceId} from the
+ * MDC for correlation.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

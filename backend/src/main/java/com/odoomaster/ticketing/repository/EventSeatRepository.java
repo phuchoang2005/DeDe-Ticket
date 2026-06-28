@@ -8,6 +8,9 @@ import org.springframework.data.repository.query.Param;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * Spring Data JPA repository for the EventSeat aggregate.
+ */
 public interface EventSeatRepository extends JpaRepository<EventSeat, Long> {
     List<EventSeat> findByEventIdOrderByRowLabelAscSeatNumberAsc(Long eventId);
     List<EventSeat> findByIdIn(List<Long> ids);

@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * REST controller for admin ticket-type management under {@code /v1/admin}.
+ */
 @RestController
 @RequestMapping("/v1/admin/events/{eventId}/ticket-types")
 public class AdminTicketTypeController {

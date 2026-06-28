@@ -4,10 +4,16 @@ import com.odoomaster.ticketing.audit.Auditable;
 import com.odoomaster.ticketing.config.CacheConfig;
 import com.odoomaster.ticketing.domain.*;
 import com.odoomaster.ticketing.dto.OrderDtos.*;
+import com.odoomaster.ticketing.event.TicketsIssuedEvent;
 import com.odoomaster.ticketing.exception.AppException;
 import com.odoomaster.ticketing.repository.*;
+import com.odoomaster.ticketing.service.payment.PaymentGateway;
+import com.odoomaster.ticketing.service.payment.PaymentGatewayResolver;
+import com.odoomaster.ticketing.service.payment.PaymentRequest;
+import com.odoomaster.ticketing.service.payment.PaymentResult;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +23,23 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+/**
+ * Core ordering service and the concurrency crux of the system.
+ *
+ * <p>Holds selected seats with a DB-level lock for {@value #LOCK_TTL_MINUTES} minutes when an
+ * order is created, transitions them through {@code AVAILABLE → LOCKED → SOLD} (or back to
+ * {@code AVAILABLE} on cancel/expiry), and issues QR tickets on payment. Every mutating method is
+ * {@code @Transactional} and evicts the event caches so seat availability is never read stale.
+ *
+ * <p>Payment is delegated to a {@link PaymentGateway} chosen by {@link PaymentGatewayResolver}
+ * (Strategy + Factory), and ticket issuance fires a {@link TicketsIssuedEvent} that
+ * {@code NotificationEventListener} observes — keeping payment and notification concerns out of
+ * this class.
+ */
 @Service
 public class OrderService {
 
+    /** How long, in minutes, a created order holds its seats before the sweeper may release them. */
     private static final int LOCK_TTL_MINUTES = 10;
 
     private final EventRepository events;
@@ -29,21 +49,38 @@ public class OrderService {
     private final PaymentRepository payments;
     private final TicketRepository tickets;
 
-    private final NotificationService notificationService;
+    private final PaymentGatewayResolver paymentGatewayResolver;
+    private final ApplicationEventPublisher eventPublisher;
 
     public OrderService(EventRepository events, EventSeatRepository seats,
                         OrderRepository orders, OrderItemRepository orderItems,
                         PaymentRepository payments, TicketRepository tickets,
-                        NotificationService notificationService) {
+                        PaymentGatewayResolver paymentGatewayResolver,
+                        ApplicationEventPublisher eventPublisher) {
         this.events = events;
         this.seats = seats;
         this.orders = orders;
         this.orderItems = orderItems;
         this.payments = payments;
         this.tickets = tickets;
-        this.notificationService = notificationService;
+        this.paymentGatewayResolver = paymentGatewayResolver;
+        this.eventPublisher = eventPublisher;
     }
 
+    /**
+     * Create a PENDING order and hold its seats for {@value #LOCK_TTL_MINUTES} minutes.
+     *
+     * <p>Validates the event is on sale and the seats are unique, available (or holding an expired
+     * lock), and belong to the event, then transitions each seat to {@code LOCKED} with
+     * {@code lockedBy}/{@code lockedUntil} set. Runs in one transaction and evicts the seat/detail
+     * caches for the event so availability is re-read fresh.
+     *
+     * @param userId the buyer holding the seats
+     * @param req the event id and requested seat ids
+     * @return a view of the created order with its line items
+     * @throws AppException if the event is missing/not published, seats are duplicated/missing,
+     *                      cross-event, or already taken
+     */
     @Transactional
     @Auditable(action = "ORDER_CREATED", entity = "orders")
     @Caching(evict = {
@@ -112,6 +149,21 @@ public class OrderService {
         return toView(order, event, items, picked);
     }
 
+    /**
+     * Pay a PENDING order: charge the gateway, mark its seats {@code SOLD}, issue QR tickets and
+     * publish a {@link TicketsIssuedEvent}.
+     *
+     * <p>Idempotent for an already-PAID order (returns the existing view without re-issuing). Seats
+     * are re-checked at payment time and rejected if sold elsewhere or their lock expired. The whole
+     * method is transactional and evicts all event caches.
+     *
+     * @param userId the paying user (must own the order)
+     * @param orderId the order to pay
+     * @param req the chosen payment method/provider
+     * @return a view of the paid order
+     * @throws AppException if the order is missing, not owned by the user, in an unpayable state,
+     *                      or a seat is no longer holdable
+     */
     @Transactional
     @Auditable(action = "ORDER_PAID", entity = "orders")
     @Caching(evict = {
@@ -150,13 +202,15 @@ public class OrderService {
         }
         seats.saveAll(picked);
 
-        // Mock payment: auto-success
+        // Charge via the resolved payment gateway (Strategy). The mock gateway always succeeds.
+        PaymentGateway gateway = paymentGatewayResolver.resolve(req.method());
+        PaymentResult result = gateway.charge(new PaymentRequest(order.getId(), req.method(), order.getTotalAmount()));
         Payment p = Payment.builder()
                 .orderId(order.getId())
                 .provider(req.method())
-                .transactionId("MOCK-" + UUID.randomUUID().toString().substring(0, 12).toUpperCase(Locale.ROOT))
+                .transactionId(result.transactionId())
                 .amount(order.getTotalAmount())
-                .status("SUCCEEDED")
+                .status(result.status())
                 .build();
         payments.save(p);
 
@@ -180,11 +234,11 @@ public class OrderService {
             ticketCount++;
         }
 
+        // Publish the tickets-issued event (Observer); NotificationEventListener creates the
+        // in-app notification. Runs synchronously within this transaction.
         Event ev = events.findById(order.getEventId()).orElse(null);
-        String title = ticketCount == 1 ? "Vé của bạn đã được phát hành" : ticketCount + " vé của bạn đã được phát hành";
-        String content = (ev != null ? "Sự kiện: " + ev.getTitle() + "." : "")
-                + " Đơn hàng #" + order.getId() + " đã thanh toán thành công qua " + req.method() + ".";
-        notificationService.create(userId, "TICKETS_ISSUED", title, content, "IN_APP", "/tickets");
+        eventPublisher.publishEvent(new TicketsIssuedEvent(
+                userId, order.getId(), ev != null ? ev.getTitle() : null, ticketCount, req.method()));
 
         return view(order);
     }

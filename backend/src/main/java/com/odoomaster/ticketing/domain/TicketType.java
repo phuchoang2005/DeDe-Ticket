@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+/**
+ * JPA entity mapping the persistence row for a tickettype.
+ */
 @Entity
 @Table(name = "ticket_types",
         uniqueConstraints = @UniqueConstraint(name = "uk_tickettype_event_name",

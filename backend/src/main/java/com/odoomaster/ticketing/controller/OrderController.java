@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * REST controller for order creation, payment, and cancellation under {@code /v1/orders}.
+ */
 @RestController
 @RequestMapping("/v1/orders")
 public class OrderController {

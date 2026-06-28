@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.Instant;
 
+/**
+ * JPA entity mapping the persistence row for a auditlog.
+ */
 @Entity
 @Table(name = "audit_logs",
         indexes = {

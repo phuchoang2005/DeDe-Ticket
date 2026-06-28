@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * DTO record container grouping the request/response value objects for the related API.
+ */
 public class AdminDtos {
 
     public record AdminEventRow(

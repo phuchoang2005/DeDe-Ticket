@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for admin/organizer event CRUD and lifecycle under {@code /v1/admin/events}.
+ */
 @RestController
 @RequestMapping("/v1/admin/events")
 public class AdminEventController {

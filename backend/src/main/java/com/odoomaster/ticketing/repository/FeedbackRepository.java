@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * Spring Data JPA repository for the Feedback aggregate.
+ */
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query("""

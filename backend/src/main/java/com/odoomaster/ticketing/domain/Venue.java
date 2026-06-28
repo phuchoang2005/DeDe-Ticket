@@ -3,6 +3,9 @@ package com.odoomaster.ticketing.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * JPA entity mapping the persistence row for a venue.
+ */
 @Entity
 @Table(name = "venues",
         uniqueConstraints = @UniqueConstraint(name = "uk_venue_name", columnNames = "name"))

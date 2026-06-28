@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST controller exposing the admin analytics report under {@code /v1/admin/analytics}.
+ */
 @RestController
 @RequestMapping("/v1/admin/analytics")
 public class AnalyticsController {

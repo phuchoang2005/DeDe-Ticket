@@ -18,6 +18,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Per-request filter that authenticates a {@code Authorization: Bearer <jwt>} header.
+ *
+ * <p>On a valid token it builds an {@link AuthPrincipal} and {@code ROLE_*} authorities and
+ * populates the Spring Security context; on any parse/verify failure it clears the context and
+ * lets the request proceed unauthenticated (route rules then decide access). Runs once per
+ * request ({@link OncePerRequestFilter}).
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -27,6 +35,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.jwt = jwt;
     }
 
+    /**
+     * Extract and verify the bearer token, then set the authentication on the security context.
+     *
+     * @param req the incoming request
+     * @param res the response
+     * @param chain the remaining filter chain
+     */
     @Override
     @SuppressWarnings("unchecked")
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)

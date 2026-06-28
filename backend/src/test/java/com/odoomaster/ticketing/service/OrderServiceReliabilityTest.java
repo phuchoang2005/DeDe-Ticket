@@ -14,6 +14,11 @@ import com.odoomaster.ticketing.repository.OrderItemRepository;
 import com.odoomaster.ticketing.repository.OrderRepository;
 import com.odoomaster.ticketing.repository.PaymentRepository;
 import com.odoomaster.ticketing.repository.TicketRepository;
+import com.odoomaster.ticketing.event.TicketsIssuedEvent;
+import com.odoomaster.ticketing.notification.NotificationEventListener;
+import com.odoomaster.ticketing.service.payment.MockPaymentGateway;
+import com.odoomaster.ticketing.service.payment.PaymentGatewayResolver;
+import org.springframework.context.ApplicationEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,7 +68,14 @@ class OrderServiceReliabilityTest {
 
     @BeforeEach
     void setUp() {
-        service = new OrderService(events, seats, orders, orderItems, payments, tickets, notificationService);
+        // Wire the Observer end-to-end: route published TicketsIssuedEvents to a real listener
+        // backed by the mocked NotificationService, so notification assertions still hold.
+        NotificationEventListener listener = new NotificationEventListener(notificationService);
+        ApplicationEventPublisher publisher = event -> {
+            if (event instanceof TicketsIssuedEvent e) listener.onTicketsIssued(e);
+        };
+        PaymentGatewayResolver resolver = new PaymentGatewayResolver(List.of(new MockPaymentGateway()));
+        service = new OrderService(events, seats, orders, orderItems, payments, tickets, resolver, publisher);
     }
 
     @Test

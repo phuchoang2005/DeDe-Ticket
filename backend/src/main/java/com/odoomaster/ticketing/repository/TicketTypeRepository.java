@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Spring Data JPA repository for the TicketType aggregate.
+ */
 public interface TicketTypeRepository extends JpaRepository<TicketType, Long> {
     List<TicketType> findByEventIdOrderByPriceAsc(Long eventId);
     Optional<TicketType> findByEventIdAndName(Long eventId, String name);

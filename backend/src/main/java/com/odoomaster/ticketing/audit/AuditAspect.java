@@ -14,6 +14,13 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
+/**
+ * AOP aspect that persists an audit row after any {@link Auditable}-annotated method succeeds.
+ *
+ * <p>After the target returns, it records the {@code action}/{@code entity} from the annotation,
+ * the current user (from the security context), the returned entity id (via {@code id()}/{@code getId()}),
+ * and the request trace id. Audit failures are swallowed (logged) so they never break the business call.
+ */
 @Aspect
 @Component
 @Slf4j
@@ -25,6 +32,13 @@ public class AuditAspect {
         this.audits = audits;
     }
 
+    /**
+     * Around advice that writes the audit row after the target method returns.
+     *
+     * @param pjp the intercepted join point
+     * @return the target method's result (returned unchanged)
+     * @throws Throwable if the target method throws
+     */
     @Around("@annotation(com.odoomaster.ticketing.audit.Auditable)")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
         Object result = pjp.proceed();

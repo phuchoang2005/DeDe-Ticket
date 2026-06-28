@@ -3,6 +3,9 @@ package com.odoomaster.ticketing.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * JPA entity mapping the persistence row for a role.
+ */
 @Entity
 @Table(name = "roles",
         uniqueConstraints = @UniqueConstraint(name = "uk_roles_name", columnNames = "name"))

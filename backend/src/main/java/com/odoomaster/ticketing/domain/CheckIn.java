@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.Instant;
 
+/**
+ * JPA entity mapping the persistence row for a checkin.
+ */
 @Entity
 @Table(name = "check_ins",
         uniqueConstraints = @UniqueConstraint(name = "uk_check_ins_ticket", columnNames = "ticket_id"),

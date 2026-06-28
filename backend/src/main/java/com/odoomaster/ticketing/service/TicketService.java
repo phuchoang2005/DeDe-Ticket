@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Read/cancel service for a user's purchased tickets, including QR ticket detail.
+ */
 @Service
 @Transactional(readOnly = true)
 public class TicketService {

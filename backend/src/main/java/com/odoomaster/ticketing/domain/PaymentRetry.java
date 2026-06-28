@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.Instant;
 
+/**
+ * JPA entity mapping the persistence row for a paymentretry.
+ */
 @Entity
 @Table(name = "payment_retries",
         indexes = @Index(name = "idx_retry_payment", columnList = "payment_id"))

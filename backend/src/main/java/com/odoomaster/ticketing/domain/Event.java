@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * JPA entity mapping the persistence row for a event.
+ */
 @Entity
 @Table(name = "events")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder

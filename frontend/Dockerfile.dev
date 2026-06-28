@@ -8,4 +8,5 @@ RUN npm install
 COPY . .
 
 EXPOSE 5173
-CMD ["npm", "run", "dev", "--", "--host"]
+# Bind to 0.0.0.0 so the Next dev server is reachable from the host.
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]

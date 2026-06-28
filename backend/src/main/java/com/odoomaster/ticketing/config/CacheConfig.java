@@ -18,14 +18,30 @@ import java.time.Clock;
 import java.time.Duration;
 import java.util.Map;
 
+/**
+ * Redis cache configuration (cache-aside) for the read-heavy event endpoints.
+ *
+ * <p>Defines three short-TTL caches — {@link #EVENTS_LIST} and {@link #EVENT_DETAIL} (30s) and
+ * {@link #EVENT_SEATS} (5s, since seat availability changes fastest). Services read via
+ * {@code @Cacheable} and invalidate via {@code @CacheEvict}/{@code @Caching} on writes. Values are
+ * JSON-serialised with JSR-310 support; the manager is transaction-aware so evictions honour
+ * transaction boundaries.
+ */
 @Configuration
 @EnableCaching
 public class CacheConfig {
 
+    /** Cache of paginated event listings (30s TTL). */
     public static final String EVENTS_LIST = "events:list";
+    /** Cache of single-event detail (30s TTL). */
     public static final String EVENT_DETAIL = "events:detail";
+    /** Cache of an event's seat map (5s TTL — availability changes fastest). */
     public static final String EVENT_SEATS = "events:seats";
 
+    /**
+     * @param cf the Redis connection factory
+     * @return a cache manager with the per-cache TTLs above
+     */
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory cf) {
         ObjectMapper mapper = new ObjectMapper()
@@ -57,6 +73,7 @@ public class CacheConfig {
                 .build();
     }
 
+    /** @return a UTC clock bean for time-based logic */
     @Bean
     public Clock clock() {
         return Clock.systemUTC();

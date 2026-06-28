@@ -15,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Authentication service: registers users (BCrypt-hashed credentials) and logs them in,
+ * issuing a signed JWT via {@link JwtService}.
+ */
 @Service
 public class AuthService {
 

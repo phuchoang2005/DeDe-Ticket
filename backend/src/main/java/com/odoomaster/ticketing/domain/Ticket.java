@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.Instant;
 
+/**
+ * JPA entity mapping the persistence row for a ticket.
+ */
 @Entity
 @Table(name = "tickets",
         uniqueConstraints = @UniqueConstraint(name = "uk_tickets_qr", columnNames = "qr_code"),

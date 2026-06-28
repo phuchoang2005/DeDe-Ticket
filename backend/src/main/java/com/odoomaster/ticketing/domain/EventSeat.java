@@ -6,6 +6,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+/**
+ * JPA entity mapping the persistence row for a eventseat.
+ */
 @Entity
 @Table(name = "event_seats",
         uniqueConstraints = @UniqueConstraint(name = "uk_event_seat", columnNames = {"event_id", "section", "row_label", "seat_number"}),

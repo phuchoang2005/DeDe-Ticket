@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for admin venue/section management under {@code /v1/admin/events}.
+ */
 @RestController
 @RequestMapping("/v1/admin/venues")
 public class AdminVenueController {

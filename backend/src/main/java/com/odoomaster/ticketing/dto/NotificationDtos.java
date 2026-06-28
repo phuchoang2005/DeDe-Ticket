@@ -4,6 +4,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DTO record container grouping the request/response value objects for the related API.
+ */
 public class NotificationDtos {
 
     public record NotificationView(

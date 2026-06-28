@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * DTO record container grouping the request/response value objects for the related API.
+ */
 public class AnalyticsDtos {
 
     public record KpiSummary(

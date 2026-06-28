@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+/**
+ * REST controller for customer feedback submission under {@code /v1/feedback}.
+ */
 @RestController
 @RequestMapping("/v1/feedback")
 public class FeedbackController {

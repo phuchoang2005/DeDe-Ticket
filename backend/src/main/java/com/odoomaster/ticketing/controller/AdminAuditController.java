@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * REST controller exposing admin audit-log queries under {@code /v1/admin}.
+ */
 @RestController
 @RequestMapping("/v1/admin/audit")
 @PreAuthorize("hasRole('ADMIN')")

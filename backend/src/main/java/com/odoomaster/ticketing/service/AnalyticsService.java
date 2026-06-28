@@ -20,6 +20,10 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+/**
+ * Builds the admin analytics report — revenue trends, payment funnel, category breakdown,
+ * top events, and operational/security signals over a configurable window.
+ */
 @Service
 @Transactional(readOnly = true)
 public class AnalyticsService {

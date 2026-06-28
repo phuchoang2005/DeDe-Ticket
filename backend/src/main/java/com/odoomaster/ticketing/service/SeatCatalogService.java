@@ -9,6 +9,9 @@ import com.odoomaster.ticketing.repository.VenueRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Lazily ensures the venue/section/seat catalog rows exist for an event, creating them on demand.
+ */
 @Service
 public class SeatCatalogService {
 

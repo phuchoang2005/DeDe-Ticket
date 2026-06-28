@@ -21,15 +21,27 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Central Spring Security configuration: stateless JWT auth, CORS, and route authorization.
+ *
+ * <p>Sessions are stateless and CSRF is disabled (token auth). Public routes are
+ * {@code /v1/auth/**}, {@code /v1/health}, and {@code GET /v1/events/**}; {@code /v1/admin/**}
+ * requires role {@code ADMIN} or {@code ORGANIZER}; everything else requires authentication.
+ * The {@link JwtAuthenticationFilter} runs before the username/password filter, and auth/access
+ * failures are rendered as the standard {@link ApiErrorEnvelope}. {@code @EnableMethodSecurity}
+ * additionally allows {@code @PreAuthorize} on methods.
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    /** @return the BCrypt password encoder used for credential hashing */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /** @return permissive CORS for all origins (token auth, no credentials), exposing {@code X-Request-Id} */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
@@ -43,6 +55,16 @@ public class SecurityConfig {
         return src;
     }
 
+    /**
+     * Define the security filter chain: route rules, stateless sessions, JSON auth/access
+     * failure responses, and the JWT filter placement.
+     *
+     * @param http the security builder
+     * @param jwtFilter the bearer-token authentication filter
+     * @param mapper Jackson mapper used to serialise error envelopes
+     * @return the built filter chain
+     * @throws Exception if the chain cannot be built
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter, ObjectMapper mapper) throws Exception {
         http

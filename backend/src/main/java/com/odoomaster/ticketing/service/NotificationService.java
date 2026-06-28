@@ -14,6 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Manages user notifications: the in-app inbox, unread counts, read-state, and creation.
+ *
+ * <p>Creation is invoked by {@code NotificationEventListener} in response to domain events (e.g.
+ * {@code TicketsIssuedEvent}) as well as directly by seeders, decoupling notification delivery
+ * from the flows that trigger it.
+ */
 @Service
 public class NotificationService {
 
@@ -63,6 +70,17 @@ public class NotificationService {
         return notifications.markAllRead(userId, Instant.now());
     }
 
+    /**
+     * Create and persist a notification for a user.
+     *
+     * @param userId recipient user id
+     * @param type notification type (e.g. {@code TICKETS_ISSUED})
+     * @param title short title
+     * @param content body text
+     * @param channel delivery channel ({@code IN_APP} if {@code null})
+     * @param linkUrl optional deep-link the notification points to
+     * @return the saved notification
+     */
     @Transactional
     public Notification create(Long userId, String type, String title, String content, String channel, String linkUrl) {
         return notifications.save(Notification.builder()

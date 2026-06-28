@@ -18,6 +18,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Customer feedback service: submission by users and listing/triage (status + admin notes) by staff.
+ */
 @Service
 public class FeedbackService {
 

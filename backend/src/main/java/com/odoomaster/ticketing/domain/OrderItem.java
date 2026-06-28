@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+/**
+ * JPA entity mapping the persistence row for a orderitem.
+ */
 @Entity
 @Table(name = "order_items",
         uniqueConstraints = @UniqueConstraint(name = "uk_order_items_seat", columnNames = "event_seat_id"),

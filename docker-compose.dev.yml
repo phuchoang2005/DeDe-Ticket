@@ -47,12 +47,16 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - /app/.next
     ports:
       - "${FRONTEND_PORT_DEV}:5173"
     depends_on:
       - backend
     environment:
-      VITE_API_BASE_URL: http://localhost:${BACKEND_PORT}
+      # Browser calls the backend directly via the host-published port in dev.
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:${BACKEND_PORT}
+      # Next server-side `/v1` rewrite target (compose network service name).
+      BACKEND_URL: http://backend:8080
 
 volumes:
   mysql_data_dev:

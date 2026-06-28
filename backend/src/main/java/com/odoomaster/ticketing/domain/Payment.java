@@ -6,6 +6,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+/**
+ * JPA entity mapping the persistence row for a payment.
+ */
 @Entity
 @Table(name = "payments", indexes = @Index(name = "idx_payments_order", columnList = "order_id"))
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder

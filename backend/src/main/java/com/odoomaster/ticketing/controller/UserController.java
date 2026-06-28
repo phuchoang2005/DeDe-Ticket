@@ -10,6 +10,9 @@ import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for the current user's profile under {@code /v1/users}.
+ */
 @RestController
 @RequestMapping("/v1/users")
 public class UserController {

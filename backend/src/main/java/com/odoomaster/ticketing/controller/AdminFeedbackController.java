@@ -4,6 +4,9 @@ import com.odoomaster.ticketing.dto.FeedbackDtos.*;
 import com.odoomaster.ticketing.service.FeedbackService;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for admin feedback listing, summary, and status updates under {@code /v1/admin/feedback}.
+ */
 @RestController
 @RequestMapping("/v1/admin/feedback")
 public class AdminFeedbackController {

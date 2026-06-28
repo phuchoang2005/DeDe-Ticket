@@ -25,6 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
 
+/**
+ * Admin/organizer service for the event lifecycle: create, edit, status transitions, and
+ * venue section management. Backs the {@code /v1/admin/events/**} endpoints.
+ */
 @Service
 public class AdminEventService {
 

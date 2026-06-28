@@ -3,6 +3,9 @@ package com.odoomaster.ticketing.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * JPA entity mapping the persistence row for a eventcategory.
+ */
 @Entity
 @Table(name = "event_categories",
         uniqueConstraints = @UniqueConstraint(name = "uk_category_name", columnNames = "name"))

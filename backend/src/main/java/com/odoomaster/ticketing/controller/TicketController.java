@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for a user's tickets under {@code /v1/tickets}.
+ */
 @RestController
 @RequestMapping("/v1/tickets")
 public class TicketController {

@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 
+/**
+ * DTO record container grouping the request/response value objects for the related API.
+ */
 public class AuthDtos {
 
     public record RegisterRequest(

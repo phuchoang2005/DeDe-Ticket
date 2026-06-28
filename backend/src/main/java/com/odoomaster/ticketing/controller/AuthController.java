@@ -6,6 +6,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for registration and login under {@code /v1/auth}.
+ */
 @RestController
 @RequestMapping("/v1/auth")
 public class AuthController {

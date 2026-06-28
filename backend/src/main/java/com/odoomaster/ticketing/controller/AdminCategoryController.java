@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for admin event-category management under {@code /v1/admin}.
+ */
 @RestController
 @RequestMapping("/v1/admin/categories")
 public class AdminCategoryController {
