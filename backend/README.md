@@ -2,50 +2,59 @@
 
 ## 📌 Giới thiệu
 
-Đây là backend cho hệ thống **Quản lý sự kiện & bán vé trực tuyến**, được xây dựng bằng:
+Đây là backend cho hệ thống **Quản lý sự kiện & bán vé trực tuyến** (Dề Dê), được xây dựng bằng:
 
-- **Spring Boot**
+- **Spring Boot 3.2** (Java 21)
 - **Maven**
-- **MySQL**
+- **MySQL 8** (Flyway migrations)
+- **Redis 7** (cache / rate-limit / idempotency — chạy ở profile prod)
 - **Docker**
 
 Hệ thống phục vụ các nhu cầu:
 
-- Quản lý sự kiện
-- Bán vé online
-- Tạo & xác thực QR code
-- Báo cáo doanh thu
-- Hỗ trợ scale lên đến **10.000 users đồng thời (mô phỏng)**
+- Quản lý sự kiện, venue, ghế, loại vé
+- Bán vé online + thanh toán (mock gateway có retry)
+- Tạo & xác thực QR code, check-in tại cổng
+- Feedback, thông báo, audit log, báo cáo & analytics
+- Hỗ trợ scale lên đến **10.000 users đồng thời (mô phỏng)** — chống double-booking & trùng QR
 
 ---
 
 ## 🏗️ Kiến trúc hệ thống
 
-Backend được thiết kế theo mô hình **Monolithic (Layered Architecture)**:
+Backend là **monolith phân lớp (Layered Architecture)** dưới package `com.odoomaster.ticketing`:
 
 ```
-controller → service → repository → database
+controller → service → repository (Spring Data JPA) → MySQL
 ```
+
+DTO (`dto/`) đi qua ranh giới controller; entity (`domain/`) không rời khỏi service layer.
 
 ### 📂 Cấu trúc thư mục
 
 ```
 src/
  ├── main/
- │   ├── java/com/dede/ticketing/
- │   │   ├── controller/     # API endpoints (REST)
- │   │   ├── service/        # Business logic
- │   │   ├── repository/     # Data access (JPA)
- │   │   ├── domain/         # Entity (Database models)
- │   │   ├── dto/            # Data Transfer Objects
- │   │   ├── config/         # Configurations (Security, CORS, etc.)
- │   │   ├── security/       # Authentication & Authorization
- │   │   ├── exception/      # Exception handling
- │   │   └── util/           # Utility classes
+ │   ├── java/com/odoomaster/ticketing/
+ │   │   ├── controller/     # REST endpoints (/v1)
+ │   │   ├── service/        # Business logic (OrderService, seat locking, ...)
+ │   │   ├── repository/     # Spring Data JPA
+ │   │   ├── domain/         # Entity (DB models)
+ │   │   ├── dto/            # Data Transfer Objects (records, *Dtos.java)
+ │   │   ├── config/         # Cấu hình (SecurityConfig, CacheConfig, ...)
+ │   │   ├── security/       # JWT filter & service, authorization
+ │   │   ├── exception/      # AppException + domain errors
+ │   │   ├── web/            # ApiErrorEnvelope, GlobalExceptionHandler, TraceIdFilter
+ │   │   ├── audit/          # @Auditable + AuditAspect (AOP audit_logs)
+ │   │   ├── event/          # Domain events
+ │   │   ├── notification/   # Notification dispatch
+ │   │   └── jobs/           # @Scheduled jobs (SeatLockSweeperJob, ...)
  │   │
  │   └── resources/
  │       ├── application.yml
- │       └── ...
+ │       ├── application-dev-example.yml   # copy -> application-dev.yml
+ │       ├── application-prod-example.yml  # copy -> application-prod.yml
+ │       └── db/migration/                 # Flyway: V<yyyyMMdd>_<HHmmss>__desc.sql
  │
  └── test/
 ```
@@ -57,111 +66,104 @@ src/
 - Java 21
 - Maven 3.9+
 - Docker & Docker Compose
-- MySQL 8
+- MySQL 8 (và Redis 7 cho prod)
 
 ---
 
 ## 🚀 Cách chạy dự án
 
----
+> Trước khi chạy local ngoài Docker, tạo file config theo profile:
+>
+> ```bash
+> cp src/main/resources/application-dev-example.yml  src/main/resources/application-dev.yml
+> cp src/main/resources/application-prod-example.yml src/main/resources/application-prod.yml
+> ```
 
-### 🧪 1. Chạy ở chế độ Development (Hot Reload)
-
-```bash
-docker-compose -f docker-compose.dev.yml up
-```
-
-✅ Tính năng:
-
-- Hot reload (tự động reload khi sửa code)
-- Mount source code vào container
-- Không cần build lại image
-
----
-
-### 🚀 2. Chạy ở chế độ Production
-
-#### Build project
+### 🧪 1. Development qua Docker (Hot Reload)
 
 ```bash
-mvn clean package
+# từ repo root
+docker compose -f docker-compose.dev.yml up --build
 ```
 
-#### Run bằng Docker
+✅ MySQL + backend (hot reload). Backend: http://localhost:8080
+
+### 🚀 2. Build & Production
 
 ```bash
-docker-compose up --build
+mvn clean package                       # build fat jar (target/ticketing.jar); chạy test
+
+# từ repo root
+docker compose -f docker-compose.prod.yml up --build   # thêm Redis, profile prod
+```
+
+### 🧪 Testing
+
+```bash
+mvn test                                              # toàn bộ test
+mvn test -Dtest=OrderServiceReliabilityTest           # 1 class
+mvn test -Dtest=ReliabilityMatrixTest#methodName      # 1 method
 ```
 
 ---
 
-## 🌐 API Endpoint
+## 🌐 API
 
-| Method | Endpoint     | Mô tả                 |
+Tất cả route nằm dưới prefix **`/v1`**. Lỗi trả về theo error envelope thống nhất:
+`{ "error": { code, message, details, traceId } }`.
+
+| Nhóm | Ví dụ endpoint | Mô tả |
 | ------ | ------------ | --------------------- |
-| GET    | /api/events  | Lấy danh sách sự kiện |
-| POST   | /api/events  | Tạo sự kiện           |
-| POST   | /api/tickets | Đặt vé                |
-| POST   | /api/payment | Thanh toán            |
-| GET    | /api/reports | Báo cáo               |
+| Auth | `POST /v1/auth/login`, `POST /v1/auth/register` | Đăng nhập / đăng ký (JWT) |
+| Events | `GET /v1/events`, `GET /v1/events/{id}` | Danh sách & chi tiết sự kiện (public) |
+| Orders | `POST /v1/orders` | Đặt vé (giữ ghế, lock 10 phút) |
+| Tickets | `GET /v1/tickets`, check-in | Vé cá nhân, QR, check-in |
+| Feedback | `/v1/feedback` | Feedback sự kiện |
+| Notifications | `/v1/notifications` | Thông báo người dùng |
+| Health | `GET /v1/health` | Health check (public) |
+| Admin | `/v1/admin/**` | Quản trị (yêu cầu role `ADMIN`/`ORGANIZER`): events, venues, categories, ticket-types, feedback, audit, analytics |
 
-_(Sẽ cập nhật thêm trong quá trình phát triển)_
+> Hợp đồng API chi tiết: xem `docs/api/openapi.yaml` và `docs/api/conventions.md`.
+
+### 🔐 Auth & Authorization
+
+- JWT stateless: `JwtAuthenticationFilter` xác thực `Authorization: Bearer`, `JwtService` phát/verify token (secret từ `APP_JWT_SECRET`, ≥32 ký tự).
+- `SecurityConfig`: public `/v1/auth/**`, `/v1/health`, `GET /v1/events/**`; `/v1/admin/**` cần `ADMIN`/`ORGANIZER`; còn lại cần đăng nhập.
+- Role là quan hệ many-to-many (`roles`/`user_roles`), seed thành authority `ROLE_*`. `@PreAuthorize` cũng khả dụng.
+
+---
+
+## 🧩 Cross-cutting concerns
+
+- **Tracing:** `TraceIdFilter` gắn request id (header `X-Request-Id`, MDC `traceId`).
+- **Audit:** `@Auditable(action, entity)` + `AuditAspect` (AOP) ghi `audit_logs`.
+- **Concurrency:** ghế trong `event_seats` (status + `locked_by`/`locked_until`). `OrderService` giữ ghế bằng DB lock 10 phút trong `@Transactional`; `SeatLockSweeperJob` (30s/lần) giải phóng lock hết hạn & evict cache.
+- **Caching (Redis, prod):** `events:list` (30s), `events:detail` (30s), `events:seats` (5s) qua `@Cacheable`/`@CacheEvict`.
+
+---
+
+## 🗄️ Database & Migrations
+
+- **Flyway** sở hữu schema — migration trong `src/main/resources/db/migration/`, đặt tên `V<yyyyMMdd>_<HHmmss>__desc.sql`. Thêm migration mới cho mọi thay đổi schema; **không sửa migration đã apply**.
+- Prod: `ddl-auto: validate`; Dev: `ddl-auto: update`.
+- `DataSeeder` seed sự kiện demo & admin mặc định: `admin@dede.test` / `admin1234`.
 
 ---
 
 ## 🛠️ Công nghệ sử dụng
 
-- Spring Boot (Web, JPA, Security)
-- MySQL
+- Spring Boot (Web, Data JPA, Security, AOP, Cache, Scheduling)
+- MySQL 8 + Flyway
+- Redis 7
+- Maven, Lombok
 - Docker
-- Maven
-- Lombok
-
----
-
-## 🔥 Tính năng chính
-
-- 🎫 Quản lý sự kiện & vé
-- 💳 Thanh toán online (giả lập)
-- 🔐 QR Code chống vé giả
-- 📊 Báo cáo doanh thu
-- ⚡ Tối ưu hiệu năng (hướng tới 10k concurrent users)
-- 🔄 Retry khi thanh toán thất bại
-
----
-
-## ⚠️ Các vấn đề cần xử lý (Important)
-
-- Chống **double booking**
-- Chống **bot mua vé**
-- Đảm bảo **không trùng QR code**
-- Xử lý **quá tải giờ mở bán**
-
----
-
-## 🧠 Hướng phát triển tiếp
-
-- Redis (lock ghế)
-- Queue (Kafka/RabbitMQ)
-- Rate limiting
-- Caching
-- Microservices (future)
-
----
-
-## 👨‍💻 Team & Phát triển
-
-- Phương pháp: **Scrum**
-- Mô hình: **Iterative / Incremental**
-- Timeline: 5 tháng
 
 ---
 
 ## 📌 Ghi chú
 
-- Không commit file `.env` hoặc config chứa mật khẩu thật
-- Sử dụng `application-dev.yml` cho môi trường local
-- Sử dụng `application-prod.yml` cho production
+- Không commit `.env`, `application-dev.yml`, `application-prod.yml` (chứa secret) — chỉ commit các file `*-example`.
+- Mọi thay đổi liên quan ordering / seat status / lock TTL là **concurrency-critical** — giữ nguyên đảm bảo transactional + cache-eviction.
 
 ---
 

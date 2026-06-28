@@ -54,6 +54,23 @@ This project is developed to solve operational challenges for **Dề Dê**—a f
 * Target customers use smartphones with stable internet access (primary).
 * The event venue provides stable internet for real-time synchronization.
 
+## 7. Tech Stack
+* **Backend:** Spring Boot 3.2 (Java 21), Spring Data JPA, Spring Security (JWT), MySQL 8 (Flyway migrations), Redis 7, Maven, Lombok.
+* **Frontend:** Next.js 14 (App Router), React 18, TypeScript, TailwindCSS, Axios.
+* **Infra:** Docker / Docker Compose (dev & prod profiles), nginx (prod load balancing).
+
+## 8. Getting Started
+Copy `.env.example` → `.env` at the repo root first, then run the full stack with Docker:
+
+```bash
+docker compose -f docker-compose.dev.yml  up --build   # mysql + backend (hot reload) + frontend
+docker compose -f docker-compose.prod.yml up --build   # adds Redis; nginx-served frontend; prod profiles
+```
+
+Dev URLs: frontend `http://localhost:5173`, backend `http://localhost:8080`.
+
+See [`backend/README.md`](./backend/README.md) and [`frontend/README.md`](./frontend/README.md) for module-specific setup, and [`docs/README.md`](./docs/README.md) for the full documentation index.
+
 ---
 **Project: Capstone Project 2 - Course Code: ITPJ2602**
 *Thank you for visiting this repository!*
