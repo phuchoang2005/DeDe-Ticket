@@ -3,17 +3,21 @@ import { describe, expect, it, vi } from 'vitest';
 import { availabilityBadge, categoryTheme, formatVND, groupByDay, initials, relativeFromNow } from './format';
 
 describe('frontend reliability matrix', () => {
-  it.each(Array.from({ length: 120 }, (_, i) => {
-    const amount = i * 12500;
-    return [amount, amount === 0 ? 'Miễn phí' : `${new Intl.NumberFormat('vi-VN').format(amount)}đ`];
-  }))('formatVND_matrix_amount_%i', (amount, expected) => {
+  it.each(
+    Array.from({ length: 120 }, (_, i) => {
+      const amount = i * 12500;
+      return [amount, amount === 0 ? 'Miễn phí' : `${new Intl.NumberFormat('vi-VN').format(amount)}đ`];
+    }),
+  )('formatVND_matrix_amount_%i', (amount, expected) => {
     expect(formatVND(amount)).toBe(expected);
   });
 
-  it.each(Array.from({ length: 101 }, (_, available) => {
-    const label = available === 0 ? 'HẾT VÉ' : available < 10 ? 'SẮP HẾT' : 'CÒN VÉ';
-    return [available, 100, label];
-  }))('availabilityBadge_matrix_%i_of_%i', (available, total, label) => {
+  it.each(
+    Array.from({ length: 101 }, (_, available) => {
+      const label = available === 0 ? 'HẾT VÉ' : available < 10 ? 'SẮP HẾT' : 'CÒN VÉ';
+      return [available, 100, label];
+    }),
+  )('availabilityBadge_matrix_%i_of_%i', (available, total, label) => {
     expect(availabilityBadge(available, total)!.label).toBe(label);
   });
 
@@ -42,18 +46,22 @@ describe('frontend reliability matrix', () => {
     expect(categoryTheme(category).tone).toBe(tone);
   });
 
-  it.each(Array.from({ length: 80 }, (_, i) => {
-    const first = `User${i}`;
-    const last = `Seat${79 - i}`;
-    return [`${first} Middle ${last}`, `${first[0]}${last[0]}`.toUpperCase()];
-  }))('initials_matrix_%s', (name, expected) => {
+  it.each(
+    Array.from({ length: 80 }, (_, i) => {
+      const first = `User${i}`;
+      const last = `Seat${79 - i}`;
+      return [`${first} Middle ${last}`, `${first[0]}${last[0]}`.toUpperCase()];
+    }),
+  )('initials_matrix_%s', (name, expected) => {
     expect(initials(name)).toBe(expected);
   });
 
-  it.each(Array.from({ length: 60 }, (_, i) => {
-    const dayOffset = i % 12;
-    return [i, dayOffset];
-  }))('groupByDay_matrix_item_%i_offset_%i', (id, dayOffset) => {
+  it.each(
+    Array.from({ length: 60 }, (_, i) => {
+      const dayOffset = i % 12;
+      return [i, dayOffset];
+    }),
+  )('groupByDay_matrix_item_%i_offset_%i', (id, dayOffset) => {
     vi.setSystemTime(new Date('2026-05-25T12:00:00Z'));
     const date = new Date('2026-05-25T12:00:00Z');
     date.setDate(date.getDate() - dayOffset);
@@ -67,10 +75,12 @@ describe('frontend reliability matrix', () => {
     vi.useRealTimers();
   });
 
-  it.each(Array.from({ length: 45 }, (_, i) => {
-    const secondsAgo = 30 + i * 60;
-    return [secondsAgo];
-  }))('relativeFromNow_matrix_secondsAgo_%i', (secondsAgo) => {
+  it.each(
+    Array.from({ length: 45 }, (_, i) => {
+      const secondsAgo = 30 + i * 60;
+      return [secondsAgo];
+    }),
+  )('relativeFromNow_matrix_secondsAgo_%i', (secondsAgo) => {
     vi.setSystemTime(new Date('2026-05-25T12:00:00Z'));
     const date = new Date(Date.now() - secondsAgo * 1000);
 

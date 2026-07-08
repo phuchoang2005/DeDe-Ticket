@@ -102,10 +102,7 @@ export interface AvailabilityBadge {
   cls: string;
 }
 
-export const availabilityBadge = (
-  available?: number | null,
-  total?: number | null,
-): AvailabilityBadge | null => {
+export const availabilityBadge = (available?: number | null, total?: number | null): AvailabilityBadge | null => {
   if (available == null || total == null) return null;
   if (total === 0) return null;
   if (available === 0) return { label: 'HẾT VÉ', cls: 'bg-danger-50 text-danger-600' };

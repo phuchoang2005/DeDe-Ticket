@@ -14,8 +14,7 @@ interface ErrorEnvelope {
  *   2. `process.env.NEXT_PUBLIC_API_BASE_URL` (build-time)
  *   3. '' (same-origin; relies on the Next `/v1` rewrite to the backend)
  */
-const runtimeBase =
-  (typeof window !== 'undefined' && window.__APP_CONFIG__ && window.__APP_CONFIG__.apiBaseUrl) || '';
+const runtimeBase = (typeof window !== 'undefined' && window.__APP_CONFIG__ && window.__APP_CONFIG__.apiBaseUrl) || '';
 const envBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 const baseURL = runtimeBase || envBase || '';
 
@@ -40,13 +39,7 @@ export class ApiError extends Error {
   traceId?: string;
   status: number;
 
-  constructor({
-    code,
-    message,
-    details,
-    traceId,
-    status,
-  }: ErrorEnvelope & { status: number }) {
+  constructor({ code, message, details, traceId, status }: ErrorEnvelope & { status: number }) {
     super(message);
     this.code = code;
     this.details = details;
@@ -72,8 +65,6 @@ apiClient.interceptors.response.use(
         }),
       );
     }
-    return Promise.reject(
-      new ApiError({ code: 'NETWORK_ERROR', message: err.message || 'Network error', status: 0 }),
-    );
+    return Promise.reject(new ApiError({ code: 'NETWORK_ERROR', message: err.message || 'Network error', status: 0 }));
   },
 );

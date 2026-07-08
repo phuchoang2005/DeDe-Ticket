@@ -36,7 +36,7 @@ function LoginInner() {
     }
   };
 
-  const useAccount = (acc: (typeof DEMO_ACCOUNTS)[number]) => {
+  const fillAccount = (acc: (typeof DEMO_ACCOUNTS)[number]) => {
     setEmail(acc.email);
     setPassword(acc.password);
     setError(null);
@@ -58,15 +58,14 @@ function LoginInner() {
           <button
             key={acc.email}
             type="button"
-            onClick={() => useAccount(acc)}
+            onClick={() => fillAccount(acc)}
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left border transition ${
               email === acc.email
                 ? 'bg-white border-brand-600 ring-1 ring-brand-600/20'
                 : 'bg-white border-line hover:border-brand-200'
-            }`}>
-            <span className={`shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold ${acc.tag}`}>
-              {acc.role}
-            </span>
+            }`}
+          >
+            <span className={`shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold ${acc.tag}`}>{acc.role}</span>
             <span className="flex-1 min-w-0">
               <span className="block text-sm text-ink font-medium truncate">{acc.email}</span>
               <span className="block text-[11px] text-ink-subtle">mật khẩu: {acc.password}</span>
@@ -78,11 +77,23 @@ function LoginInner() {
       <form className="space-y-4" onSubmit={submit}>
         <div>
           <label className="field-label">Email</label>
-          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="field-input" />
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="field-input"
+          />
         </div>
         <div>
           <label className="field-label">Mật khẩu</label>
-          <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="field-input" />
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="field-input"
+          />
         </div>
         {error && <div className="text-danger-600 text-sm">{error}</div>}
         <button type="submit" disabled={busy} className="btn-primary w-full">
@@ -90,7 +101,10 @@ function LoginInner() {
         </button>
       </form>
       <p className="text-center text-sm text-ink-muted mt-6">
-        Chưa có tài khoản? <Link href="/register" className="text-brand-700 font-semibold hover:underline">Tạo tài khoản</Link>
+        Chưa có tài khoản?{' '}
+        <Link href="/register" className="text-brand-700 font-semibold hover:underline">
+          Tạo tài khoản
+        </Link>
       </p>
     </div>
   );

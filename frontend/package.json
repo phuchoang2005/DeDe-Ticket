@@ -6,7 +6,9 @@
     "dev": "next dev -p 5173",
     "build": "next build",
     "start": "next start -p 3000",
-    "lint": "next lint",
+    "lint": "next lint --dir app --dir components --dir hooks --dir services --dir store --dir utils",
+    "format": "prettier --write \"{app,components,hooks,services,store,types,utils}/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"{app,components,hooks,services,store,types,utils}/**/*.{ts,tsx}\"",
     "test": "vitest run",
     "test:watch": "vitest",
     "setup": "cp .env.example .env.local && npm install"
@@ -29,6 +31,7 @@
     "eslint-config-next": "^14.2.35",
     "jsdom": "^24.1.0",
     "postcss": "^8.4.38",
+    "prettier": "^3.9.4",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.5.3",
     "vitest": "^1.6.1"

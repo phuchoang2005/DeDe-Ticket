@@ -18,23 +18,35 @@ export default function Pagination({
     <nav className="pt-2" aria-label="Phân trang">
       {/* Mobile: prev on far-left, next on far-right, page/total in centre */}
       <div className="flex sm:hidden items-center justify-between gap-2">
-        <PageBtn disabled={page <= 1} onClick={() => onChange(page - 1)}>‹ Trước</PageBtn>
+        <PageBtn disabled={page <= 1} onClick={() => onChange(page - 1)}>
+          ‹ Trước
+        </PageBtn>
         <span className="text-sm text-ink-muted font-semibold">
           Trang <span className="text-ink">{page}</span> / {totalPages}
         </span>
-        <PageBtn disabled={page >= totalPages} onClick={() => onChange(page + 1)}>Sau ›</PageBtn>
+        <PageBtn disabled={page >= totalPages} onClick={() => onChange(page + 1)}>
+          Sau ›
+        </PageBtn>
       </div>
       {/* Desktop: full numbered pagination, prev and next stay on the ends */}
       <div className="hidden sm:flex justify-center items-center gap-1.5">
-        <PageBtn disabled={page <= 1} onClick={() => onChange(page - 1)}>‹ Trước</PageBtn>
+        <PageBtn disabled={page <= 1} onClick={() => onChange(page - 1)}>
+          ‹ Trước
+        </PageBtn>
         {numbers.map((n, i) =>
           n === '…' ? (
-            <span key={`g${i}`} className="px-2 text-ink-subtle">…</span>
+            <span key={`g${i}`} className="px-2 text-ink-subtle">
+              …
+            </span>
           ) : (
-            <PageBtn key={n} active={n === page} onClick={() => onChange(n as number)}>{n}</PageBtn>
+            <PageBtn key={n} active={n === page} onClick={() => onChange(n as number)}>
+              {n}
+            </PageBtn>
           ),
         )}
-        <PageBtn disabled={page >= totalPages} onClick={() => onChange(page + 1)}>Sau ›</PageBtn>
+        <PageBtn disabled={page >= totalPages} onClick={() => onChange(page + 1)}>
+          Sau ›
+        </PageBtn>
       </div>
     </nav>
   );
@@ -61,7 +73,8 @@ function PageBtn({
           : disabled
             ? 'bg-white text-ink-faint border-line cursor-not-allowed'
             : 'bg-white text-ink-muted border-line hover:border-brand-600 hover:text-brand-700'
-      }`}>
+      }`}
+    >
       {children}
     </button>
   );

@@ -15,7 +15,10 @@ function TicketDetailInner() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    ticketApi.get(id).then(setTicket).catch((err) => setError(err.message));
+    ticketApi
+      .get(id)
+      .then(setTicket)
+      .catch((err) => setError(err.message));
   }, [id]);
 
   if (error) return <div className="text-danger-600">Lỗi: {error}</div>;
@@ -26,7 +29,9 @@ function TicketDetailInner() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
-      <Link href="/tickets" className="text-sm text-brand-700 hover:underline">← Quay lại Vé của tôi</Link>
+      <Link href="/tickets" className="text-sm text-brand-700 hover:underline">
+        ← Quay lại Vé của tôi
+      </Link>
 
       <div className="card overflow-hidden">
         <div className="p-4 sm:p-6 flex flex-col sm:grid sm:grid-cols-[120px_1fr] gap-4 sm:gap-5 border-b border-line">
@@ -59,7 +64,11 @@ function TicketDetailInner() {
         <div className="p-4 sm:p-6 text-center">
           <div className="text-xs text-ink-subtle mb-3">QR · vui lòng xuất trình tại cổng</div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={qrUrl} alt="QR code" className="mx-auto rounded-lg border border-line shadow-sm max-w-full h-auto" />
+          <img
+            src={qrUrl}
+            alt="QR code"
+            className="mx-auto rounded-lg border border-line shadow-sm max-w-full h-auto"
+          />
           <div className="font-mono text-xs text-ink-muted mt-3 break-all">{ticket.qrCode}</div>
           <div className="text-xs text-ink-subtle mt-1">Phát hành: {formatDateTime(ticket.issuedAt)}</div>
         </div>
