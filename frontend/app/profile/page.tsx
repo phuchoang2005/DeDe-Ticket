@@ -54,11 +54,19 @@ function ProfileInner() {
         <h2 className="font-bold text-ink">Thông tin cá nhân</h2>
         <div>
           <label className="field-label">Họ và tên</label>
-          <input value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className="field-input" />
+          <input
+            value={form.fullName}
+            onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+            className="field-input"
+          />
         </div>
         <div>
           <label className="field-label">Số điện thoại</label>
-          <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="field-input" />
+          <input
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            className="field-input"
+          />
         </div>
         {status.message && (
           <div className={status.kind === 'success' ? 'text-brand-700 text-sm' : 'text-danger-600 text-sm'}>

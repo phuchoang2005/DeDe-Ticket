@@ -123,39 +123,57 @@ com.odoomaster.ticketing
 
 ---
 
-## 3. Frontend (React + Vite)
+## 3. Frontend (Next.js + TypeScript)
+
+The frontend is a Next.js 14 App Router app in TypeScript. A quick reference lives in
+[`frontend/CONVENTIONS.md`](../../frontend/CONVENTIONS.md); the authoritative rules are here.
 
 ### 3.1 Layout
 
 ```
-frontend/src/
-├── pages/        route-level components, one per screen
-├── components/   reusable UI
-├── services/     API clients (one file per backend domain)
-├── hooks/        custom React hooks
-├── store/        global state (Zustand or Redux — TBD)
-├── utils/        pure helpers
-└── styles/       Tailwind config + globals
+frontend/
+├── app/          App Router routes (one folder per URL segment)
+│   ├── <route>/page.tsx      route assembly: data hook + layout only
+│   ├── <route>/_hooks/       page-local hooks (data loading, form state)
+│   └── <route>/_components/  page-local presentational components
+├── components/
+│   ├── ui/       shared cross-page primitives (KpiCard, Badge, Alert, Stepper…)
+│   ├── layout/   app chrome (Header, DesktopNav, MobileDrawer, Footer)
+│   └── icons/    inline SVG icons
+├── hooks/        shared hooks (useAsync, usePolling, usePagination)
+├── services/     apiClient + http + one file per backend domain; api.ts re-exports them
+├── store/        React context (AuthContext)
+├── types/        shared domain types mirroring backend DTOs
+└── utils/        pure helpers (format, chart, chartColors, datetime)
 ```
+
+`_`-prefixed folders are ignored by the App Router, so page-local hooks/components
+colocate next to the `page.tsx` that uses them.
 
 ### 3.2 Style
 
 - Functional components only. No class components.
-- Hooks rules of React (no conditional hooks).
+- Rules of Hooks (no conditional hooks; don't name non-hook helpers `useX`).
+- **Small, single-purpose files.** Aim ~30–60 lines for logic; JSX components may run
+  longer but render one cohesive thing. `max-lines` (ESLint) warns past 120.
+- **Pages assemble, they don't compute.** Push fetch/polling/form state into a `_hooks/`
+  hook (or shared `hooks/`); push repeated markup into a `components/ui` primitive.
 - Tailwind for styling. Avoid arbitrary value classes (`w-[473px]`) — extend the theme.
-- Prefer composition over prop drilling. Use context for cross-cutting state (auth, theme).
-- File naming: `PascalCase.jsx` for components, `camelCase.js` for utils/services.
+- Prefer composition over prop drilling. Use context for cross-cutting state (auth).
+- File naming: `PascalCase.tsx` for components, `camelCase.ts` for hooks/utils/services.
 
 ### 3.3 API calls
 
-- All HTTP through `services/`. Components never call `fetch` directly.
-- Every service module exposes typed (JSDoc) functions returning Promises.
-- Centralized error handling: a base `apiClient` parses the standard error envelope and throws a typed `ApiError(code, message, details, traceId)`.
+- All HTTP through `services/`. Components never call `fetch`/axios directly.
+- Import call functions from `@/services/api` (barrel) or a specific domain module
+  (`@/services/events`). Each domain module wraps the shared `http` helpers.
+- Centralized error handling: `apiClient` parses the standard error envelope and throws
+  a typed `ApiError(code, message, details, traceId)`.
 
 ### 3.4 Forbidden
 
-- Inline API URLs — use `VITE_API_BASE_URL`.
-- `any` / `unknown` types in JSDoc as a shortcut.
+- Inline API URLs — resolve via `apiClient` (`NEXT_PUBLIC_API_BASE_URL` / runtime config).
+- `any` as a shortcut in shared types (`types/`).
 - `dangerouslySetInnerHTML` outside of explicitly sanitized renderers.
 
 ---
@@ -198,8 +216,8 @@ See [`test-strategy.md`](../quality/test-strategy.md). Key style points:
 |---|---|---|
 | Spotless / google-java-format | Java formatting | Maven plugin, `mvn spotless:apply` |
 | Checkstyle | Java style rules beyond formatting | TBD |
-| ESLint | JS lint | `frontend/eslint.config.js` exists; `npm run lint` script to be added |
-| Prettier | JS formatting | TBD |
+| ESLint | JS/TS lint (+ `max-lines` file-size guardrail) | `frontend/.eslintrc.json`; `npm run lint` |
+| Prettier | JS/TS formatting | `frontend/.prettierrc`; `npm run format` / `npm run format:check` |
 | Dependabot | dependency updates | GitHub config |
 | Trivy / OWASP dep-check | CVE scan | CI step |
 

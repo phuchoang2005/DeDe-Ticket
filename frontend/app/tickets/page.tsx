@@ -1,13 +1,10 @@
 'use client';
 
-import { Suspense, useEffect, useState, type ReactNode } from 'react';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { ticketApi } from '@/services/api';
-import { dayCard, formatVND } from '@/utils/format';
+import { Suspense } from 'react';
 import Pagination from '@/components/Pagination';
 import RequireAuth from '@/components/RequireAuth';
-import type { PageMeta, Ticket } from '@/types';
+import { useMyTickets } from './_hooks/useMyTickets';
+import TicketRow from './_components/TicketRow';
 
 const TABS = [
   { key: 'all', label: 'Tất cả' },
@@ -16,63 +13,15 @@ const TABS = [
   { key: 'CANCELLED', label: 'Đã hủy' },
 ];
 
-const PAGE_SIZE = 8;
-
 function MyTicketsInner() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [counts, setCounts] = useState<Record<string, number>>({ all: 0, VALID: 0, USED: 0, CANCELLED: 0 });
-  const [meta, setMeta] = useState<PageMeta>({ page: 1, limit: PAGE_SIZE, total: 0, hasMore: false });
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState('all');
-  const [page, setPage] = useState(1);
-  const searchParams = useSearchParams();
-  const justPaid = searchParams.get('justPaid');
-
-  const reload = () => {
-    setLoading(true);
-    const params: Record<string, unknown> = { page, limit: PAGE_SIZE };
-    if (tab !== 'all') params.status = tab;
-    ticketApi
-      .list(params)
-      .then((r) => {
-        setTickets(r.data || []);
-        if (r.page) setMeta(r.page);
-        if (r.counts) setCounts(r.counts);
-      })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    reload();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, tab]);
-
-  const remove = async (id: number) => {
-    if (!window.confirm('Xoá vé này? Ghế sẽ được trả về kho và đơn vé sẽ chuyển sang trạng thái "Đã huỷ".')) return;
-    try {
-      await ticketApi.delete(id);
-      reload();
-    } catch (err: any) {
-      window.alert('Không thể xoá vé: ' + (err.message || 'lỗi không xác định'));
-    }
-  };
-
-  const setTabAndReset = (t: string) => {
-    setTab(t);
-    setPage(1);
-  };
-
-  const totalPages = Math.max(1, Math.ceil(meta.total / meta.limit));
+  const { tickets, counts, meta, error, loading, tab, justPaid, remove, setTabAndReset, goPage, totalPages } =
+    useMyTickets();
 
   return (
     <div className="space-y-5">
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-ink">Vé của tôi</h1>
-        <p className="text-sm text-ink-subtle mt-1">
-          Tất cả vé đã mua từ tài khoản của bạn · {counts.all || 0} vé
-        </p>
+        <p className="text-sm text-ink-subtle mt-1">Tất cả vé đã mua từ tài khoản của bạn · {counts.all || 0} vé</p>
       </div>
 
       {justPaid && (
@@ -89,7 +38,8 @@ function MyTicketsInner() {
               onClick={() => setTabAndReset(t.key)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap ${
                 tab === t.key ? 'bg-brand-600 text-white' : 'text-ink-muted hover:bg-surface-alt'
-              }`}>
+              }`}
+            >
               {t.label} ({counts[t.key] ?? 0})
             </button>
           ))}
@@ -108,71 +58,9 @@ function MyTicketsInner() {
         ))}
       </div>
 
-      <Pagination
-        page={meta.page}
-        totalPages={totalPages}
-        onChange={(n) => {
-          setPage(n);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-      />
+      <Pagination page={meta.page} totalPages={totalPages} onChange={goPage} />
     </div>
   );
-}
-
-function TicketRow({ ticket, onDelete }: { ticket: Ticket; onDelete: () => void }) {
-  const d = dayCard(ticket.eventStartTime);
-  const isValid = ticket.status === 'VALID';
-  const canDelete = ticket.status !== 'USED' && ticket.status !== 'CANCELLED';
-  const handleDelete = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onDelete?.();
-  };
-  return (
-    <Link href={`/tickets/${ticket.id}`} className="card overflow-hidden flex hover:shadow-pop transition">
-      <div
-        className={`w-20 sm:w-32 shrink-0 p-3 sm:p-4 flex flex-col items-center justify-center text-center ${
-          isValid ? 'bg-brand-100 text-brand-700' : 'bg-surface-panel text-ink-muted'
-        }`}>
-        <div className="text-2xl sm:text-4xl font-bold leading-none">{d.day}</div>
-        <div className="text-[10px] sm:text-[11px] mt-1 font-semibold tracking-wider">{d.monthYear}</div>
-        <div className="text-[11px] sm:text-xs mt-1 text-ink-muted">{d.time}</div>
-        <div className={`mt-2 sm:mt-3 text-[10px] font-bold tracking-wider ${isValid ? 'text-brand-700' : 'text-ink-subtle'}`}>
-          {ticket.status}
-        </div>
-      </div>
-      <div className="flex-1 p-3 sm:p-4 min-w-0">
-        <div className="text-sm sm:text-base font-bold text-ink leading-snug line-clamp-2">{ticket.eventTitle}</div>
-        <div className="text-xs sm:text-sm text-ink-muted mt-0.5 truncate">{ticket.eventLocation}</div>
-        <div className="flex flex-wrap gap-1.5 mt-2 sm:mt-3">
-          <Tag tone="green">{ticket.section} · {ticket.rowLabel}-{ticket.seatNumber}</Tag>
-          <Tag>{formatVND(ticket.price)}</Tag>
-        </div>
-        <div className="mt-2 sm:mt-3 text-[11px] sm:text-xs text-ink-subtle truncate">
-          QR: <code className="font-mono">{ticket.qrCode.slice(0, 16)}…</code>
-        </div>
-      </div>
-      <div className="flex flex-col items-end justify-between p-3 sm:p-4 gap-2">
-        <div className="hidden sm:block text-brand-700 text-sm font-semibold">Xem vé →</div>
-        {canDelete && (
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="text-xs text-danger-600 border border-danger-200 hover:bg-danger-50 px-2 py-1 rounded font-semibold whitespace-nowrap">
-            Xoá vé
-          </button>
-        )}
-      </div>
-    </Link>
-  );
-}
-
-function Tag({ children, tone }: { children: ReactNode; tone?: string }) {
-  const cls = tone === 'green'
-    ? 'bg-brand-100 text-brand-700 font-bold'
-    : 'bg-white border border-line text-ink-muted';
-  return <span className={`text-xs px-2 py-1 rounded ${cls}`}>{children}</span>;
 }
 
 export default function MyTicketsPage() {

@@ -68,7 +68,10 @@ export default function RegisterPage() {
         </button>
       </form>
       <p className="text-center text-sm text-ink-muted mt-6">
-        Đã có tài khoản? <Link href="/login" className="text-brand-700 font-semibold hover:underline">Đăng nhập</Link>
+        Đã có tài khoản?{' '}
+        <Link href="/login" className="text-brand-700 font-semibold hover:underline">
+          Đăng nhập
+        </Link>
       </p>
     </div>
   );
