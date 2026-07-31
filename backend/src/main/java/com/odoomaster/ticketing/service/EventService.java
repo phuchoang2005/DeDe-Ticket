@@ -5,7 +5,7 @@ import com.odoomaster.ticketing.domain.EventCategory;
 import com.odoomaster.ticketing.domain.EventSeat;
 import com.odoomaster.ticketing.dto.EventDtos.*;
 import com.odoomaster.ticketing.config.CacheConfig;
-import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.shared.exception.AppException;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
 import org.springframework.cache.annotation.Cacheable;

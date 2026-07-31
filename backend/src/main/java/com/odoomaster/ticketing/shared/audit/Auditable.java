@@ -1,4 +1,4 @@
-package com.odoomaster.ticketing.audit;
+package com.odoomaster.ticketing.shared.audit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Marks a service method whose successful execution should write an {@code audit_logs} row.
  *
- * <p>Processed by {@link AuditAspect} (AOP), which records the acting user, the returned entity's
+ * <p>Processed by the audit aspect (AOP), which records the acting user, the returned entity's
  * id, and the request trace id — keeping auditing out of the business logic.
  */
 @Retention(RetentionPolicy.RUNTIME)

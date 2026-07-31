@@ -2,9 +2,9 @@ package com.odoomaster.ticketing.controller;
 
 import com.odoomaster.ticketing.domain.User;
 import com.odoomaster.ticketing.dto.AuthDtos.UserResponse;
-import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.shared.exception.AppException;
 import com.odoomaster.ticketing.repository.UserRepository;
-import com.odoomaster.ticketing.security.CurrentUser;
+import com.odoomaster.ticketing.shared.security.CurrentUser;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;

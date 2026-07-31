@@ -1,4 +1,4 @@
-package com.odoomaster.ticketing.web;
+package com.odoomaster.ticketing.shared.web;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

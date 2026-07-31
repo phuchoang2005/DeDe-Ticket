@@ -6,7 +6,7 @@ import com.odoomaster.ticketing.domain.Ticket;
 import com.odoomaster.ticketing.dto.TicketDtos.TicketPage;
 import com.odoomaster.ticketing.dto.TicketDtos.TicketPageMeta;
 import com.odoomaster.ticketing.dto.TicketDtos.TicketView;
-import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.shared.exception.AppException;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
 import com.odoomaster.ticketing.repository.TicketRepository;

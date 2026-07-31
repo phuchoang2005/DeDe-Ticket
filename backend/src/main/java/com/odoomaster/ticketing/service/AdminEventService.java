@@ -5,7 +5,7 @@ import com.odoomaster.ticketing.domain.Event;
 import com.odoomaster.ticketing.domain.EventCategory;
 import com.odoomaster.ticketing.domain.EventSeat;
 import com.odoomaster.ticketing.dto.AdminDtos.*;
-import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.shared.exception.AppException;
 import com.odoomaster.ticketing.repository.EventCategoryRepository;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.EventSeatRepository;
