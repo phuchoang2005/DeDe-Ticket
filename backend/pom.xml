@@ -16,6 +16,8 @@
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.boot.version>3.2.5</spring.boot.version>
+        <!-- Spring Modulith 1.1.x is the line aligned with Spring Boot 3.2. -->
+        <spring.modulith.version>1.1.12</spring.modulith.version>
         <jjwt.version>0.12.5</jjwt.version>
         <!-- 1.18.34+ required for JDK 21 + maven-compiler-plugin 3.13/3.15 (fixes javac TypeTag UNKNOWN). -->
         <lombok.version>1.18.38</lombok.version>
@@ -27,6 +29,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.modulith</groupId>
+                <artifactId>spring-modulith-bom</artifactId>
+                <version>${spring.modulith.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -85,6 +94,23 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <!-- Spring Modulith: module model at runtime (core), plus verification and
+             documentation tooling scoped to tests. Versions managed by spring-modulith-bom. -->
+        <dependency>
+            <groupId>org.springframework.modulith</groupId>
+            <artifactId>spring-modulith-starter-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.modulith</groupId>
+            <artifactId>spring-modulith-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.modulith</groupId>
+            <artifactId>spring-modulith-docs</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
