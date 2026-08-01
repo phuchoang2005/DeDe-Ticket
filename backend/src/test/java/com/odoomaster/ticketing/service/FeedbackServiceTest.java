@@ -1,12 +1,13 @@
 package com.odoomaster.ticketing.service;
+import com.odoomaster.ticketing.feedback.FeedbackService;
 
-import com.odoomaster.ticketing.domain.Feedback;
-import com.odoomaster.ticketing.domain.User;
-import com.odoomaster.ticketing.dto.FeedbackDtos.*;
+import com.odoomaster.ticketing.feedback.Feedback;
+import com.odoomaster.ticketing.iam.User;
+import com.odoomaster.ticketing.feedback.FeedbackDtos.*;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.repository.EventRepository;
-import com.odoomaster.ticketing.repository.FeedbackRepository;
-import com.odoomaster.ticketing.repository.UserRepository;
+import com.odoomaster.ticketing.catalog.EventRepository;
+import com.odoomaster.ticketing.feedback.FeedbackRepository;
+import com.odoomaster.ticketing.iam.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

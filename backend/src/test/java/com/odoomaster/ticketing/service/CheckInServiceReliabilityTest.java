@@ -1,14 +1,15 @@
 package com.odoomaster.ticketing.service;
+import com.odoomaster.ticketing.ticketing.CheckInService;
 
-import com.odoomaster.ticketing.domain.Event;
-import com.odoomaster.ticketing.domain.EventSeat;
-import com.odoomaster.ticketing.domain.Ticket;
-import com.odoomaster.ticketing.dto.TicketDtos.ScanRequest;
+import com.odoomaster.ticketing.catalog.Event;
+import com.odoomaster.ticketing.catalog.EventSeat;
+import com.odoomaster.ticketing.ticketing.Ticket;
+import com.odoomaster.ticketing.ticketing.TicketDtos.ScanRequest;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.repository.CheckInRepository;
-import com.odoomaster.ticketing.repository.EventRepository;
-import com.odoomaster.ticketing.repository.EventSeatRepository;
-import com.odoomaster.ticketing.repository.TicketRepository;
+import com.odoomaster.ticketing.ticketing.CheckInRepository;
+import com.odoomaster.ticketing.catalog.EventRepository;
+import com.odoomaster.ticketing.catalog.EventSeatRepository;
+import com.odoomaster.ticketing.ticketing.TicketRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

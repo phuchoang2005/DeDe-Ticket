@@ -1,8 +1,8 @@
 package com.odoomaster.ticketing.service;
 
-import com.odoomaster.ticketing.domain.EventSeat;
-import com.odoomaster.ticketing.domain.Ticket;
-import com.odoomaster.ticketing.dto.TicketDtos.ScanRequest;
+import com.odoomaster.ticketing.catalog.EventSeat;
+import com.odoomaster.ticketing.ticketing.Ticket;
+import com.odoomaster.ticketing.ticketing.TicketDtos.ScanRequest;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 

@@ -1,0 +1,22 @@
+package com.odoomaster.ticketing.notification;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * DTO record container grouping the request/response value objects for the related API.
+ */
+public class NotificationDtos {
+
+    public record NotificationView(
+            Long id, String type, String title, String content, String channel,
+            String status, String linkUrl, Instant sentAt, Instant readAt, Instant createdAt) {}
+
+    public record InboxResponse(
+            List<NotificationView> items,
+            long unreadCount,
+            Map<String, Long> countsByType) {}
+
+    public record UnreadCountResponse(long unreadCount) {}
+}
