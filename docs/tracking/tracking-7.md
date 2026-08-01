@@ -96,6 +96,58 @@ still compile — so this is a pure structural move plus import fixes.
 - Commits: `refactor(backend): carve capability modules (Sprint 1)`;
   `refactor(backend): split DataSeeder into per-module seeders (Sprint 1)`.
 
-## Sprint 2 — Publish module APIs & decouple the ordering hot path — _pending_
+## Sprint 2 — Publish module APIs & decouple the ordering hot path ✅
+
+> Date: 2026-08-01
+
+Goal (highest-risk sprint): publish the three cross-module APIs the sale spans
+and refactor the concurrency-critical `OrderService` off other modules'
+entities/repositories onto them, moving the seat state machine, lock TTL, and
+event-cache eviction into catalog — all while preserving the single-transaction
+seat-lock/sell/issue behaviour exactly.
+
+| # | Change | Status |
+|---|---|---|
+| 1 | Publish `catalog/EventCatalog` (+ `catalog/internal/EventCatalogImpl`): `requireOnSale(eventId)` (not-found / not-published guards) and `find(eventId)`, returning the `EventSummary` projection instead of the `Event` entity | ✅ |
+| 2 | Publish `catalog/SeatInventory` (+ `catalog/internal/SeatInventoryImpl`): `lockSeats` / `markSold` / `releaseLocks` / `findSeats`. The `AVAILABLE → LOCKED → SOLD` state machine, the 10-minute `LOCK_TTL_MINUTES`, and the event-cache eviction **moved here** from `OrderService`; returns the `SeatDetail` projection | ✅ |
+| 3 | Publish `ticketing/TicketIssuance` (+ new `ticketing/internal/TicketIssuanceImpl`): `issueForOrder(TicketOrder)` builds/persists one `VALID` QR ticket per line and returns the count | ✅ |
+| 4 | Refactor `OrderService`: drop `EventRepository`/`EventSeatRepository`/`TicketRepository` and the `Event`/`EventSeat`/`Ticket` imports; orchestrate via `EventCatalog` + `SeatInventory` + `TicketIssuance`; keep the sole `@Transactional` (inner APIs join it). Remove its `@Caching`/`@CacheEvict` — eviction now lives with the seat mutations in `SeatInventory` | ✅ |
+| 5 | Rewrite `OrderServiceReliabilityTest` to mock the three APIs and assert orchestration (delegation args, ordering, idempotency, error propagation) | ✅ |
+| 6 | New `SeatInventoryReliabilityTest` carrying the guarantees that moved out of `OrderService` — contention/double-booking rejection, cross-event guard, expired-lock re-lock, sell/release transitions, per-event cache eviction; new `TicketIssuanceReliabilityTest` (QR shape + unique QR under concurrent issuance, moved from the old order test); new `EventCatalogReliabilityTest` (on-sale guards + projection) | ✅ |
+
+### Impact
+- **Boundaries.** `sales` no longer imports any `catalog`/`ticketing` entity or
+  repository — it depends only on the three published APIs. New `ticketing/internal`
+  package created for the issuance impl.
+- **Concurrency crux relocated.** The seat state machine + lock TTL + cache eviction
+  now live in catalog's `SeatInventoryImpl`; `OrderService` is pure orchestration.
+  The whole sale is still one Spring transaction, so ACID/locking is unchanged.
+- **Eviction refinement (behaviour-preserving).** Eviction is now colocated with the
+  seat mutation and keyed per-event for `events:seats`/`events:detail` (clearing
+  `events:list`). The old idempotent-PAID `pay` and already-CANCELLED `cancel`
+  early-returns no longer evict — correct, since no seat changes on those paths.
+- **Tests.** Suite grew 691 → 706 (`OrderServiceReliabilityTest` 27 → 17 as the
+  seat/QR cases moved out; +15 `SeatInventory`, +3 `TicketIssuance`, +7 `EventCatalog`).
+
+### Verification
+| Check | Result |
+|---|---|
+| `cd backend && mvn test` (JDK 21) | ✅ BUILD SUCCESS — 706 tests, 0 failures, 0 errors |
+| Runtime hot-path smoke — local dev boot (Docker MySQL + local Redis), `demo@dede.test` | ✅ browse events → `POST /v1/orders` (seat `AVAILABLE→LOCKED`, order `PENDING`, `eventTitle` via `EventCatalog`) → `POST /v1/orders/{id}/pay` (seat `SOLD`, `VALID` 32-char QR ticket issued, `TICKETS_ISSUED` notification with event title, order `PAID`) → `DELETE /v1/orders/{id}` on a second order (seat `LOCKED→AVAILABLE` via `releaseLocks`) |
+| Real Redis eviction inside the pay/cancel transaction | ✅ no failure; caches evicted on commit |
+| Behaviour / API / schema | unchanged |
+
+### Notes
+- Redis is exercised for the first time end-to-end here (the pay path evicts caches);
+  the dev compose omits Redis, so the smoke ran the backend locally against a
+  throwaway `redis:7-alpine` container. Under `show-sql`, the catalog seeder takes
+  ~4.5 min to insert the 60 events / 3.6k seats — data appears only after it finishes.
+- **Deferred to Sprint 3:** the notification seeder still resolves the demo user via a
+  direct `UserRepository` call; it is repointed at `iam`'s `UserDirectory` alongside the
+  other cross-module consumers (Feedback/Analytics/CheckIn/Ticket) in Sprint 3.
+- Commits: `feat(backend): publish EventCatalog, SeatInventory, TicketIssuance APIs`;
+  `refactor(sales): decouple OrderService onto catalog/ticketing APIs`;
+  `test(backend): cover new SeatInventory/TicketIssuance/EventCatalog APIs`.
+
 ## Sprint 3 — Decouple remaining consumers & cascade — _pending_
 ## Sprint 4 — Enforce boundaries & documentation — _pending_

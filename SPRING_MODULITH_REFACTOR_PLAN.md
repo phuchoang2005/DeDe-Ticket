@@ -81,7 +81,7 @@ Each sprint ends in a **green, shippable state** (`cd backend && mvn test` compi
 - Cross-module foreign-repo calls still compile (needed repos briefly package-visible).
 **DoD:** compiles; all existing tests pass with updated packages/imports.
 
-### Sprint 2 — Publish module APIs & decouple the ordering hot path *(highest risk)*
+### Sprint 2 — Publish module APIs & decouple the ordering hot path *(highest risk)* ✅ _done 2026-08-01_
 **Goal:** the concurrency-critical decoupling.
 - Add `catalog/EventCatalog`, `catalog/SeatInventory` (seat `AVAILABLE→LOCKED→SOLD` machine, lock TTL and event-cache eviction moved in), `ticketing/TicketIssuance` (+impls in `…/internal`).
 - Refactor `OrderService` off `Event`/`EventSeat`/`Ticket` repos → these APIs; remove its `@CacheEvict` (eviction now lives with the seat mutations).
