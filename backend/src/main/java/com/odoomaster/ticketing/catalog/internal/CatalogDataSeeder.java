@@ -1,24 +1,19 @@
-package com.odoomaster.ticketing.config;
+package com.odoomaster.ticketing.catalog.internal;
 
 import com.odoomaster.ticketing.catalog.Event;
 import com.odoomaster.ticketing.catalog.EventCategory;
-import com.odoomaster.ticketing.catalog.EventSeat;
-import com.odoomaster.ticketing.iam.Role;
-import com.odoomaster.ticketing.iam.User;
 import com.odoomaster.ticketing.catalog.EventCategoryRepository;
 import com.odoomaster.ticketing.catalog.EventRepository;
+import com.odoomaster.ticketing.catalog.EventSeat;
 import com.odoomaster.ticketing.catalog.EventSeatRepository;
-import com.odoomaster.ticketing.iam.RoleRepository;
-import com.odoomaster.ticketing.catalog.TicketTypeRepository;
-import com.odoomaster.ticketing.iam.UserRepository;
-import com.odoomaster.ticketing.catalog.TicketType;
-import com.odoomaster.ticketing.notification.NotificationService;
 import com.odoomaster.ticketing.catalog.SeatCatalogService;
+import com.odoomaster.ticketing.catalog.TicketType;
+import com.odoomaster.ticketing.catalog.TicketTypeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -30,54 +25,35 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Configuration
-public class DataSeeder implements CommandLineRunner {
+/**
+ * Seeds demo events, categories, ticket types and seats for the {@code catalog} module. Runs after
+ * {@code iam} seeding; only populates when no events exist yet.
+ */
+@Component
+@Order(2)
+public class CatalogDataSeeder implements CommandLineRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(DataSeeder.class);
+    private static final Logger log = LoggerFactory.getLogger(CatalogDataSeeder.class);
 
     private final EventRepository events;
     private final EventCategoryRepository eventCategories;
     private final EventSeatRepository seats;
-    private final UserRepository users;
-    private final RoleRepository roles;
     private final TicketTypeRepository ticketTypes;
-    private final PasswordEncoder encoder;
-    private final NotificationService notifications;
     private final SeatCatalogService catalog;
 
-    public DataSeeder(EventRepository events, EventCategoryRepository eventCategories,
-                      EventSeatRepository seats, UserRepository users,
-                      RoleRepository roles, TicketTypeRepository ticketTypes,
-                      PasswordEncoder encoder, NotificationService notifications,
-                      SeatCatalogService catalog) {
+    public CatalogDataSeeder(EventRepository events, EventCategoryRepository eventCategories,
+                             EventSeatRepository seats, TicketTypeRepository ticketTypes,
+                             SeatCatalogService catalog) {
         this.events = events;
         this.eventCategories = eventCategories;
         this.seats = seats;
-        this.users = users;
-        this.roles = roles;
         this.ticketTypes = ticketTypes;
-        this.encoder = encoder;
-        this.notifications = notifications;
         this.catalog = catalog;
     }
 
     @Override
     @Transactional
     public void run(String... args) {
-        User demo = ensureUser("demo@dede.test", "demo1234", "Người Dùng", "0900000000", "USER");
-        ensureUser("admin@dede.test", "admin1234", "Quản Trị Viên", "0900000001", "ADMIN");
-        ensureUser("organizer@dede.test", "org12345", "Ban Tổ Chức", "0900000002", "ORGANIZER");
-
-        if (demo != null && notifications.unreadCount(demo.getId()).unreadCount() == 0) {
-            notifications.create(demo.getId(), "WELCOME",
-                    "Chào mừng đến với Dề Dê!",
-                    "Khám phá các sự kiện đang mở bán và đặt vé chỉ trong vài bước. Bạn sẽ nhận thông báo khi vé được phát hành.",
-                    "IN_APP", "/events");
-            notifications.create(demo.getId(), "EVENT_REMINDER",
-                    "Sự kiện được đề xuất cho bạn",
-                    "Workshop Spring Boot for Production sắp diễn ra. Còn ít chỗ — đặt vé sớm để giữ chỗ.",
-                    "EMAIL", "/events");
-        }
         if (events.count() == 0) {
             seedEvent("Đại nhạc hội Mùa Hè 2026", "🎵 Concert", "DV Entertainment",
                     "Đại tiệc âm nhạc hoành tráng với dàn line-up trong nước và quốc tế. Sân khấu LED 360° và pháo hoa cuối show.",
@@ -402,22 +378,4 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private record SectionSpec(String name, int rows, int seatsPerRow, BigDecimal price) {}
-
-    private User ensureUser(String email, String password, String fullName, String phone, String role) {
-        return users.findByEmail(email).orElseGet(() -> {
-            Role r = roles.findByName(role).orElseGet(() -> roles.save(Role.builder().name(role).build()));
-            Set<Role> roleSet = new HashSet<>();
-            roleSet.add(r);
-            User u = users.save(User.builder()
-                    .email(email)
-                    .passwordHash(encoder.encode(password))
-                    .fullName(fullName)
-                    .phone(phone)
-                    .roles(roleSet)
-                    .status("ACTIVE")
-                    .build());
-            log.info("Seeded {} user {} / {}", role, email, password);
-            return u;
-        });
-    }
 }
