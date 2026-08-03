@@ -12,4 +12,5 @@ public interface CheckInRepository extends JpaRepository<CheckIn, Long> {
     Optional<CheckIn> findByTicketId(Long ticketId);
     boolean existsByTicketId(Long ticketId);
     long countByTicketIdIn(java.util.List<Long> ticketIds);
+    void deleteByTicketIdIn(java.util.List<Long> ticketIds);
 }

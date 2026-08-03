@@ -9,15 +9,12 @@ import com.odoomaster.ticketing.shared.exception.AppException;
 import com.odoomaster.ticketing.catalog.EventCategoryRepository;
 import com.odoomaster.ticketing.catalog.EventRepository;
 import com.odoomaster.ticketing.catalog.EventSeatRepository;
-import com.odoomaster.ticketing.sales.OrderItemRepository;
-import com.odoomaster.ticketing.sales.OrderRepository;
-import com.odoomaster.ticketing.sales.PaymentRepository;
-import com.odoomaster.ticketing.ticketing.TicketRepository;
 import com.odoomaster.ticketing.catalog.TicketTypeRepository;
 import com.odoomaster.ticketing.catalog.TicketType;
-import com.odoomaster.ticketing.sales.Order;
+import com.odoomaster.ticketing.shared.event.EventDeletedEvent;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,28 +34,21 @@ public class AdminEventService {
     private final EventRepository events;
     private final EventCategoryRepository categories;
     private final EventSeatRepository seats;
-    private final OrderRepository orders;
-    private final OrderItemRepository orderItems;
-    private final PaymentRepository payments;
-    private final TicketRepository tickets;
     private final TicketTypeRepository ticketTypes;
     private final SeatCatalogService catalog;
+    private final ApplicationEventPublisher eventPublisher;
 
     public AdminEventService(EventRepository events, EventCategoryRepository categories,
                              EventSeatRepository seats,
-                             OrderRepository orders, OrderItemRepository orderItems,
-                             PaymentRepository payments, TicketRepository tickets,
                              TicketTypeRepository ticketTypes,
-                             SeatCatalogService catalog) {
+                             SeatCatalogService catalog,
+                             ApplicationEventPublisher eventPublisher) {
         this.events = events;
         this.categories = categories;
         this.seats = seats;
-        this.orders = orders;
-        this.orderItems = orderItems;
-        this.payments = payments;
-        this.tickets = tickets;
         this.ticketTypes = ticketTypes;
         this.catalog = catalog;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +61,7 @@ public class AdminEventService {
         Event e = events.findById(id)
                 .orElseThrow(() -> new AppException("EVENT_NOT_FOUND", "Event not found.", HttpStatus.NOT_FOUND));
         List<EventSeat> all = seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(id);
-        BigDecimal revenue = orders.sumPaidRevenueForEvent(id);
+        BigDecimal revenue = seats.sumSoldPriceForEvent(id);
         int total = all.size();
         int sold = (int) all.stream().filter(s -> "SOLD".equals(s.getStatus())).count();
         int avail = (int) all.stream().filter(s -> "AVAILABLE".equals(s.getStatus())).count();
@@ -174,7 +164,7 @@ public class AdminEventService {
             throw new AppException("EVENT_HAS_NO_SEATS",
                     "Cannot publish an event with no seats.", HttpStatus.CONFLICT);
         }
-        if ("DRAFT".equals(status) && tickets.countByEventId(id) > 0) {
+        if ("DRAFT".equals(status) && seats.existsByEventIdAndStatus(id, "SOLD")) {
             throw new AppException("EVENT_HAS_TICKETS",
                     "Cannot revert to DRAFT: event already has issued tickets.", HttpStatus.CONFLICT);
         }
@@ -274,18 +264,13 @@ public class AdminEventService {
                     "Cannot delete a PUBLISHED event. Cancel or complete it first.",
                     HttpStatus.CONFLICT);
         }
-        cascadeDeleteEvent(id);
+        // Cascade via a published contract: downstream modules purge their own dependent rows
+        // (ticketing: check-ins + tickets; sales: order items, payments, orders) synchronously in this
+        // transaction, then catalog removes its own seats and the event. Keeps the cascade atomic
+        // without catalog reaching into sales/ticketing repositories.
+        eventPublisher.publishEvent(new EventDeletedEvent(id));
+        seats.deleteAll(seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(id));
         events.delete(e);
-    }
-
-    private void cascadeDeleteEvent(Long eventId) {
-        tickets.deleteAll(tickets.findByEventId(eventId));
-        for (Order o : orders.findByEventId(eventId)) {
-            orderItems.deleteAll(orderItems.findByOrderId(o.getId()));
-            payments.deleteAll(payments.findByOrderId(o.getId()));
-            orders.delete(o);
-        }
-        seats.deleteAll(seats.findByEventIdOrderByRowLabelAscSeatNumberAsc(eventId));
     }
 
     @Transactional
@@ -333,7 +318,7 @@ public class AdminEventService {
         int total = all.size();
         int sold = (int) all.stream().filter(s -> "SOLD".equals(s.getStatus())).count();
         int avail = (int) all.stream().filter(s -> "AVAILABLE".equals(s.getStatus())).count();
-        BigDecimal revenue = orders.sumPaidRevenueForEvent(e.getId());
+        BigDecimal revenue = seats.sumSoldPriceForEvent(e.getId());
         return new AdminEventRow(
                 e.getId(), e.getTitle(), e.getLocation(), EventService.categoryRefs(e), e.getOrganizer(),
                 e.getStatus(), e.getStartTime(), e.getEndTime(), e.getCreatedAt(),

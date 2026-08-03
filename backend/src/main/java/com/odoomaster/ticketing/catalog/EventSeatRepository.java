@@ -17,6 +17,10 @@ public interface EventSeatRepository extends JpaRepository<EventSeat, Long> {
     List<EventSeat> findByEventIdAndSection(Long eventId, String section);
     long countByEventId(Long eventId);
     long countByEventIdAndStatus(Long eventId, String status);
+    boolean existsByEventIdAndStatus(Long eventId, String status);
+
+    @Query("SELECT COALESCE(SUM(s.price), 0) FROM EventSeat s WHERE s.eventId = :eventId AND s.status = 'SOLD'")
+    java.math.BigDecimal sumSoldPriceForEvent(@Param("eventId") Long eventId);
 
     @Query("SELECT COUNT(s) FROM EventSeat s WHERE s.status = 'SOLD'")
     long countAllSold();
