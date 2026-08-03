@@ -1,13 +1,13 @@
 package com.odoomaster.ticketing.service;
 import com.odoomaster.ticketing.feedback.FeedbackService;
 
+import com.odoomaster.ticketing.catalog.EventCatalog;
 import com.odoomaster.ticketing.feedback.Feedback;
-import com.odoomaster.ticketing.iam.User;
 import com.odoomaster.ticketing.feedback.FeedbackDtos.*;
+import com.odoomaster.ticketing.iam.UserDirectory;
+import com.odoomaster.ticketing.iam.UserDirectory.UserRef;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.catalog.EventRepository;
 import com.odoomaster.ticketing.feedback.FeedbackRepository;
-import com.odoomaster.ticketing.iam.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -30,8 +30,8 @@ import static org.mockito.Mockito.*;
 class FeedbackServiceTest {
 
     @Mock FeedbackRepository feedbackRepo;
-    @Mock UserRepository userRepo;
-    @Mock EventRepository eventRepo;
+    @Mock UserDirectory userDirectory;
+    @Mock EventCatalog eventCatalog;
 
     @InjectMocks FeedbackService service;
 
@@ -40,8 +40,7 @@ class FeedbackServiceTest {
     @Test
     void submit_happyPath_savesFeedbackWithDefaults() {
         var req = new SubmitFeedbackRequest(null, "GENERAL", "Great app", "I love it", 5);
-        User user = stubUser(1L, "user@test.com");
-        when(userRepo.findById(1L)).thenReturn(Optional.of(user));
+        when(userDirectory.find(1L)).thenReturn(Optional.of(new UserRef(1L, "user@test.com")));
         when(feedbackRepo.save(any())).thenAnswer(inv -> {
             Feedback f = inv.getArgument(0);
             f.setId(42L);
@@ -101,7 +100,7 @@ class FeedbackServiceTest {
     @Test
     void submit_nullCategory_defaultsToGeneral() {
         var req = new SubmitFeedbackRequest(null, null, "subject", "body", null);
-        when(userRepo.findById(anyLong())).thenReturn(Optional.empty());
+        when(userDirectory.find(anyLong())).thenReturn(Optional.empty());
         when(feedbackRepo.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         service.submit(1L, req);
@@ -141,7 +140,7 @@ class FeedbackServiceTest {
         Feedback fb = stubFeedback(7L, "NEW");
         when(feedbackRepo.findById(7L)).thenReturn(Optional.of(fb));
         when(feedbackRepo.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(userRepo.findById(anyLong())).thenReturn(Optional.empty());
+        when(userDirectory.find(anyLong())).thenReturn(Optional.empty());
 
         service.updateStatus(7L, new UpdateStatusRequest("RESOLVED", "handled"));
 
@@ -155,7 +154,7 @@ class FeedbackServiceTest {
         Feedback fb = stubFeedback(8L, "NEW");
         when(feedbackRepo.findById(8L)).thenReturn(Optional.of(fb));
         when(feedbackRepo.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(userRepo.findById(anyLong())).thenReturn(Optional.empty());
+        when(userDirectory.find(anyLong())).thenReturn(Optional.empty());
 
         service.updateStatus(8L, new UpdateStatusRequest("READ", null));
 
@@ -215,14 +214,6 @@ class FeedbackServiceTest {
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────
-
-    private static User stubUser(Long id, String email) {
-        User u = new User();
-        u.setId(id);
-        u.setEmail(email);
-        u.setStatus("ACTIVE");
-        return u;
-    }
 
     private static Feedback stubFeedback(Long id, String status) {
         Feedback f = new Feedback();

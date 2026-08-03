@@ -1,39 +1,40 @@
 package com.odoomaster.ticketing.ticketing;
 
-import com.odoomaster.ticketing.ticketing.CheckIn;
-import com.odoomaster.ticketing.catalog.Event;
-import com.odoomaster.ticketing.catalog.EventSeat;
-import com.odoomaster.ticketing.ticketing.Ticket;
+import com.odoomaster.ticketing.catalog.EventCatalog;
+import com.odoomaster.ticketing.catalog.EventCatalog.EventSummary;
+import com.odoomaster.ticketing.catalog.SeatInventory;
+import com.odoomaster.ticketing.catalog.SeatInventory.SeatDetail;
 import com.odoomaster.ticketing.ticketing.TicketDtos.ScanRequest;
 import com.odoomaster.ticketing.ticketing.TicketDtos.ScanResult;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.ticketing.CheckInRepository;
-import com.odoomaster.ticketing.catalog.EventRepository;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
-import com.odoomaster.ticketing.ticketing.TicketRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Gate check-in service: validates a ticket's QR code and records a single, idempotent
  * check-in, transitioning the ticket to {@code USED}.
+ *
+ * <p>Event/seat context for the scan result is read through catalog's {@link EventCatalog} and
+ * {@link SeatInventory}, so this module no longer touches the {@code Event}/{@code EventSeat} entities.
  */
 @Service
 public class CheckInService {
 
     private final TicketRepository tickets;
     private final CheckInRepository checkIns;
-    private final EventRepository events;
-    private final EventSeatRepository seats;
+    private final EventCatalog eventCatalog;
+    private final SeatInventory seatInventory;
 
     public CheckInService(TicketRepository tickets, CheckInRepository checkIns,
-                          EventRepository events, EventSeatRepository seats) {
+                          EventCatalog eventCatalog, SeatInventory seatInventory) {
         this.tickets = tickets;
         this.checkIns = checkIns;
-        this.events = events;
-        this.seats = seats;
+        this.eventCatalog = eventCatalog;
+        this.seatInventory = seatInventory;
     }
 
     @Transactional
@@ -66,16 +67,16 @@ public class CheckInService {
         t.setStatus("USED");
         tickets.save(t);
 
-        Event ev = events.findById(t.getEventId()).orElse(null);
-        EventSeat s = seats.findById(t.getEventSeatId()).orElse(null);
+        EventSummary ev = eventCatalog.find(t.getEventId()).orElse(null);
+        SeatDetail s = seatInventory.findSeats(List.of(t.getEventSeatId())).stream().findFirst().orElse(null);
         return new ScanResult(
                 "OK",
                 t.getId(),
                 t.getEventId(),
-                ev != null ? ev.getTitle() : null,
-                s != null ? s.getRowLabel() : null,
-                s != null ? s.getSeatNumber() : null,
-                s != null ? s.getSection() : null,
+                ev != null ? ev.title() : null,
+                s != null ? s.rowLabel() : null,
+                s != null ? s.seatNumber() : null,
+                s != null ? s.section() : null,
                 ci.getCheckedInAt());
     }
 }
