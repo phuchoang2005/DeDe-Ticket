@@ -87,7 +87,7 @@ Each sprint ends in a **green, shippable state** (`cd backend && mvn test` compi
 - Refactor `OrderService` off `Event`/`EventSeat`/`Ticket` repos → these APIs; remove its `@CacheEvict` (eviction now lives with the seat mutations).
 **DoD:** order→pay→issue→notification flow works end-to-end; `OrderServiceReliabilityTest` **rewritten** to mock the new APIs; **new `SeatInventory` concurrency/double-booking tests** carry the guarantees that moved out of `OrderService`; `mvn test` green.
 
-### Sprint 3 — Decouple remaining consumers & cascade
+### Sprint 3 — Decouple remaining consumers & cascade ✅ _done 2026-08-03_
 **Goal:** remove all other cross-module repo access and lock in the DAG.
 - `AdminEventService`: catalog-local revenue + DRAFT guard; `delete()` publishes `EventDeletedEvent`; add `sales` + `ticketing` listeners that purge their rows.
 - `AnalyticsService` → `SalesReporting`/`TicketingReporting`/`EventCatalog` (add the aggregate methods those APIs need).
