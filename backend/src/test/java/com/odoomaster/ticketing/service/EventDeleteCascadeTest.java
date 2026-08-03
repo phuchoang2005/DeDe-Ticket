@@ -7,7 +7,7 @@ import com.odoomaster.ticketing.sales.internal.OrderRepository;
 import com.odoomaster.ticketing.sales.internal.Payment;
 import com.odoomaster.ticketing.sales.internal.PaymentRepository;
 import com.odoomaster.ticketing.sales.internal.SalesEventCleanupListener;
-import com.odoomaster.ticketing.shared.event.EventDeletedEvent;
+import com.odoomaster.ticketing.shared.EventDeletedEvent;
 import com.odoomaster.ticketing.ticketing.internal.CheckInRepository;
 import com.odoomaster.ticketing.ticketing.internal.Ticket;
 import com.odoomaster.ticketing.ticketing.internal.TicketRepository;

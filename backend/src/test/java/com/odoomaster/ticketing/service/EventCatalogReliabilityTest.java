@@ -6,7 +6,7 @@ import com.odoomaster.ticketing.catalog.EventCatalog.EventSummary;
 import com.odoomaster.ticketing.catalog.internal.EventRepository;
 import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
 import com.odoomaster.ticketing.catalog.internal.EventCatalogImpl;
-import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.AppException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

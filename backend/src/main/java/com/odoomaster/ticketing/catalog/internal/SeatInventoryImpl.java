@@ -3,7 +3,7 @@ package com.odoomaster.ticketing.catalog.internal;
 import com.odoomaster.ticketing.catalog.internal.EventSeat;
 import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
 import com.odoomaster.ticketing.catalog.SeatInventory;
-import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.AppException;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;

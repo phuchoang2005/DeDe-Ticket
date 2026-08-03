@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.iam.internal;
 
 import com.odoomaster.ticketing.iam.internal.JwtAuthenticationFilter;
-import com.odoomaster.ticketing.shared.web.ApiErrorEnvelope;
+import com.odoomaster.ticketing.shared.ApiErrorEnvelope;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

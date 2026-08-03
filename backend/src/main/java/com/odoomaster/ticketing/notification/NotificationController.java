@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.notification;
 
 import com.odoomaster.ticketing.notification.NotificationDtos.*;
-import com.odoomaster.ticketing.shared.security.CurrentUser;
+import com.odoomaster.ticketing.shared.CurrentUser;
 import com.odoomaster.ticketing.notification.NotificationService;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,6 +1,6 @@
 package com.odoomaster.ticketing.iam.internal;
 
-import com.odoomaster.ticketing.shared.security.AuthPrincipal;
+import com.odoomaster.ticketing.shared.AuthPrincipal;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -6,7 +6,7 @@ import com.odoomaster.ticketing.catalog.SeatInventory;
 import com.odoomaster.ticketing.catalog.SeatInventory.SeatDetail;
 import com.odoomaster.ticketing.catalog.internal.CacheConfig;
 import com.odoomaster.ticketing.catalog.internal.SeatInventoryImpl;
-import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.AppException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

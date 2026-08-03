@@ -4,7 +4,7 @@ import com.odoomaster.ticketing.catalog.internal.Event;
 import com.odoomaster.ticketing.catalog.EventCatalog;
 import com.odoomaster.ticketing.catalog.internal.EventRepository;
 import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
-import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.AppException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

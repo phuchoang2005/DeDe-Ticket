@@ -1,4 +1,4 @@
-package com.odoomaster.ticketing.shared.web;
+package com.odoomaster.ticketing.shared;
 
 import java.util.List;
 

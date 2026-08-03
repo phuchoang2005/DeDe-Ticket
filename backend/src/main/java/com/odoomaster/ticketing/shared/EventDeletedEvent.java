@@ -1,4 +1,4 @@
-package com.odoomaster.ticketing.shared.event;
+package com.odoomaster.ticketing.shared;
 
 /**
  * Domain event published by the catalog when an event is deleted.
