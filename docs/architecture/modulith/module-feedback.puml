@@ -1,0 +1,24 @@
+@startuml
+title Feedback
+
+top to bottom direction
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary("Application.Application_boundary", "Application", $tags="") {
+  Component(Application.Application.Feedback, "Feedback", "Module", "", $tags="")
+  Component(Application.Application.SharedKernel, "Shared Kernel", "Module", "", $tags="")
+  Component(Application.Application.IAM, "IAM", "Module", "", $tags="")
+  Component(Application.Application.Catalog, "Catalog", "Module", "", $tags="")
+}
+
+Rel_D(Application.Application.Feedback, Application.Application.SharedKernel, "uses", $tags="")
+Rel_D(Application.Application.Feedback, Application.Application.IAM, "uses", $tags="")
+Rel_D(Application.Application.Feedback, Application.Application.Catalog, "uses", $tags="")
+Rel_D(Application.Application.Catalog, Application.Application.SharedKernel, "depends on", $tags="")
+Rel_D(Application.Application.IAM, Application.Application.SharedKernel, "uses", $tags="")
+
+SHOW_LEGEND(true)
+@enduml

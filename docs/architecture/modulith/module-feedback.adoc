@@ -1,0 +1,18 @@
+[%autowidth.stretch, cols="h,a"]
+|===
+|Base package
+|`com.odoomaster.ticketing.feedback`
+|Spring components
+|_Controllers_
+
+* `c.o.t.f.AdminFeedbackController`
+* `c.o.t.f.FeedbackController`
+
+_Services_
+
+* `c.o.t.f.FeedbackService`
+|Bean references
+|* `c.o.t.s.CurrentUser` (in Shared Kernel)
+* `c.o.t.i.UserDirectory` (in IAM)
+* `c.o.t.c.EventCatalog` (in Catalog)
+|===

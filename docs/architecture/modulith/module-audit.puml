@@ -1,0 +1,18 @@
+@startuml
+title Audit
+
+top to bottom direction
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary("Application.Application_boundary", "Application", $tags="") {
+  Component(Application.Application.Audit, "Audit", "Module", "", $tags="")
+  Component(Application.Application.SharedKernel, "Shared Kernel", "Module", "", $tags="")
+}
+
+Rel_D(Application.Application.Audit, Application.Application.SharedKernel, "depends on", $tags="")
+
+SHOW_LEGEND(true)
+@enduml

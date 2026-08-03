@@ -1,0 +1,22 @@
+[%autowidth.stretch, cols="h,a"]
+|===
+|Base package
+|`com.odoomaster.ticketing.notification`
+|Spring components
+|_Controllers_
+
+* `c.o.t.n.NotificationController`
+
+_Services_
+
+* `c.o.t.n.NotificationService`
+
+_Event listeners_
+
+* `c.o.t.n.NotificationEventListener` listening to `c.o.t.s.TicketsIssuedEvent`
+|Bean references
+|* `c.o.t.s.CurrentUser` (in Shared Kernel)
+* `c.o.t.i.UserDirectory` (in IAM)
+|Events listened to
+|* `c.o.t.s.TicketsIssuedEvent`
+|===

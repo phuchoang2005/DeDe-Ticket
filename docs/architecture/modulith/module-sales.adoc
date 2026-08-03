@@ -1,0 +1,22 @@
+[%autowidth.stretch, cols="h,a"]
+|===
+|Base package
+|`com.odoomaster.ticketing.sales`
+|Spring components
+|_Controllers_
+
+* `c.o.t.s.OrderController`
+
+_Services_
+
+* `c.o.t.s.OrderService`
+* `c.o.t.s.PaymentRetryService`
+* `c.o.t.s.SalesReporting` (via `c.o.t.s.internal.SalesReportingImpl`)
+|Bean references
+|* `c.o.t.s.CurrentUser` (in Shared Kernel)
+* `c.o.t.c.EventCatalog` (in Catalog)
+* `c.o.t.c.SeatInventory` (in Catalog)
+* `c.o.t.t.TicketIssuance` (in Ticketing)
+|Events listened to
+|* `c.o.t.s.EventDeletedEvent`
+|===

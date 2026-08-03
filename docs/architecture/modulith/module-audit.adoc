@@ -1,0 +1,13 @@
+[%autowidth.stretch, cols="h,a"]
+|===
+|Base package
+|`com.odoomaster.ticketing.audit`
+|Spring components
+|_Controllers_
+
+* `c.o.t.a.AdminAuditController`
+
+_Others_
+
+* `c.o.t.a.AuditAspect`
+|===

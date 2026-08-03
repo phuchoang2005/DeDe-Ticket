@@ -1,0 +1,25 @@
+@startuml
+title Analytics
+
+top to bottom direction
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary("Application.Application_boundary", "Application", $tags="") {
+  Component(Application.Application.Sales, "Sales", "Module", "", $tags="")
+  Component(Application.Application.Analytics, "Analytics", "Module", "", $tags="")
+  Component(Application.Application.Ticketing, "Ticketing", "Module", "", $tags="")
+  Component(Application.Application.Catalog, "Catalog", "Module", "", $tags="")
+}
+
+Rel_D(Application.Application.Analytics, Application.Application.Catalog, "uses", $tags="")
+Rel_D(Application.Application.Analytics, Application.Application.Sales, "uses", $tags="")
+Rel_D(Application.Application.Analytics, Application.Application.Ticketing, "uses", $tags="")
+Rel_D(Application.Application.Ticketing, Application.Application.Catalog, "uses", $tags="")
+Rel_D(Application.Application.Sales, Application.Application.Catalog, "uses", $tags="")
+Rel_D(Application.Application.Sales, Application.Application.Ticketing, "uses", $tags="")
+
+SHOW_LEGEND(true)
+@enduml
