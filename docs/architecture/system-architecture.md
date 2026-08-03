@@ -57,7 +57,7 @@ flowchart TB
     end
 
     subgraph Application
-        API[Backend API<br/>Spring Boot 3.2 / Java 21<br/>Monolith, layered]
+        API[Backend API<br/>Spring Boot 3.2 / Java 21<br/>Modular monolith · Spring Modulith]
         Sweep[Seat-Lock Sweeper<br/>scheduled in API JVMs]
         Notif[Notification Dispatcher<br/>planned worker pool]
         Refund[Refund Queue Worker<br/>planned compensation handler]
@@ -109,38 +109,79 @@ ADR-0001 captures the reasoning. Short version: a single Spring Boot deployable 
 
 ## 3. C4 — Level 3: Components inside the backend
 
-Layering inside `com.odoomaster.ticketing` (matches the package layout in CLAUDE.md):
+The backend is a **Spring Modulith** application: one deployable, sliced by **business
+capability** into 9 modules + a shared kernel (direct sub-packages of
+`com.odoomaster.ticketing`), with boundaries **enforced at build time**. See
+[ADR-0011](../adr/0011-spring-modulith.md) and the generated
+[module docs](modulith/) (C4 diagrams + per-module canvas).
+
+Each module exposes only the **API types in its base package**; entities, repositories
+and impls are hidden in a **`…​.internal`** sub-package. Cross-module calls go through
+published APIs (`EventCatalog`, `SeatInventory`, `TicketIssuance`, `SalesReporting`,
+`TicketingReporting`, `UserDirectory`) or `shared` events — never a foreign repository.
 
 ```mermaid
-flowchart LR
-    HTTP[HTTP request] --> Filter[Filters<br/>JWT, rate-limit, idempotency, traceId]
-    Filter --> Ctrl[controller/<br/>thin, maps DTO ↔ domain]
-    Ctrl --> Svc[service/<br/>business logic, transactions]
-    Svc --> Repo[repository/<br/>Spring Data JPA]
-    Repo --> Dom[domain/<br/>JPA entities]
-    Svc --> Ext[integration/<br/>payment, email, sms clients]
-    Dom --> DB[(MySQL)]
-    Ext --> Gateways[External providers]
+flowchart TD
+    shared["shared (kernel)<br/>errors, tracing, auth types,<br/>@Auditable, event contracts"]
+    iam --> shared
+    catalog --> shared
+    ticketing --> catalog
+    ticketing --> shared
+    sales --> catalog
+    sales --> ticketing
+    sales --> shared
+    feedback --> catalog
+    feedback --> iam
+    feedback --> shared
+    analytics --> catalog
+    analytics --> sales
+    analytics --> ticketing
+    notification --> iam
+    notification --> shared
+    audit --> shared
+    notification -. "listens: TicketsIssuedEvent" .-> shared
+    ticketing -. "listens: EventDeletedEvent" .-> shared
+    sales -. "listens: EventDeletedEvent" .-> shared
 ```
 
-**Layer rules**
+| Module | Owns | Publishes |
+|---|---|---|
+| `shared` | error envelope, `TraceIdFilter`, `AuthPrincipal`/`@CurrentUser`, `@Auditable`, event contracts | all types (flat kernel) |
+| `iam` | users, roles, JWT auth, `SecurityConfig` | `UserDirectory` |
+| `catalog` | events, categories, ticket types, seats/venues, seat-lock sweeper, caches | `EventCatalog`, `SeatInventory` |
+| `ticketing` | tickets, gate check-in | `TicketIssuance`, `TicketingReporting` |
+| `sales` | orders, payments, retry loop | `SalesReporting` |
+| `notification` | in-app notifications | — |
+| `feedback` | ratings/reviews | — |
+| `analytics` | admin dashboards (composes reporting APIs) | — |
+| `audit` | `@Auditable` audit trail (AOP) | — |
 
-- `controller` never touches `repository` directly. Controllers handle HTTP concerns only.
-- `service` owns transactions (`@Transactional`). One service method = one logical unit of work.
-- `domain` is the JPA entity layer (not `entity/`, not `model/`).
-- `integration` wraps external clients so test doubles plug in cleanly.
+`catalog` never depends on `sales`/`ticketing`; three **cycle-breakers** keep it clean —
+catalog-local revenue (`Σ SOLD seat price`), a catalog-local DRAFT-revert guard, and a
+delete cascade via `shared:EventDeletedEvent` that `sales`/`ticketing` listen for.
+
+**Within a module** the classic lifecycle still holds: filters → controller (thin,
+DTO ↔ domain) → service (`@Transactional`, one logical unit of work) →
+`internal` repository (Spring Data JPA) → `internal` entity → MySQL. Controllers never
+touch repositories directly; the ordering hot path spans `sales → catalog → ticketing`
+inside **one** transaction, so ACID and seat-lock semantics are unchanged.
+
+**Boundaries are a test:** `ModularityTests` runs `ApplicationModules.verify()` (static
+analysis, no context/DB) and fails the build on any cycle or undeclared cross-module
+dependency.
 
 **Cross-cutting concerns**
 
 | Concern | Where it lives |
 |---|---|
-| AuthN (JWT validation) | `security/JwtAuthenticationFilter` |
-| AuthZ (RBAC) | Spring Security request matchers and selected `@PreAuthorize` annotations; resource-level organizer ownership checks are partial |
+| AuthN (JWT validation) | `iam/internal/JwtAuthenticationFilter` |
+| AuthZ (RBAC) | `iam/internal/SecurityConfig` request matchers + selected `@PreAuthorize`; resource-level organizer ownership checks are partial |
 | Rate limiting | Planned Redis token bucket; not implemented |
 | Idempotency | ADR exists, but no Idempotency-Key filter/table is implemented yet |
-| Tracing | MDC `traceId` per request, propagated to logs |
+| Tracing | `shared/TraceIdFilter` → MDC `traceId` per request, propagated to logs |
 | Validation | Jakarta Bean Validation on DTOs |
-| Error mapping | `web/GlobalExceptionHandler` → standard error envelope (see `api/conventions.md`) |
+| Error mapping | `shared/GlobalExceptionHandler` → standard error envelope (see `api/conventions.md`) |
+| Audit | `audit/AuditAspect` matches `shared/@Auditable` via AOP |
 
 ---
 

@@ -52,23 +52,26 @@ npm run build        # production build
 
 ## Architecture
 
-### Backend layering
+### Backend module structure (Spring Modulith)
 
-Classic Spring layered monolith under `com.odoomaster.ticketing` (note: package is `odoomaster`, not `dede`/`ticketing` despite some README text):
-`controller → service → repository (Spring Data JPA) → MySQL`. DTOs (`dto/`, grouped as `*Dtos.java` record containers) cross the controller boundary; domain entities (`domain/`) never leave the service layer.
+The backend under `com.odoomaster.ticketing` (note: package is `odoomaster`, not `dede`/`ticketing` despite some README text) is a **Spring Modulith modular monolith** — one deployable, sliced by business capability into 9 modules + a shared kernel, direct sub-packages of the base package: `shared`, `iam`, `catalog`, `ticketing`, `sales`, `notification`, `feedback`, `analytics`, `audit`. Each module **exposes only the API types in its base package**; entities, repositories and impls are hidden in a `…/internal` sub-package. Cross-module calls go through published APIs (`EventCatalog`, `SeatInventory`, `TicketIssuance`, `SalesReporting`, `TicketingReporting`, `UserDirectory`) or `shared` events — **never a foreign repository or `…/internal` type**.
+
+The `shared` kernel is **flat** — all cross-cutting types live directly in the `shared` base package (Modulith 1.1 has no open modules), so any module depends on it as a plain `"shared"`.
+
+Boundaries are declared in each module's `package-info.java` via `@ApplicationModule(allowedDependencies = …)` and **enforced at build time** by `ModularityTests` (`ApplicationModules.of(Application.class).verify()` — static analysis, no Spring context/DB, runs in plain `mvn test`). A boundary violation or dependency cycle fails the build. Within a module the classic lifecycle still holds: `controller → service (@Transactional) → …/internal repository (Spring Data JPA) → …/internal entity → MySQL`; DTOs (`*Dtos.java` record containers) cross the controller boundary, entities never leave the service layer. See `docs/adr/0011-spring-modulith.md`, `docs/architecture/modulith/` (generated C4 diagrams + canvas), and `SPRING_MODULITH_REFACTOR_PLAN.md`. **Any change that adds a cross-module reference must keep `verify()` green and, if boundaries change, update the module's `allowedDependencies` and regenerate the docs (`mvn test -Dtest=DocumentationTests`).**
 
 ### Request lifecycle & cross-cutting concerns
 
-- **Auth**: stateless JWT. `JwtAuthenticationFilter` (in `security/`) validates the `Authorization: Bearer` token and populates the security context; `JwtService` issues/verifies tokens (HS, secret from `APP_JWT_SECRET`, ≥32 chars). Controllers read the caller via `@CurrentUser AuthPrincipal`.
-- **Authorization**: `SecurityConfig` defines route rules. Public: `/v1/auth/**`, `/v1/health`, `GET /v1/events/**`. `/v1/admin/**` requires role `ADMIN` or `ORGANIZER`. Everything else requires authentication. Roles are a many-to-many join (`roles`/`user_roles`), seeded as Spring authorities `ROLE_*`. `@EnableMethodSecurity` is on, so `@PreAuthorize` is also available.
+- **Auth**: stateless JWT. `JwtAuthenticationFilter` (in `iam/internal`) validates the `Authorization: Bearer` token and populates the security context; `JwtService` issues/verifies tokens (HS, secret from `APP_JWT_SECRET`, ≥32 chars). Controllers read the caller via `@CurrentUser AuthPrincipal` (both in `shared`).
+- **Authorization**: `SecurityConfig` (in `iam/internal`) defines route rules. Public: `/v1/auth/**`, `/v1/health`, `GET /v1/events/**`. `/v1/admin/**` requires role `ADMIN` or `ORGANIZER`. Everything else requires authentication. Roles are a many-to-many join (`roles`/`user_roles`), seeded as Spring authorities `ROLE_*`. `@EnableMethodSecurity` is on, so `@PreAuthorize` is also available.
 - **All API routes are under `/v1`** (no `/api` prefix despite older README tables).
-- **Error handling**: `GlobalExceptionHandler` + `ApiErrorEnvelope` produce a uniform JSON shape `{ "error": { code, message, details, traceId } }`. Throw `AppException` (in `exception/`) for domain errors. The frontend `apiClient.js` parses this envelope into an `ApiError`.
-- **Tracing**: `TraceIdFilter` assigns a request id (exposed as `X-Request-Id`, logged via MDC `traceId`).
-- **Audit**: `@Auditable(action, entity)` on a service method + `AuditAspect` (AOP) writes an `audit_logs` row.
+- **Error handling**: `GlobalExceptionHandler` + `ApiErrorEnvelope` (both in `shared`) produce a uniform JSON shape `{ "error": { code, message, details, traceId } }`. Throw `AppException` (in `shared`) for domain errors. The frontend `apiClient.js` parses this envelope into an `ApiError`.
+- **Tracing**: `TraceIdFilter` (in `shared`) assigns a request id (exposed as `X-Request-Id`, logged via MDC `traceId`).
+- **Audit**: `@Auditable(action, entity)` (in `shared`) on a service method + `AuditAspect` (in `audit`, AOP) writes an `audit_logs` row.
 
 ### Concurrency model (the crux of the system)
 
-Seat inventory lives in `event_seats` with a status + lock fields (`locked_by`, `locked_until`). `OrderService` holds seats with a **10-minute DB-level lock** (`LOCK_TTL_MINUTES`) when an order is created, inside a `@Transactional` boundary. `SeatLockSweeperJob` runs every 30s (`@Scheduled`) to release expired locks and evict the affected events from the seat cache. Treat any change to ordering, seat status transitions, or lock TTLs as concurrency-critical — preserve the transactional + cache-eviction guarantees.
+Seat inventory lives in `event_seats` with a status + lock fields (`locked_by`, `locked_until`). The seat `AVAILABLE→LOCKED→SOLD` state machine, the lock TTL and the seat-cache eviction now live in **`catalog`'s `SeatInventory`** API (impl + `SeatLockSweeperJob` in `catalog/internal`). `OrderService` (in `sales`) orchestrates order→pay→issue by calling `SeatInventory` (hold seats with a **10-minute DB-level lock**, `LOCK_TTL_MINUTES`) and `TicketIssuance` inside **one** `@Transactional` boundary, so ACID/locking is unchanged despite the module split. `SeatLockSweeperJob` runs every 30s (`@Scheduled`) to release expired locks and evict the affected events from the seat cache. Treat any change to ordering, seat status transitions, or lock TTLs as concurrency-critical — preserve the transactional + cache-eviction guarantees, and the `sales → catalog/ticketing` single-transaction boundary.
 
 ### Caching (Redis)
 
