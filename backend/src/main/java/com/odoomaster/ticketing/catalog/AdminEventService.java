@@ -1,16 +1,16 @@
 package com.odoomaster.ticketing.catalog;
 
 import com.odoomaster.ticketing.catalog.internal.CacheConfig;
-import com.odoomaster.ticketing.catalog.Event;
-import com.odoomaster.ticketing.catalog.EventCategory;
-import com.odoomaster.ticketing.catalog.EventSeat;
+import com.odoomaster.ticketing.catalog.internal.Event;
+import com.odoomaster.ticketing.catalog.internal.EventCategory;
+import com.odoomaster.ticketing.catalog.internal.EventSeat;
 import com.odoomaster.ticketing.catalog.AdminDtos.*;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.catalog.EventCategoryRepository;
-import com.odoomaster.ticketing.catalog.EventRepository;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
-import com.odoomaster.ticketing.catalog.TicketTypeRepository;
-import com.odoomaster.ticketing.catalog.TicketType;
+import com.odoomaster.ticketing.catalog.internal.EventCategoryRepository;
+import com.odoomaster.ticketing.catalog.internal.EventRepository;
+import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
+import com.odoomaster.ticketing.catalog.internal.TicketTypeRepository;
+import com.odoomaster.ticketing.catalog.internal.TicketType;
 import com.odoomaster.ticketing.shared.event.EventDeletedEvent;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;

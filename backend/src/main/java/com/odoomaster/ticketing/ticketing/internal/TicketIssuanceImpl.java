@@ -1,8 +1,8 @@
 package com.odoomaster.ticketing.ticketing.internal;
 
-import com.odoomaster.ticketing.ticketing.Ticket;
+import com.odoomaster.ticketing.ticketing.internal.Ticket;
 import com.odoomaster.ticketing.ticketing.TicketIssuance;
-import com.odoomaster.ticketing.ticketing.TicketRepository;
+import com.odoomaster.ticketing.ticketing.internal.TicketRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

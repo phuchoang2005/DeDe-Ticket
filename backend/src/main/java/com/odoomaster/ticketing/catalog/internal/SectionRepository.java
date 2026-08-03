@@ -1,0 +1,15 @@
+package com.odoomaster.ticketing.catalog.internal;
+
+import com.odoomaster.ticketing.catalog.internal.Section;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Spring Data JPA repository for the Section aggregate.
+ */
+public interface SectionRepository extends JpaRepository<Section, Long> {
+    List<Section> findByVenueIdOrderByNameAsc(Long venueId);
+    Optional<Section> findByVenueIdAndName(Long venueId, String name);
+}

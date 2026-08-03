@@ -1,9 +1,9 @@
 package com.odoomaster.ticketing.notification;
 
-import com.odoomaster.ticketing.notification.Notification;
+import com.odoomaster.ticketing.notification.internal.Notification;
 import com.odoomaster.ticketing.notification.NotificationDtos.*;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.notification.NotificationRepository;
+import com.odoomaster.ticketing.notification.internal.NotificationRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

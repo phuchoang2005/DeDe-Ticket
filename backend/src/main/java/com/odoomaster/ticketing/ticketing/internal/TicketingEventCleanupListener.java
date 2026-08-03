@@ -1,9 +1,9 @@
 package com.odoomaster.ticketing.ticketing.internal;
 
 import com.odoomaster.ticketing.shared.event.EventDeletedEvent;
-import com.odoomaster.ticketing.ticketing.CheckInRepository;
-import com.odoomaster.ticketing.ticketing.Ticket;
-import com.odoomaster.ticketing.ticketing.TicketRepository;
+import com.odoomaster.ticketing.ticketing.internal.CheckInRepository;
+import com.odoomaster.ticketing.ticketing.internal.Ticket;
+import com.odoomaster.ticketing.ticketing.internal.TicketRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;

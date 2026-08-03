@@ -1,11 +1,11 @@
 package com.odoomaster.ticketing.catalog;
 
-import com.odoomaster.ticketing.catalog.Seat;
-import com.odoomaster.ticketing.catalog.Section;
-import com.odoomaster.ticketing.catalog.Venue;
-import com.odoomaster.ticketing.catalog.SeatRepository;
-import com.odoomaster.ticketing.catalog.SectionRepository;
-import com.odoomaster.ticketing.catalog.VenueRepository;
+import com.odoomaster.ticketing.catalog.internal.Seat;
+import com.odoomaster.ticketing.catalog.internal.Section;
+import com.odoomaster.ticketing.catalog.internal.Venue;
+import com.odoomaster.ticketing.catalog.internal.SeatRepository;
+import com.odoomaster.ticketing.catalog.internal.SectionRepository;
+import com.odoomaster.ticketing.catalog.internal.VenueRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

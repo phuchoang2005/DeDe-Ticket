@@ -1,0 +1,33 @@
+package com.odoomaster.ticketing.catalog.internal;
+
+import com.odoomaster.ticketing.catalog.internal.EventSeat;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.Instant;
+import java.util.List;
+
+/**
+ * Spring Data JPA repository for the EventSeat aggregate.
+ */
+public interface EventSeatRepository extends JpaRepository<EventSeat, Long> {
+    List<EventSeat> findByEventIdOrderByRowLabelAscSeatNumberAsc(Long eventId);
+    List<EventSeat> findByIdIn(List<Long> ids);
+    List<EventSeat> findByEventIdAndSection(Long eventId, String section);
+    long countByEventId(Long eventId);
+    long countByEventIdAndStatus(Long eventId, String status);
+    boolean existsByEventIdAndStatus(Long eventId, String status);
+
+    @Query("SELECT COALESCE(SUM(s.price), 0) FROM EventSeat s WHERE s.eventId = :eventId AND s.status = 'SOLD'")
+    java.math.BigDecimal sumSoldPriceForEvent(@Param("eventId") Long eventId);
+
+    @Query("SELECT COUNT(s) FROM EventSeat s WHERE s.status = 'SOLD'")
+    long countAllSold();
+
+    @Query("SELECT COUNT(s) FROM EventSeat s")
+    long countAll();
+
+    @Query("SELECT s FROM EventSeat s WHERE s.status = 'LOCKED' AND s.lockedUntil < :now")
+    List<EventSeat> findExpiredLocks(@Param("now") Instant now);
+}

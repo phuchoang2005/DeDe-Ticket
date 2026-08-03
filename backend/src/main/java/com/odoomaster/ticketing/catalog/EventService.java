@@ -1,13 +1,13 @@
 package com.odoomaster.ticketing.catalog;
 
-import com.odoomaster.ticketing.catalog.Event;
-import com.odoomaster.ticketing.catalog.EventCategory;
-import com.odoomaster.ticketing.catalog.EventSeat;
+import com.odoomaster.ticketing.catalog.internal.Event;
+import com.odoomaster.ticketing.catalog.internal.EventCategory;
+import com.odoomaster.ticketing.catalog.internal.EventSeat;
 import com.odoomaster.ticketing.catalog.EventDtos.*;
 import com.odoomaster.ticketing.catalog.internal.CacheConfig;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.catalog.EventRepository;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
+import com.odoomaster.ticketing.catalog.internal.EventRepository;
+import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

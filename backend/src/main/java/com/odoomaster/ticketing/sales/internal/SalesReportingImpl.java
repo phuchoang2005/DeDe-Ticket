@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.sales.internal;
 
-import com.odoomaster.ticketing.sales.OrderRepository;
-import com.odoomaster.ticketing.sales.PaymentRepository;
+import com.odoomaster.ticketing.sales.internal.OrderRepository;
+import com.odoomaster.ticketing.sales.internal.PaymentRepository;
 import com.odoomaster.ticketing.sales.SalesReporting;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

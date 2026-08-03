@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.sales;
 
-import com.odoomaster.ticketing.sales.PaymentRetry;
-import com.odoomaster.ticketing.sales.PaymentRetryRepository;
+import com.odoomaster.ticketing.sales.internal.PaymentRetry;
+import com.odoomaster.ticketing.sales.internal.PaymentRetryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

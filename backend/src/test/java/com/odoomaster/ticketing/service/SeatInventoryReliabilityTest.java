@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.service;
 
-import com.odoomaster.ticketing.catalog.EventSeat;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
+import com.odoomaster.ticketing.catalog.internal.EventSeat;
+import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
 import com.odoomaster.ticketing.catalog.SeatInventory;
 import com.odoomaster.ticketing.catalog.SeatInventory.SeatDetail;
 import com.odoomaster.ticketing.catalog.internal.CacheConfig;

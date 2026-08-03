@@ -1,8 +1,8 @@
 package com.odoomaster.ticketing.iam.internal;
 
-import com.odoomaster.ticketing.iam.User;
+import com.odoomaster.ticketing.iam.internal.User;
 import com.odoomaster.ticketing.iam.UserDirectory;
-import com.odoomaster.ticketing.iam.UserRepository;
+import com.odoomaster.ticketing.iam.internal.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

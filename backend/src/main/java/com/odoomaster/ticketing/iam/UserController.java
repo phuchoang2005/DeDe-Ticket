@@ -1,9 +1,9 @@
 package com.odoomaster.ticketing.iam;
 
-import com.odoomaster.ticketing.iam.User;
+import com.odoomaster.ticketing.iam.internal.User;
 import com.odoomaster.ticketing.iam.AuthDtos.UserResponse;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.iam.UserRepository;
+import com.odoomaster.ticketing.iam.internal.UserRepository;
 import com.odoomaster.ticketing.shared.security.CurrentUser;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;

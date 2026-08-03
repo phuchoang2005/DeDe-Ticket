@@ -1,11 +1,11 @@
 package com.odoomaster.ticketing.iam;
 
-import com.odoomaster.ticketing.iam.Role;
-import com.odoomaster.ticketing.iam.User;
+import com.odoomaster.ticketing.iam.internal.Role;
+import com.odoomaster.ticketing.iam.internal.User;
 import com.odoomaster.ticketing.iam.AuthDtos.*;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.iam.RoleRepository;
-import com.odoomaster.ticketing.iam.UserRepository;
+import com.odoomaster.ticketing.iam.internal.RoleRepository;
+import com.odoomaster.ticketing.iam.internal.UserRepository;
 import com.odoomaster.ticketing.iam.internal.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;

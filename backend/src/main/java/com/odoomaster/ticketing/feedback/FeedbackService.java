@@ -6,6 +6,8 @@ import com.odoomaster.ticketing.feedback.FeedbackDtos.*;
 import com.odoomaster.ticketing.iam.UserDirectory;
 import com.odoomaster.ticketing.iam.UserDirectory.UserRef;
 import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.feedback.internal.Feedback;
+import com.odoomaster.ticketing.feedback.internal.FeedbackRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;

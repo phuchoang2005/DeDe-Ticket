@@ -1,9 +1,9 @@
 package com.odoomaster.ticketing.sales.internal;
 
-import com.odoomaster.ticketing.sales.Order;
-import com.odoomaster.ticketing.sales.OrderItemRepository;
-import com.odoomaster.ticketing.sales.OrderRepository;
-import com.odoomaster.ticketing.sales.PaymentRepository;
+import com.odoomaster.ticketing.sales.internal.Order;
+import com.odoomaster.ticketing.sales.internal.OrderItemRepository;
+import com.odoomaster.ticketing.sales.internal.OrderRepository;
+import com.odoomaster.ticketing.sales.internal.PaymentRepository;
 import com.odoomaster.ticketing.shared.event.EventDeletedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

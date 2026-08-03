@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.audit;
 
-import com.odoomaster.ticketing.audit.AuditLog;
-import com.odoomaster.ticketing.audit.AuditLogRepository;
+import com.odoomaster.ticketing.audit.internal.AuditLog;
+import com.odoomaster.ticketing.audit.internal.AuditLogRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

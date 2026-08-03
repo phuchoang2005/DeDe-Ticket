@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.audit;
 
-import com.odoomaster.ticketing.audit.AuditLog;
-import com.odoomaster.ticketing.audit.AuditLogRepository;
+import com.odoomaster.ticketing.audit.internal.AuditLog;
+import com.odoomaster.ticketing.audit.internal.AuditLogRepository;
 import com.odoomaster.ticketing.shared.audit.Auditable;
 import com.odoomaster.ticketing.shared.security.AuthPrincipal;
 import lombok.extern.slf4j.Slf4j;

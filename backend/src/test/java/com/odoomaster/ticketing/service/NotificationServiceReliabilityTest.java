@@ -1,9 +1,9 @@
 package com.odoomaster.ticketing.service;
 import com.odoomaster.ticketing.notification.NotificationService;
 
-import com.odoomaster.ticketing.notification.Notification;
+import com.odoomaster.ticketing.notification.internal.Notification;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.notification.NotificationRepository;
+import com.odoomaster.ticketing.notification.internal.NotificationRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
