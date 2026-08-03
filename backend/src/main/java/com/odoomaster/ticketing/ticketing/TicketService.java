@@ -1,15 +1,15 @@
 package com.odoomaster.ticketing.ticketing;
 
-import com.odoomaster.ticketing.catalog.Event;
-import com.odoomaster.ticketing.catalog.EventSeat;
-import com.odoomaster.ticketing.ticketing.Ticket;
+import com.odoomaster.ticketing.catalog.EventCatalog;
+import com.odoomaster.ticketing.catalog.EventCatalog.EventSummary;
+import com.odoomaster.ticketing.catalog.SeatInventory;
+import com.odoomaster.ticketing.catalog.SeatInventory.SeatDetail;
 import com.odoomaster.ticketing.ticketing.TicketDtos.TicketPage;
 import com.odoomaster.ticketing.ticketing.TicketDtos.TicketPageMeta;
 import com.odoomaster.ticketing.ticketing.TicketDtos.TicketView;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.catalog.EventRepository;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
-import com.odoomaster.ticketing.ticketing.TicketRepository;
+import com.odoomaster.ticketing.ticketing.internal.Ticket;
+import com.odoomaster.ticketing.ticketing.internal.TicketRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -23,19 +23,23 @@ import java.util.Set;
 
 /**
  * Read/cancel service for a user's purchased tickets, including QR ticket detail.
+ *
+ * <p>Event/seat context is read through catalog's {@link EventCatalog}/{@link SeatInventory}, and
+ * cancelling a ticket frees its seat via {@link SeatInventory#releaseSold} — so this module no longer
+ * touches the {@code Event}/{@code EventSeat} entities.
  */
 @Service
 @Transactional(readOnly = true)
 public class TicketService {
 
     private final TicketRepository tickets;
-    private final EventRepository events;
-    private final EventSeatRepository seats;
+    private final EventCatalog eventCatalog;
+    private final SeatInventory seatInventory;
 
-    public TicketService(TicketRepository tickets, EventRepository events, EventSeatRepository seats) {
+    public TicketService(TicketRepository tickets, EventCatalog eventCatalog, SeatInventory seatInventory) {
         this.tickets = tickets;
-        this.events = events;
-        this.seats = seats;
+        this.eventCatalog = eventCatalog;
+        this.seatInventory = seatInventory;
     }
 
     public List<TicketView> listMine(Long userId) {
@@ -48,7 +52,7 @@ public class TicketService {
         int safePage = Math.max(1, page);
         int safeLimit = Math.min(50, Math.max(1, limit));
         PageRequest pr = PageRequest.of(safePage - 1, safeLimit);
-        Page<com.odoomaster.ticketing.ticketing.Ticket> result;
+        Page<Ticket> result;
         if (status == null || status.isBlank() || "all".equalsIgnoreCase(status)) {
             result = tickets.findByUserIdOrderByIssuedAtDesc(userId, pr);
         } else {
@@ -91,28 +95,22 @@ public class TicketService {
         }
         t.setStatus("CANCELLED");
         tickets.save(t);
-        seats.findById(t.getEventSeatId()).ifPresent(s -> {
-            if ("SOLD".equals(s.getStatus())) {
-                s.setStatus("AVAILABLE");
-                s.setLockedBy(null);
-                s.setLockedUntil(null);
-                seats.save(s);
-            }
-        });
+        // Free the seat for resale: catalog transitions it SOLD -> AVAILABLE and evicts the caches.
+        seatInventory.releaseSold(t.getEventId(), List.of(t.getEventSeatId()));
     }
 
     private TicketView view(Ticket t) {
-        Event ev = events.findById(t.getEventId()).orElse(null);
-        EventSeat s = seats.findById(t.getEventSeatId()).orElse(null);
+        EventSummary ev = eventCatalog.find(t.getEventId()).orElse(null);
+        SeatDetail s = seatInventory.findSeats(List.of(t.getEventSeatId())).stream().findFirst().orElse(null);
         return new TicketView(t.getId(), t.getQrCode(), t.getStatus(),
                 t.getEventId(),
-                ev != null ? ev.getTitle() : null,
-                ev != null ? ev.getLocation() : null,
-                ev != null ? ev.getStartTime() : null,
-                s != null ? s.getRowLabel() : null,
-                s != null ? s.getSeatNumber() : null,
-                s != null ? s.getSection() : null,
-                s != null ? s.getPrice() : null,
+                ev != null ? ev.title() : null,
+                ev != null ? ev.location() : null,
+                ev != null ? ev.startTime() : null,
+                s != null ? s.rowLabel() : null,
+                s != null ? s.seatNumber() : null,
+                s != null ? s.section() : null,
+                s != null ? s.price() : null,
                 t.getIssuedAt());
     }
 }

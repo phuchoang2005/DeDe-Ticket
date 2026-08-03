@@ -1,10 +1,10 @@
 package com.odoomaster.ticketing.service;
 
-import com.odoomaster.ticketing.ticketing.Ticket;
+import com.odoomaster.ticketing.ticketing.internal.Ticket;
 import com.odoomaster.ticketing.ticketing.TicketIssuance;
 import com.odoomaster.ticketing.ticketing.TicketIssuance.TicketLine;
 import com.odoomaster.ticketing.ticketing.TicketIssuance.TicketOrder;
-import com.odoomaster.ticketing.ticketing.TicketRepository;
+import com.odoomaster.ticketing.ticketing.internal.TicketRepository;
 import com.odoomaster.ticketing.ticketing.internal.TicketIssuanceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

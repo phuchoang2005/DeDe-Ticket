@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.catalog.internal;
 
-import com.odoomaster.ticketing.catalog.EventSeat;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
+import com.odoomaster.ticketing.catalog.internal.EventSeat;
+import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
 import com.odoomaster.ticketing.catalog.SeatInventory;
 import com.odoomaster.ticketing.shared.exception.AppException;
 import org.springframework.cache.Cache;
@@ -94,6 +94,21 @@ public class SeatInventoryImpl implements SeatInventory {
         List<EventSeat> picked = seats.findByIdIn(seatIds);
         for (EventSeat s : picked) {
             if ("LOCKED".equals(s.getStatus())) {
+                s.setStatus("AVAILABLE");
+                s.setLockedBy(null);
+                s.setLockedUntil(null);
+            }
+        }
+        seats.saveAll(picked);
+        evictEventCaches(eventId);
+    }
+
+    @Override
+    @Transactional
+    public void releaseSold(Long eventId, List<Long> seatIds) {
+        List<EventSeat> picked = seats.findByIdIn(seatIds);
+        for (EventSeat s : picked) {
+            if ("SOLD".equals(s.getStatus())) {
                 s.setStatus("AVAILABLE");
                 s.setLockedBy(null);
                 s.setLockedUntil(null);

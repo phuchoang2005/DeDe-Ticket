@@ -1,6 +1,6 @@
 # Tracking Sheet — Iteration 7
 
-> Date: 2026-07-31 → 2026-08-01 (in progress)
+> Date: 2026-07-31 → 2026-08-03 (in progress)
 > Scope: backend re-architecture from a technically-layered monolith
 > (`controller / service / repository / domain / dto`) into
 > **Spring Modulith** modules sliced by business capability, with
@@ -149,5 +149,65 @@ seat-lock/sell/issue behaviour exactly.
   `refactor(sales): decouple OrderService onto catalog/ticketing APIs`;
   `test(backend): cover new SeatInventory/TicketIssuance/EventCatalog APIs`.
 
-## Sprint 3 — Decouple remaining consumers & cascade — _pending_
+## Sprint 3 — Decouple remaining consumers & cascade ✅
+
+> Date: 2026-08-03
+
+Goal: remove every remaining cross-module repository/entity access from the
+non-hot-path consumers (`AdminEventService`, `AnalyticsService`, `CheckInService`,
+`TicketService`, `FeedbackService`), replace the admin delete's hand-written
+foreign-row cascade with an event-driven one, and lock in the DAG by pushing all
+entities/repositories behind each module's `internal` package.
+
+| # | Change | Status |
+|---|---|---|
+| 1 | Publish the last enabling APIs: `iam/UserDirectory` (`find`/`findByEmail` → `UserRef`), `sales/SalesReporting` (paid revenue total/per-event, `revenueByDay` → `DailyRevenue`, order/payment status counts — the `Object[]`→`LocalDate` mapping moved here from `AnalyticsService`), `ticketing/TicketingReporting` (ticket totals + per-event/status counts); extend `catalog/EventCatalog` (`listForReporting` → `EventStats`, event/seat count aggregates) and `catalog/SeatInventory` (`releaseSold` for the cancel/refund path). Repoint `NotificationDataSeeder` off `UserRepository` onto `UserDirectory` (the Sprint 2 deferral) | ✅ |
+| 2 | `AdminEventService`: revenue now catalog-local `SUM(price)` over `SOLD` `EventSeat`s (`EventSeatRepository.sumSoldPriceForEvent`); DRAFT-revert guard now catalog-local `existsByEventIdAndStatus(id,'SOLD')`; `delete()` publishes `shared/event/EventDeletedEvent` and drops the `Order`/`OrderItem`/`Payment`/`Ticket` repositories. New synchronous `@EventListener` purgers — `sales/internal/SalesEventCleanupListener` (order items → payments → order) and `ticketing/internal/TicketingEventCleanupListener` (check-ins → tickets) — run `Propagation.MANDATORY` inside the delete tx so the cascade stays atomic | ✅ |
+| 3 | `AnalyticsService` rebuilt on `EventCatalog` + `SalesReporting` + `TicketingReporting`; drops `Event`/`EventSeat`/`Order`/`Payment`/`Ticket` repositories. Report output (KPIs, revenue-by-day, leaderboard, funnel, category breakdown, security signals) unchanged | ✅ |
+| 4 | `CheckInService` + `TicketService` onto `EventCatalog.find` / `SeatInventory.findSeats`; `TicketService.cancelMine` frees the seat via `SeatInventory.releaseSold` (SOLD→AVAILABLE + eviction) rather than mutating `EventSeat`. `FeedbackService` onto `EventCatalog` + `UserDirectory`. `CheckInServiceReliabilityTest`/`FeedbackServiceTest` re-pointed at the mocked projections | ✅ |
+| 5 | Push all **18 entities + 18 repositories** from each module's base package into `<module>/internal` (36 git renames; new `feedback/internal`, `audit/internal`); `findTrending` JPQL FQN → `…catalog.internal.EventSeat`; base-package services that used same-package access (`OrderService`, `CheckInService`, `TicketService`, `FeedbackService`) gained explicit `…internal` imports | ✅ |
+| 6 | New/extended tests (+16): `EventDeleteCascadeTest`, `SalesReportingReliabilityTest`, `AnalyticsServiceTest`, `UserDirectoryReliabilityTest`, plus `EventCatalog`/`SeatInventory` extensions | ✅ |
+
+### Impact
+- **Boundaries.** No production module references another module's entity or repository —
+  every cross-module call goes through a published API (`EventCatalog`, `SeatInventory`,
+  `TicketIssuance`, `SalesReporting`, `TicketingReporting`, `UserDirectory`) or the shared
+  `EventDeletedEvent`. Entities/repositories are now physically hidden in `…/internal`.
+- **Cascade decoupled & hardened.** `catalog` deletes an event by publishing `EventDeletedEvent`;
+  `sales`/`ticketing` observe it and purge their own rows. The ticketing purge now also removes
+  **check-ins** before tickets — a correctness refinement, since the old catalog-side cascade
+  deleted only tickets and would have failed the `check_ins.ticket_id → tickets.id` FK when an
+  event had checked-in tickets. Listeners are `MANDATORY`, so they can only run inside the
+  delete transaction — the whole cascade is atomic.
+- **Revenue equivalence.** Admin views take revenue catalog-locally (`Σ SOLD seat price`);
+  analytics takes it from `SalesReporting` (`Σ PAID order total`). Both agree while
+  `totalAmount == Σ seat price` (no fees/discounts) — see the plan's risk note.
+- **Tests.** 706 → 722.
+
+### Verification
+| Check | Result |
+|---|---|
+| `cd backend && mvn test` (JDK 21) | ✅ BUILD SUCCESS — 722 tests, 0 failures, 0 errors |
+| Runtime boot smoke — Docker MySQL + throwaway `redis:7-alpine`, dev profile | ✅ context boots in ~51s with all entities in `…/internal` (Hibernate maps them, repositories wire, Flyway migrates); `GET /v1/health` → `UP` |
+| JPQL FQN after the move | ✅ `GET /v1/events/trending` (runs `findTrending` with `…catalog.internal.EventSeat`) returns events |
+| Analytics on the reporting APIs | ✅ `GET /v1/admin/analytics` → coherent report (revenue 800 000, 3 659 seats, 60 events) composed from `SalesReporting`/`TicketingReporting`/`EventCatalog` |
+| `EventDeletedEvent` cascade | ✅ admin create DRAFT event → `DELETE` returns 204 (both `MANDATORY` listeners run in-tx, no error) → `GET` → 404 |
+| Behaviour / API / schema | unchanged |
+
+### Notes
+- **Redis for admin writes.** `AdminEventService`'s write paths carry `@CacheEvict`, so with the
+  Redis cache manager active they need Redis reachable; the dev compose omits Redis (as in Sprint 2),
+  so the smoke attached a throwaway `redis:7-alpine` to the compose network — a pre-existing
+  environment need, not a Sprint 3 change.
+- **Redundant same-package imports** on the relocated entities/repositories were carried over from
+  the pre-existing codebase convention (repositories already self-imported their entity) and left as-is.
+- **Deferred to Sprint 4:** boundary **enforcement** — `@ApplicationModule(allowedDependencies = …)`
+  per the DAG, `shared` OPEN, and `ApplicationModules.verify()` — plus `Documenter` output and the ADR.
+- Commits: `feat(backend): publish UserDirectory, SalesReporting, TicketingReporting + extend catalog APIs`;
+  `refactor(catalog): decouple AdminEventService + wire EventDeletedEvent cascade`;
+  `refactor(analytics): decouple AnalyticsService onto reporting APIs`;
+  `refactor(ticketing,feedback): decouple CheckIn/Ticket/Feedback onto module APIs`;
+  `refactor(backend): push module entities & repositories into internal`;
+  `test(backend): cover Sprint 3 APIs & the EventDeletedEvent cascade`.
+
 ## Sprint 4 — Enforce boundaries & documentation — _pending_

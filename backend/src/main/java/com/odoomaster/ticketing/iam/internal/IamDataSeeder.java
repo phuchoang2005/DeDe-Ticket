@@ -1,9 +1,9 @@
 package com.odoomaster.ticketing.iam.internal;
 
-import com.odoomaster.ticketing.iam.Role;
-import com.odoomaster.ticketing.iam.RoleRepository;
-import com.odoomaster.ticketing.iam.User;
-import com.odoomaster.ticketing.iam.UserRepository;
+import com.odoomaster.ticketing.iam.internal.Role;
+import com.odoomaster.ticketing.iam.internal.RoleRepository;
+import com.odoomaster.ticketing.iam.internal.User;
+import com.odoomaster.ticketing.iam.internal.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

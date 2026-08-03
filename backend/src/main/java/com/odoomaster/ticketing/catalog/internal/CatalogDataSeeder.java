@@ -1,14 +1,14 @@
 package com.odoomaster.ticketing.catalog.internal;
 
-import com.odoomaster.ticketing.catalog.Event;
-import com.odoomaster.ticketing.catalog.EventCategory;
-import com.odoomaster.ticketing.catalog.EventCategoryRepository;
-import com.odoomaster.ticketing.catalog.EventRepository;
-import com.odoomaster.ticketing.catalog.EventSeat;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
+import com.odoomaster.ticketing.catalog.internal.Event;
+import com.odoomaster.ticketing.catalog.internal.EventCategory;
+import com.odoomaster.ticketing.catalog.internal.EventCategoryRepository;
+import com.odoomaster.ticketing.catalog.internal.EventRepository;
+import com.odoomaster.ticketing.catalog.internal.EventSeat;
+import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
 import com.odoomaster.ticketing.catalog.SeatCatalogService;
-import com.odoomaster.ticketing.catalog.TicketType;
-import com.odoomaster.ticketing.catalog.TicketTypeRepository;
+import com.odoomaster.ticketing.catalog.internal.TicketType;
+import com.odoomaster.ticketing.catalog.internal.TicketTypeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

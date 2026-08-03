@@ -1,19 +1,16 @@
 package com.odoomaster.ticketing.analytics;
 
-import com.odoomaster.ticketing.catalog.Event;
-import com.odoomaster.ticketing.catalog.Event;
 import com.odoomaster.ticketing.analytics.AnalyticsDtos.*;
-import com.odoomaster.ticketing.catalog.EventRepository;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
-import com.odoomaster.ticketing.sales.OrderRepository;
-import com.odoomaster.ticketing.sales.PaymentRepository;
-import com.odoomaster.ticketing.ticketing.TicketRepository;
+import com.odoomaster.ticketing.catalog.EventCatalog;
+import com.odoomaster.ticketing.catalog.EventCatalog.EventStats;
+import com.odoomaster.ticketing.sales.SalesReporting;
+import com.odoomaster.ticketing.sales.SalesReporting.DailyRevenue;
+import com.odoomaster.ticketing.ticketing.TicketingReporting;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -23,25 +20,24 @@ import java.util.*;
 /**
  * Builds the admin analytics report — revenue trends, payment funnel, category breakdown,
  * top events, and operational/security signals over a configurable window.
+ *
+ * <p>Reads exclusively through published module APIs — catalog's {@link EventCatalog} (events + seat
+ * aggregates), sales' {@link SalesReporting} (revenue, order/payment counts), and ticketing's
+ * {@link TicketingReporting} (ticket counts) — so this module never touches another module's entities
+ * or repositories.
  */
 @Service
 @Transactional(readOnly = true)
 public class AnalyticsService {
 
-    private final EventRepository events;
-    private final EventSeatRepository seats;
-    private final OrderRepository orders;
-    private final PaymentRepository payments;
-    private final TicketRepository tickets;
+    private final EventCatalog events;
+    private final SalesReporting sales;
+    private final TicketingReporting ticketing;
 
-    public AnalyticsService(EventRepository events, EventSeatRepository seats,
-                            OrderRepository orders, PaymentRepository payments,
-                            TicketRepository tickets) {
+    public AnalyticsService(EventCatalog events, SalesReporting sales, TicketingReporting ticketing) {
         this.events = events;
-        this.seats = seats;
-        this.orders = orders;
-        this.payments = payments;
-        this.tickets = tickets;
+        this.sales = sales;
+        this.ticketing = ticketing;
     }
 
     public AnalyticsReport report(int days) {
@@ -57,14 +53,14 @@ public class AnalyticsService {
     }
 
     private List<CategoryBreakdownRow> categoryBreakdown() {
-        List<Event> all = events.findAllForAdmin();
+        List<EventStats> all = events.listForReporting();
         Map<String, long[]> buckets = new LinkedHashMap<>();
         Map<String, BigDecimal> rev = new HashMap<>();
-        for (Event e : all) {
-            Set<String> names = e.getCategoryNames();
+        for (EventStats e : all) {
+            Set<String> names = e.categoryNames();
             if (names.isEmpty()) names = Set.of("Khác");
-            long sold = tickets.countByEventId(e.getId());
-            BigDecimal r = orders.sumPaidRevenueForEvent(e.getId());
+            long sold = ticketing.countTicketsForEvent(e.id());
+            BigDecimal r = sales.paidRevenueForEvent(e.id());
             for (String cat : names) {
                 buckets.computeIfAbsent(cat, k -> new long[]{0L, 0L});
                 buckets.get(cat)[0] += 1;
@@ -80,11 +76,11 @@ public class AnalyticsService {
     }
 
     private List<SecuritySignal> securitySignals() {
-        long paymentFailed = payments.countByStatus("FAILED");
-        long ordersExpired = orders.countByStatus("EXPIRED");
-        long ordersCancelled = orders.countByStatus("CANCELLED");
-        long refundPending = orders.countByStatus("REFUND_PENDING");
-        long ticketsCancelled = tickets.countByStatus("CANCELLED");
+        long paymentFailed = sales.countPaymentsByStatus("FAILED");
+        long ordersExpired = sales.countOrdersByStatus("EXPIRED");
+        long ordersCancelled = sales.countOrdersByStatus("CANCELLED");
+        long refundPending = sales.countOrdersByStatus("REFUND_PENDING");
+        long ticketsCancelled = ticketing.countTicketsByStatus("CANCELLED");
         return List.of(
                 new SecuritySignal("PAYMENT_FAILED", "Thanh toán thất bại", paymentFailed,
                         paymentFailed > 0 ? "warn" : "ok"),
@@ -99,22 +95,22 @@ public class AnalyticsService {
     }
 
     private KpiSummary kpis() {
-        BigDecimal revenue = orders.sumPaidRevenue();
-        long ticketsSold = tickets.count();
-        long totalSeats = seats.countAll();
-        long soldSeats = seats.countAllSold();
+        BigDecimal revenue = sales.totalPaidRevenue();
+        long ticketsSold = ticketing.totalTickets();
+        long totalSeats = events.countAllSeats();
+        long soldSeats = events.countSoldSeats();
         double fillRate = totalSeats == 0 ? 0 : (double) soldSeats / totalSeats;
 
-        long success = payments.countByStatus("SUCCEEDED");
-        long failed = payments.countByStatus("FAILED");
+        long success = sales.countPaymentsByStatus("SUCCEEDED");
+        long failed = sales.countPaymentsByStatus("FAILED");
         long paymentTotal = success + failed;
         double successRate = paymentTotal == 0 ? 1.0 : (double) success / paymentTotal;
 
-        long checkin = tickets.countByStatus("USED");
+        long checkin = ticketing.countTicketsByStatus("USED");
         double checkinRate = ticketsSold == 0 ? 0 : (double) checkin / ticketsSold;
 
-        long totalEvents = events.count();
-        long published = events.findAllByStatusOrderByStartTimeAsc("PUBLISHED").size();
+        long totalEvents = events.countEvents();
+        long published = events.countEventsByStatus("PUBLISHED");
 
         return new KpiSummary(revenue, ticketsSold, totalSeats,
                 round(fillRate, 4), round(successRate, 4),
@@ -129,27 +125,23 @@ public class AnalyticsService {
             LocalDate d = startDay.plusDays(i);
             bucket.put(d, new RevenuePoint(d, BigDecimal.ZERO, 0L));
         }
-        List<Object[]> rows = orders.revenueByDay(from);
-        for (Object[] r : rows) {
-            LocalDate d = toLocalDate(r[0]);
-            BigDecimal rev = r[1] == null ? BigDecimal.ZERO : new BigDecimal(r[1].toString());
-            Long cnt = ((Number) r[2]).longValue();
-            bucket.put(d, new RevenuePoint(d, rev, cnt));
+        for (DailyRevenue r : sales.revenueByDay(from)) {
+            bucket.put(r.date(), new RevenuePoint(r.date(), r.revenue(), r.orderCount()));
         }
         return new ArrayList<>(bucket.values());
     }
 
     private List<EventLeaderboardRow> topEvents(int limit) {
-        List<Event> all = events.findAllForAdmin();
+        List<EventStats> all = events.listForReporting();
         List<EventLeaderboardRow> rows = new ArrayList<>();
-        for (Event e : all) {
-            long sold = tickets.countByEventId(e.getId());
-            BigDecimal rev = orders.sumPaidRevenueForEvent(e.getId());
-            long used = tickets.countByEventIdAndStatus(e.getId(), "USED");
+        for (EventStats e : all) {
+            long sold = ticketing.countTicketsForEvent(e.id());
+            BigDecimal rev = sales.paidRevenueForEvent(e.id());
+            long used = ticketing.countTicketsForEventByStatus(e.id(), "USED");
             double rate = sold == 0 ? 0 : (double) used / sold;
-            String catLabel = String.join(", ", new TreeSet<>(e.getCategoryNames()));
+            String catLabel = String.join(", ", new TreeSet<>(e.categoryNames()));
             rows.add(new EventLeaderboardRow(
-                    e.getId(), e.getTitle(), catLabel, e.getStatus(),
+                    e.id(), e.title(), catLabel, e.status(),
                     sold, rev, round(rate, 4)));
         }
         rows.sort(Comparator.comparing(EventLeaderboardRow::revenue).reversed());
@@ -158,18 +150,11 @@ public class AnalyticsService {
 
     private PaymentFunnel paymentFunnel() {
         return new PaymentFunnel(
-                payments.countByStatus("SUCCEEDED"),
-                payments.countByStatus("PENDING"),
-                payments.countByStatus("FAILED"),
-                orders.countByStatus("REFUND_PENDING"),
-                orders.countByStatus("REFUNDED"));
-    }
-
-    private static LocalDate toLocalDate(Object value) {
-        if (value instanceof LocalDate ld) return ld;
-        if (value instanceof Date d) return d.toLocalDate();
-        if (value instanceof java.util.Date d) return d.toInstant().atZone(ZoneOffset.UTC).toLocalDate();
-        return LocalDate.parse(value.toString());
+                sales.countPaymentsByStatus("SUCCEEDED"),
+                sales.countPaymentsByStatus("PENDING"),
+                sales.countPaymentsByStatus("FAILED"),
+                sales.countOrdersByStatus("REFUND_PENDING"),
+                sales.countOrdersByStatus("REFUNDED"));
     }
 
     private static double round(double v, int scale) {

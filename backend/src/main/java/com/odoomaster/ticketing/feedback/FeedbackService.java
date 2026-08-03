@@ -1,13 +1,13 @@
 package com.odoomaster.ticketing.feedback;
 
-import com.odoomaster.ticketing.catalog.Event;
-import com.odoomaster.ticketing.feedback.Feedback;
-import com.odoomaster.ticketing.iam.User;
+import com.odoomaster.ticketing.catalog.EventCatalog;
+import com.odoomaster.ticketing.catalog.EventCatalog.EventSummary;
 import com.odoomaster.ticketing.feedback.FeedbackDtos.*;
+import com.odoomaster.ticketing.iam.UserDirectory;
+import com.odoomaster.ticketing.iam.UserDirectory.UserRef;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.catalog.EventRepository;
-import com.odoomaster.ticketing.feedback.FeedbackRepository;
-import com.odoomaster.ticketing.iam.UserRepository;
+import com.odoomaster.ticketing.feedback.internal.Feedback;
+import com.odoomaster.ticketing.feedback.internal.FeedbackRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,10 @@ import java.util.Set;
 
 /**
  * Customer feedback service: submission by users and listing/triage (status + admin notes) by staff.
+ *
+ * <p>User and event context on a feedback view is resolved through iam's {@link UserDirectory} and
+ * catalog's {@link EventCatalog}, so this module no longer touches the {@code User}/{@code Event}
+ * entities or their repositories.
  */
 @Service
 public class FeedbackService {
@@ -29,10 +33,10 @@ public class FeedbackService {
     private static final Set<String> VALID_STATUSES = Set.of("NEW", "READ", "RESOLVED");
 
     private final FeedbackRepository feedbacks;
-    private final UserRepository users;
-    private final EventRepository events;
+    private final UserDirectory users;
+    private final EventCatalog events;
 
-    public FeedbackService(FeedbackRepository feedbacks, UserRepository users, EventRepository events) {
+    public FeedbackService(FeedbackRepository feedbacks, UserDirectory users, EventCatalog events) {
         this.feedbacks = feedbacks;
         this.users = users;
         this.events = events;
@@ -65,8 +69,8 @@ public class FeedbackService {
                 .build();
         feedbacks.save(fb);
 
-        User user = users.findById(userId).orElse(null);
-        Event event = req.eventId() != null ? events.findById(req.eventId()).orElse(null) : null;
+        UserRef user = users.find(userId).orElse(null);
+        EventSummary event = req.eventId() != null ? events.find(req.eventId()).orElse(null) : null;
         return toView(fb, user, event);
     }
 
@@ -114,18 +118,18 @@ public class FeedbackService {
     }
 
     private FeedbackView toView(Feedback fb) {
-        User user = users.findById(fb.getUserId()).orElse(null);
-        Event event = fb.getEventId() != null ? events.findById(fb.getEventId()).orElse(null) : null;
+        UserRef user = users.find(fb.getUserId()).orElse(null);
+        EventSummary event = fb.getEventId() != null ? events.find(fb.getEventId()).orElse(null) : null;
         return toView(fb, user, event);
     }
 
-    private FeedbackView toView(Feedback fb, User user, Event event) {
+    private FeedbackView toView(Feedback fb, UserRef user, EventSummary event) {
         return new FeedbackView(
                 fb.getId(),
                 fb.getUserId(),
-                user != null ? user.getEmail() : null,
+                user != null ? user.email() : null,
                 fb.getEventId(),
-                event != null ? event.getTitle() : null,
+                event != null ? event.title() : null,
                 fb.getCategory(),
                 fb.getSubject(),
                 fb.getBody(),

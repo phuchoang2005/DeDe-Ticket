@@ -1,9 +1,10 @@
 package com.odoomaster.ticketing.service;
 
-import com.odoomaster.ticketing.catalog.Event;
+import com.odoomaster.ticketing.catalog.internal.Event;
 import com.odoomaster.ticketing.catalog.EventCatalog;
 import com.odoomaster.ticketing.catalog.EventCatalog.EventSummary;
-import com.odoomaster.ticketing.catalog.EventRepository;
+import com.odoomaster.ticketing.catalog.internal.EventRepository;
+import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
 import com.odoomaster.ticketing.catalog.internal.EventCatalogImpl;
 import com.odoomaster.ticketing.shared.exception.AppException;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,12 +32,13 @@ import static org.mockito.Mockito.when;
 class EventCatalogReliabilityTest {
 
     @Mock EventRepository events;
+    @Mock EventSeatRepository seats;
 
     EventCatalog catalog;
 
     @BeforeEach
     void setUp() {
-        catalog = new EventCatalogImpl(events);
+        catalog = new EventCatalogImpl(events, seats);
     }
 
     @Test
@@ -84,6 +87,31 @@ class EventCatalogReliabilityTest {
         when(events.findById(9L)).thenReturn(Optional.empty());
 
         assertThat(catalog.find(9L)).isEmpty();
+    }
+
+    @Test
+    void listForReporting_mapsEventsToStatsProjection() {
+        when(events.findAllForAdmin()).thenReturn(List.of(event("PUBLISHED")));
+
+        assertThat(catalog.listForReporting()).singleElement().satisfies(s -> {
+            assertThat(s.id()).isEqualTo(1L);
+            assertThat(s.title()).isEqualTo("Concert");
+            assertThat(s.status()).isEqualTo("PUBLISHED");
+            assertThat(s.categoryNames()).isEmpty();
+        });
+    }
+
+    @Test
+    void countAggregates_delegateToRepositories() {
+        when(events.count()).thenReturn(60L);
+        when(events.countByStatus("PUBLISHED")).thenReturn(58L);
+        when(seats.countAll()).thenReturn(3659L);
+        when(seats.countAllSold()).thenReturn(42L);
+
+        assertThat(catalog.countEvents()).isEqualTo(60L);
+        assertThat(catalog.countEventsByStatus("PUBLISHED")).isEqualTo(58L);
+        assertThat(catalog.countAllSeats()).isEqualTo(3659L);
+        assertThat(catalog.countSoldSeats()).isEqualTo(42L);
     }
 
     private static Event event(String status) {

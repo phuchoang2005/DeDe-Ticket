@@ -2,8 +2,8 @@ package com.odoomaster.ticketing.jobs;
 import com.odoomaster.ticketing.catalog.internal.SeatLockSweeperJob;
 
 import com.odoomaster.ticketing.catalog.internal.CacheConfig;
-import com.odoomaster.ticketing.catalog.EventSeat;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
+import com.odoomaster.ticketing.catalog.internal.EventSeat;
+import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

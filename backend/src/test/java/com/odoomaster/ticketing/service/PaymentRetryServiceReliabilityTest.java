@@ -1,8 +1,8 @@
 package com.odoomaster.ticketing.service;
 import com.odoomaster.ticketing.sales.PaymentRetryService;
 
-import com.odoomaster.ticketing.sales.PaymentRetry;
-import com.odoomaster.ticketing.sales.PaymentRetryRepository;
+import com.odoomaster.ticketing.sales.internal.PaymentRetry;
+import com.odoomaster.ticketing.sales.internal.PaymentRetryRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

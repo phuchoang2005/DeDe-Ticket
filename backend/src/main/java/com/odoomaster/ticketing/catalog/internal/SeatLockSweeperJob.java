@@ -1,8 +1,8 @@
 package com.odoomaster.ticketing.catalog.internal;
 
 import com.odoomaster.ticketing.catalog.internal.CacheConfig;
-import com.odoomaster.ticketing.catalog.EventSeat;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
+import com.odoomaster.ticketing.catalog.internal.EventSeat;
+import com.odoomaster.ticketing.catalog.internal.EventSeatRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;

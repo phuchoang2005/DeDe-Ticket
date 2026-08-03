@@ -1,15 +1,15 @@
 package com.odoomaster.ticketing.service;
 import com.odoomaster.ticketing.ticketing.CheckInService;
 
-import com.odoomaster.ticketing.catalog.Event;
-import com.odoomaster.ticketing.catalog.EventSeat;
-import com.odoomaster.ticketing.ticketing.Ticket;
+import com.odoomaster.ticketing.catalog.EventCatalog;
+import com.odoomaster.ticketing.catalog.EventCatalog.EventSummary;
+import com.odoomaster.ticketing.catalog.SeatInventory;
+import com.odoomaster.ticketing.catalog.SeatInventory.SeatDetail;
+import com.odoomaster.ticketing.ticketing.internal.Ticket;
 import com.odoomaster.ticketing.ticketing.TicketDtos.ScanRequest;
 import com.odoomaster.ticketing.shared.exception.AppException;
-import com.odoomaster.ticketing.ticketing.CheckInRepository;
-import com.odoomaster.ticketing.catalog.EventRepository;
-import com.odoomaster.ticketing.catalog.EventSeatRepository;
-import com.odoomaster.ticketing.ticketing.TicketRepository;
+import com.odoomaster.ticketing.ticketing.internal.CheckInRepository;
+import com.odoomaster.ticketing.ticketing.internal.TicketRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,7 +20,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -39,14 +41,14 @@ class CheckInServiceReliabilityTest {
 
     @Mock TicketRepository tickets;
     @Mock CheckInRepository checkIns;
-    @Mock EventRepository events;
-    @Mock EventSeatRepository seats;
+    @Mock EventCatalog eventCatalog;
+    @Mock SeatInventory seatInventory;
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"   ", "\t"})
     void scan_givenBlankQr_rejectsBeforeRepositoryLookup(String qr) {
-        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        CheckInService service = new CheckInService(tickets, checkIns, eventCatalog, seatInventory);
 
         assertThatThrownBy(() -> service.scan(9L, new ScanRequest(qr, "device-1")))
                 .isInstanceOf(AppException.class)
@@ -56,7 +58,7 @@ class CheckInServiceReliabilityTest {
 
     @Test
     void scan_givenUnknownQr_returnsTicketNotFound() {
-        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        CheckInService service = new CheckInService(tickets, checkIns, eventCatalog, seatInventory);
         when(tickets.findByQrCode("missing")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.scan(9L, new ScanRequest("missing", "device-1")))
@@ -67,7 +69,7 @@ class CheckInServiceReliabilityTest {
     @ParameterizedTest
     @ValueSource(strings = {"USED", "CANCELLED", "REFUNDED", "PENDING"})
     void scan_givenNonValidTicketStatus_rejectsUnsafeScan(String status) {
-        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        CheckInService service = new CheckInService(tickets, checkIns, eventCatalog, seatInventory);
         Ticket ticket = ticket(status);
         when(tickets.findByQrCode("qr")).thenReturn(Optional.of(ticket));
         if (!"USED".equals(status)) when(checkIns.existsByTicketId(1L)).thenReturn(false);
@@ -79,7 +81,7 @@ class CheckInServiceReliabilityTest {
 
     @Test
     void scan_givenExistingCheckIn_rejectsDuplicateQr() {
-        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        CheckInService service = new CheckInService(tickets, checkIns, eventCatalog, seatInventory);
         when(tickets.findByQrCode("qr")).thenReturn(Optional.of(ticket("VALID")));
         when(checkIns.existsByTicketId(1L)).thenReturn(true);
 
@@ -91,7 +93,7 @@ class CheckInServiceReliabilityTest {
 
     @Test
     void scan_givenUniqueConstraintRace_mapsToAlreadyUsed() {
-        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        CheckInService service = new CheckInService(tickets, checkIns, eventCatalog, seatInventory);
         when(tickets.findByQrCode("qr")).thenReturn(Optional.of(ticket("VALID")));
         when(checkIns.existsByTicketId(1L)).thenReturn(false);
         when(checkIns.save(any())).thenThrow(new DataIntegrityViolationException("duplicate"));
@@ -104,13 +106,13 @@ class CheckInServiceReliabilityTest {
 
     @Test
     void scan_givenValidTicket_marksUsedAndReturnsSeatContext() {
-        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        CheckInService service = new CheckInService(tickets, checkIns, eventCatalog, seatInventory);
         Ticket ticket = ticket("VALID");
         when(tickets.findByQrCode("qr")).thenReturn(Optional.of(ticket));
         when(checkIns.existsByTicketId(1L)).thenReturn(false);
         when(checkIns.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(events.findById(2L)).thenReturn(Optional.of(event()));
-        when(seats.findById(3L)).thenReturn(Optional.of(seat()));
+        when(eventCatalog.find(2L)).thenReturn(Optional.of(eventSummary()));
+        when(seatInventory.findSeats(List.of(3L))).thenReturn(List.of(seatDetail()));
 
         var result = service.scan(9L, new ScanRequest("qr", "gate-a"));
 
@@ -125,7 +127,7 @@ class CheckInServiceReliabilityTest {
 
     @Test
     void scan_concurrentDuplicateAttempts_onlyOnePersistsAndOneConflicts() throws Exception {
-        CheckInService service = new CheckInService(tickets, checkIns, events, seats);
+        CheckInService service = new CheckInService(tickets, checkIns, eventCatalog, seatInventory);
         AtomicBoolean firstSave = new AtomicBoolean(true);
         CountDownLatch bothAtSave = new CountDownLatch(2);
         when(tickets.findByQrCode("qr")).thenReturn(Optional.of(ticket("VALID")));
@@ -136,8 +138,8 @@ class CheckInServiceReliabilityTest {
             if (firstSave.getAndSet(false)) return inv.getArgument(0);
             throw new DataIntegrityViolationException("duplicate");
         });
-        when(events.findById(2L)).thenReturn(Optional.of(event()));
-        when(seats.findById(3L)).thenReturn(Optional.of(seat()));
+        when(eventCatalog.find(2L)).thenReturn(Optional.of(eventSummary()));
+        when(seatInventory.findSeats(List.of(3L))).thenReturn(List.of(seatDetail()));
 
         var pool = Executors.newFixedThreadPool(2);
         var a = pool.submit(() -> service.scan(9L, new ScanRequest("qr", "gate-a")));
@@ -172,23 +174,12 @@ class CheckInServiceReliabilityTest {
         return ticket;
     }
 
-    private static Event event() {
-        Event event = new Event();
-        event.setId(2L);
-        event.setTitle("Gate reliability");
-        event.setStartTime(Instant.now());
-        event.setEndTime(Instant.now().plusSeconds(3600));
-        event.setStatus("PUBLISHED");
-        return event;
+    private static EventSummary eventSummary() {
+        return new EventSummary(2L, "Gate reliability", null,
+                Instant.now(), Instant.now().plusSeconds(3600), "PUBLISHED");
     }
 
-    private static EventSeat seat() {
-        EventSeat seat = new EventSeat();
-        seat.setId(3L);
-        seat.setEventId(2L);
-        seat.setRowLabel("B");
-        seat.setSeatNumber("12");
-        seat.setSection("VIP");
-        return seat;
+    private static SeatDetail seatDetail() {
+        return new SeatDetail(3L, null, "B", "12", "VIP", BigDecimal.TEN, "SOLD");
     }
 }
