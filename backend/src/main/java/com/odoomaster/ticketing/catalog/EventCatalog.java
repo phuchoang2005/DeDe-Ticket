@@ -3,7 +3,9 @@ package com.odoomaster.ticketing.catalog;
 import com.odoomaster.ticketing.shared.exception.AppException;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Published catalog API for reading event information across module boundaries.
@@ -34,8 +36,34 @@ public interface EventCatalog {
     Optional<EventSummary> find(Long eventId);
 
     /**
+     * List every event (newest first) with the fields admin reporting needs: identity, status, and
+     * category names. Lets {@code analytics} build its leaderboard/category breakdown without touching
+     * the {@code Event} entity.
+     *
+     * @return one {@link EventStats} per event
+     */
+    List<EventStats> listForReporting();
+
+    /** Total number of events across all statuses. */
+    long countEvents();
+
+    /** Number of events in the given lifecycle status (e.g. {@code PUBLISHED}). */
+    long countEventsByStatus(String status);
+
+    /** Total number of seats across all events. */
+    long countAllSeats();
+
+    /** Number of {@code SOLD} seats across all events. */
+    long countSoldSeats();
+
+    /**
      * Immutable projection of an event exposed across module boundaries.
      */
     record EventSummary(Long id, String title, String location,
                         Instant startTime, Instant endTime, String status) {}
+
+    /**
+     * Reporting projection of an event: identity, status, and its category names.
+     */
+    record EventStats(Long id, String title, String status, Set<String> categoryNames) {}
 }

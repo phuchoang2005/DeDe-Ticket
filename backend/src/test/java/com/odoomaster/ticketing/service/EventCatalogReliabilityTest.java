@@ -4,6 +4,7 @@ import com.odoomaster.ticketing.catalog.Event;
 import com.odoomaster.ticketing.catalog.EventCatalog;
 import com.odoomaster.ticketing.catalog.EventCatalog.EventSummary;
 import com.odoomaster.ticketing.catalog.EventRepository;
+import com.odoomaster.ticketing.catalog.EventSeatRepository;
 import com.odoomaster.ticketing.catalog.internal.EventCatalogImpl;
 import com.odoomaster.ticketing.shared.exception.AppException;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,12 +31,13 @@ import static org.mockito.Mockito.when;
 class EventCatalogReliabilityTest {
 
     @Mock EventRepository events;
+    @Mock EventSeatRepository seats;
 
     EventCatalog catalog;
 
     @BeforeEach
     void setUp() {
-        catalog = new EventCatalogImpl(events);
+        catalog = new EventCatalogImpl(events, seats);
     }
 
     @Test

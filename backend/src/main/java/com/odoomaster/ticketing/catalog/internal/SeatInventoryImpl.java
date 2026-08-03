@@ -104,6 +104,21 @@ public class SeatInventoryImpl implements SeatInventory {
     }
 
     @Override
+    @Transactional
+    public void releaseSold(Long eventId, List<Long> seatIds) {
+        List<EventSeat> picked = seats.findByIdIn(seatIds);
+        for (EventSeat s : picked) {
+            if ("SOLD".equals(s.getStatus())) {
+                s.setStatus("AVAILABLE");
+                s.setLockedBy(null);
+                s.setLockedUntil(null);
+            }
+        }
+        seats.saveAll(picked);
+        evictEventCaches(eventId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<SeatDetail> findSeats(List<Long> seatIds) {
         return seats.findByIdIn(seatIds).stream().map(SeatInventoryImpl::toDetail).toList();

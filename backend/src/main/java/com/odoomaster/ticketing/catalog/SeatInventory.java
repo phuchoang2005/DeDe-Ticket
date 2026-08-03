@@ -52,6 +52,16 @@ public interface SeatInventory {
     void releaseLocks(Long eventId, List<Long> seatIds);
 
     /**
+     * Release any {@code SOLD} seats among the given ids back to {@code AVAILABLE} (idempotent for
+     * seats in any other status), clearing their lock fields. Used when a ticket is cancelled/refunded
+     * so the freed seat can be resold. Evicts the event caches.
+     *
+     * @param eventId the event whose caches to evict
+     * @param seatIds the seats to release
+     */
+    void releaseSold(Long eventId, List<Long> seatIds);
+
+    /**
      * Look up seat details for rendering (e.g. order line items). Missing ids are simply absent from
      * the result.
      *

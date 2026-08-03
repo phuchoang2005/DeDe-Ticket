@@ -14,6 +14,8 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByStatusOrderByStartTimeAsc(String status);
 
+    long countByStatus(String status);
+
     @Query("SELECT e FROM Event e ORDER BY e.createdAt DESC")
     List<Event> findAllForAdmin();
 
