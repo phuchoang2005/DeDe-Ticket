@@ -3,7 +3,7 @@ package com.odoomaster.ticketing.controller;
 import com.odoomaster.ticketing.domain.Seat;
 import com.odoomaster.ticketing.domain.Section;
 import com.odoomaster.ticketing.domain.Venue;
-import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.shared.exception.AppException;
 import com.odoomaster.ticketing.repository.SeatRepository;
 import com.odoomaster.ticketing.repository.SectionRepository;
 import com.odoomaster.ticketing.repository.VenueRepository;

@@ -1,5 +1,6 @@
 package com.odoomaster.ticketing.security;
 
+import com.odoomaster.ticketing.shared.security.AuthPrincipal;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

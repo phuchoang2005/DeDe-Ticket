@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.controller;
 
 import com.odoomaster.ticketing.dto.OrderDtos.*;
-import com.odoomaster.ticketing.security.CurrentUser;
+import com.odoomaster.ticketing.shared.security.CurrentUser;
 import com.odoomaster.ticketing.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,9 @@
-package com.odoomaster.ticketing.security;
+package com.odoomaster.ticketing.shared.security;
 
 import java.util.Set;
 
 /**
- * The authenticated caller, stored as the security context principal by {@link JwtAuthenticationFilter}.
+ * The authenticated caller, stored as the security context principal by the JWT authentication filter.
  *
  * @param userId the authenticated user's id
  * @param email the user's email

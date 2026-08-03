@@ -1,6 +1,6 @@
-package com.odoomaster.ticketing.web;
+package com.odoomaster.ticketing.shared.web;
 
-import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.shared.exception.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;

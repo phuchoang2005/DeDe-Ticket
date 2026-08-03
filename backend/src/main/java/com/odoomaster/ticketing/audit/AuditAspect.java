@@ -2,7 +2,8 @@ package com.odoomaster.ticketing.audit;
 
 import com.odoomaster.ticketing.domain.AuditLog;
 import com.odoomaster.ticketing.repository.AuditLogRepository;
-import com.odoomaster.ticketing.security.AuthPrincipal;
+import com.odoomaster.ticketing.shared.audit.Auditable;
+import com.odoomaster.ticketing.shared.security.AuthPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -39,7 +40,7 @@ public class AuditAspect {
      * @return the target method's result (returned unchanged)
      * @throws Throwable if the target method throws
      */
-    @Around("@annotation(com.odoomaster.ticketing.audit.Auditable)")
+    @Around("@annotation(com.odoomaster.ticketing.shared.audit.Auditable)")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
         Object result = pjp.proceed();
         try {

@@ -1,11 +1,11 @@
 package com.odoomaster.ticketing.service;
 
-import com.odoomaster.ticketing.audit.Auditable;
+import com.odoomaster.ticketing.shared.audit.Auditable;
 import com.odoomaster.ticketing.config.CacheConfig;
 import com.odoomaster.ticketing.domain.*;
 import com.odoomaster.ticketing.dto.OrderDtos.*;
-import com.odoomaster.ticketing.event.TicketsIssuedEvent;
-import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.shared.event.TicketsIssuedEvent;
+import com.odoomaster.ticketing.shared.exception.AppException;
 import com.odoomaster.ticketing.repository.*;
 import com.odoomaster.ticketing.service.payment.PaymentGateway;
 import com.odoomaster.ticketing.service.payment.PaymentGatewayResolver;

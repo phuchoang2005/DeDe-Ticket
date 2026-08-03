@@ -1,9 +1,9 @@
 package com.odoomaster.ticketing.controller;
 
 import com.odoomaster.ticketing.dto.FeedbackDtos.*;
-import com.odoomaster.ticketing.exception.AppException;
-import com.odoomaster.ticketing.security.AuthPrincipal;
-import com.odoomaster.ticketing.security.CurrentUser;
+import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.security.AuthPrincipal;
+import com.odoomaster.ticketing.shared.security.CurrentUser;
 import com.odoomaster.ticketing.service.FeedbackService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

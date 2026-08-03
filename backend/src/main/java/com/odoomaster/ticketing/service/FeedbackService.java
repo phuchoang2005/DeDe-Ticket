@@ -4,7 +4,7 @@ import com.odoomaster.ticketing.domain.Event;
 import com.odoomaster.ticketing.domain.Feedback;
 import com.odoomaster.ticketing.domain.User;
 import com.odoomaster.ticketing.dto.FeedbackDtos.*;
-import com.odoomaster.ticketing.exception.AppException;
+import com.odoomaster.ticketing.shared.exception.AppException;
 import com.odoomaster.ticketing.repository.EventRepository;
 import com.odoomaster.ticketing.repository.FeedbackRepository;
 import com.odoomaster.ticketing.repository.UserRepository;
