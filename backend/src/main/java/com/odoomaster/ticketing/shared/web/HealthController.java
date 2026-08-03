@@ -1,0 +1,21 @@
+package com.odoomaster.ticketing.shared.web;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Instant;
+import java.util.Map;
+
+/**
+ * REST controller exposing the liveness endpoint {@code /v1/health}.
+ */
+@RestController
+@RequestMapping("/v1")
+public class HealthController {
+
+    @GetMapping("/health")
+    public Map<String, Object> health() {
+        return Map.of("status", "UP", "timestamp", Instant.now().toString());
+    }
+}

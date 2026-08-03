@@ -66,14 +66,14 @@ audit → shared                  (AuditAspect matches @Auditable via AOP — no
 
 Each sprint ends in a **green, shippable state** (`cd backend && mvn test` compiles and passes). Sprints are sequential; the risky ordering hot-path work (Sprint 2) is isolated.
 
-### Sprint 0 — Modulith tooling & shared kernel
+### Sprint 0 — Modulith tooling & shared kernel ✅ _(done — see docs/tracking/tracking-7.md)_
 **Goal:** introduce Spring Modulith and extract the cross-cutting kernel without touching capability logic.
 - Add `spring-modulith-bom` (aligned to Boot 3.2, `1.1.x`) + `spring-modulith-starter-core`; test-scoped `spring-modulith-starter-test`, `spring-modulith-docs`.
 - Create `shared` module (`type = OPEN`): move `exception/`, `web/`, `security/CurrentUser`+`AuthPrincipal`, `audit/Auditable`, and event contracts (`TicketsIssuedEvent`; add `EventDeletedEvent`).
 - Everything else stays layered for now; fix imports.
 **DoD:** compiles; full existing test suite green.
 
-### Sprint 1 — Carve capability modules (structural move)
+### Sprint 1 — Carve capability modules (structural move) ✅ _(done — see docs/tracking/tracking-7.md)_
 **Goal:** physically re-slice remaining code into the 9 modules + `…/internal`, no logic change.
 - Create module + `…/internal` packages; move controllers/services/domain/repos/dtos per the map.
 - `SecurityConfig` + `Jwt*` → `iam/internal`; `CacheConfig` → `catalog/internal`.
