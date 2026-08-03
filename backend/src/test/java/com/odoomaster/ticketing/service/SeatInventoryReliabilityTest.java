@@ -197,6 +197,23 @@ class SeatInventoryReliabilityTest {
     }
 
     @Test
+    void releaseSold_reclaimsSoldSeatsAndLeavesOthersUntouched() {
+        EventSeat sold = seat(10L, "SOLD", BigDecimal.TEN);
+        EventSeat locked = seat(11L, "LOCKED", BigDecimal.TEN);
+        locked.setLockedBy(5L);
+        locked.setLockedUntil(Instant.now().plusSeconds(60));
+        when(seats.findByIdIn(List.of(10L, 11L))).thenReturn(List.of(sold, locked));
+
+        inventory.releaseSold(1L, List.of(10L, 11L));
+
+        assertThat(sold.getStatus()).isEqualTo("AVAILABLE"); // freed for resale on cancel/refund
+        assertThat(sold.getLockedBy()).isNull();
+        assertThat(sold.getLockedUntil()).isNull();
+        assertThat(locked.getStatus()).isEqualTo("LOCKED"); // only SOLD seats are reclaimed here
+        verify(seats).saveAll(List.of(sold, locked));
+    }
+
+    @Test
     void findSeats_returnsDetailsForFoundSeats() {
         EventSeat s = seat(10L, "SOLD", BigDecimal.valueOf(99_000));
         when(seats.findByIdIn(List.of(10L))).thenReturn(List.of(s));
