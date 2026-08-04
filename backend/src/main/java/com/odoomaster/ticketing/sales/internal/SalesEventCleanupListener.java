@@ -4,7 +4,7 @@ import com.odoomaster.ticketing.sales.internal.Order;
 import com.odoomaster.ticketing.sales.internal.OrderItemRepository;
 import com.odoomaster.ticketing.sales.internal.OrderRepository;
 import com.odoomaster.ticketing.sales.internal.PaymentRepository;
-import com.odoomaster.ticketing.shared.event.EventDeletedEvent;
+import com.odoomaster.ticketing.shared.EventDeletedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;

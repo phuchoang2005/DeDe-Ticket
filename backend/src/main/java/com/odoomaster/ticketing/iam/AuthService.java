@@ -3,7 +3,7 @@ package com.odoomaster.ticketing.iam;
 import com.odoomaster.ticketing.iam.internal.Role;
 import com.odoomaster.ticketing.iam.internal.User;
 import com.odoomaster.ticketing.iam.AuthDtos.*;
-import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.AppException;
 import com.odoomaster.ticketing.iam.internal.RoleRepository;
 import com.odoomaster.ticketing.iam.internal.UserRepository;
 import com.odoomaster.ticketing.iam.internal.JwtService;

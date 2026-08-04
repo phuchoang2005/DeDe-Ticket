@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.feedback;
 
 import com.odoomaster.ticketing.feedback.FeedbackDtos.*;
-import com.odoomaster.ticketing.shared.security.CurrentUser;
+import com.odoomaster.ticketing.shared.CurrentUser;
 import com.odoomaster.ticketing.feedback.FeedbackService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

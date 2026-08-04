@@ -1,0 +1,21 @@
+[%autowidth.stretch, cols="h,a"]
+|===
+|Base package
+|`com.odoomaster.ticketing.catalog`
+|Spring components
+|_Controllers_
+
+* `c.o.t.c.AdminCategoryController`
+* `c.o.t.c.AdminEventController`
+* `c.o.t.c.AdminTicketTypeController`
+* `c.o.t.c.AdminVenueController`
+* `c.o.t.c.EventController`
+
+_Services_
+
+* `c.o.t.c.AdminEventService`
+* `c.o.t.c.EventService`
+* `c.o.t.c.SeatCatalogService`
+* `c.o.t.c.EventCatalog` (via `c.o.t.c.internal.EventCatalogImpl`)
+* `c.o.t.c.SeatInventory` (via `c.o.t.c.internal.SeatInventoryImpl`)
+|===

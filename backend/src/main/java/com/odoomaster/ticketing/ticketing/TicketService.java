@@ -7,7 +7,7 @@ import com.odoomaster.ticketing.catalog.SeatInventory.SeatDetail;
 import com.odoomaster.ticketing.ticketing.TicketDtos.TicketPage;
 import com.odoomaster.ticketing.ticketing.TicketDtos.TicketPageMeta;
 import com.odoomaster.ticketing.ticketing.TicketDtos.TicketView;
-import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.AppException;
 import com.odoomaster.ticketing.ticketing.internal.Ticket;
 import com.odoomaster.ticketing.ticketing.internal.TicketRepository;
 import org.springframework.data.domain.Page;

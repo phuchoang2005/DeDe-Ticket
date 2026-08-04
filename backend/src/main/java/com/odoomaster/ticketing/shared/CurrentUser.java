@@ -1,6 +1,5 @@
-package com.odoomaster.ticketing.shared.security;
+package com.odoomaster.ticketing.shared;
 
-import com.odoomaster.ticketing.shared.exception.AppException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

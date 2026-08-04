@@ -1,0 +1,22 @@
+[%autowidth.stretch, cols="h,a"]
+|===
+|Base package
+|`com.odoomaster.ticketing.ticketing`
+|Spring components
+|_Controllers_
+
+* `c.o.t.t.TicketController`
+
+_Services_
+
+* `c.o.t.t.CheckInService`
+* `c.o.t.t.TicketService`
+* `c.o.t.t.TicketIssuance` (via `c.o.t.t.internal.TicketIssuanceImpl`)
+* `c.o.t.t.TicketingReporting` (via `c.o.t.t.internal.TicketingReportingImpl`)
+|Bean references
+|* `c.o.t.c.EventCatalog` (in Catalog)
+* `c.o.t.c.SeatInventory` (in Catalog)
+* `c.o.t.s.CurrentUser` (in Shared Kernel)
+|Events listened to
+|* `c.o.t.s.EventDeletedEvent`
+|===

@@ -1,0 +1,17 @@
+[%autowidth.stretch, cols="h,a"]
+|===
+|Base package
+|`com.odoomaster.ticketing.iam`
+|Spring components
+|_Controllers_
+
+* `c.o.t.i.AuthController`
+* `c.o.t.i.UserController`
+
+_Services_
+
+* `c.o.t.i.AuthService`
+* `c.o.t.i.UserDirectory` (via `c.o.t.i.internal.UserDirectoryImpl`)
+|Bean references
+|* `c.o.t.s.CurrentUser` (in Shared Kernel)
+|===

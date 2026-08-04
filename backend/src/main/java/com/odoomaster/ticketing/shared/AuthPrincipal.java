@@ -1,4 +1,4 @@
-package com.odoomaster.ticketing.shared.security;
+package com.odoomaster.ticketing.shared;
 
 import java.util.Set;
 

@@ -1,0 +1,22 @@
+@startuml
+title Notification
+
+top to bottom direction
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary("Application.Application_boundary", "Application", $tags="") {
+  Component(Application.Application.SharedKernel, "Shared Kernel", "Module", "", $tags="")
+  Component(Application.Application.Notification, "Notification", "Module", "", $tags="")
+  Component(Application.Application.IAM, "IAM", "Module", "", $tags="")
+}
+
+Rel_D(Application.Application.Notification, Application.Application.SharedKernel, "listens to", $tags="")
+Rel_D(Application.Application.Notification, Application.Application.SharedKernel, "uses", $tags="")
+Rel_D(Application.Application.Notification, Application.Application.IAM, "uses", $tags="")
+Rel_D(Application.Application.IAM, Application.Application.SharedKernel, "uses", $tags="")
+
+SHOW_LEGEND(true)
+@enduml

@@ -1,7 +1,7 @@
 package com.odoomaster.ticketing.catalog;
 
 import com.odoomaster.ticketing.catalog.internal.TicketType;
-import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.AppException;
 import com.odoomaster.ticketing.catalog.internal.EventRepository;
 import com.odoomaster.ticketing.catalog.internal.TicketTypeRepository;
 import jakarta.validation.constraints.NotBlank;

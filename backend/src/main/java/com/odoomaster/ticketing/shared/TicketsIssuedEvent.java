@@ -1,4 +1,4 @@
-package com.odoomaster.ticketing.shared.event;
+package com.odoomaster.ticketing.shared;
 
 /**
  * Domain event published once an order is paid and its tickets are issued.

@@ -1,0 +1,16 @@
+@startuml
+title Shared Kernel
+
+top to bottom direction
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary("Application.Application_boundary", "Application", $tags="") {
+  Component(Application.Application.SharedKernel, "Shared Kernel", "Module", "", $tags="")
+}
+
+
+SHOW_LEGEND(true)
+@enduml

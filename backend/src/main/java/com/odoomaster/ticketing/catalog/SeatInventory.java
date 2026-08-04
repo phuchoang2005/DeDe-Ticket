@@ -1,6 +1,6 @@
 package com.odoomaster.ticketing.catalog;
 
-import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.AppException;
 
 import java.math.BigDecimal;
 import java.util.List;

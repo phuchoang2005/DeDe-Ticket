@@ -1,6 +1,6 @@
 package com.odoomaster.ticketing.notification;
 
-import com.odoomaster.ticketing.shared.event.TicketsIssuedEvent;
+import com.odoomaster.ticketing.shared.TicketsIssuedEvent;
 import com.odoomaster.ticketing.notification.NotificationService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

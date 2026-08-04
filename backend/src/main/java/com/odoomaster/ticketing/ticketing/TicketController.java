@@ -4,7 +4,7 @@ import com.odoomaster.ticketing.ticketing.TicketDtos.ScanRequest;
 import com.odoomaster.ticketing.ticketing.TicketDtos.ScanResult;
 import com.odoomaster.ticketing.ticketing.TicketDtos.TicketPage;
 import com.odoomaster.ticketing.ticketing.TicketDtos.TicketView;
-import com.odoomaster.ticketing.shared.security.CurrentUser;
+import com.odoomaster.ticketing.shared.CurrentUser;
 import com.odoomaster.ticketing.ticketing.CheckInService;
 import com.odoomaster.ticketing.ticketing.TicketService;
 import org.springframework.security.access.prepost.PreAuthorize;

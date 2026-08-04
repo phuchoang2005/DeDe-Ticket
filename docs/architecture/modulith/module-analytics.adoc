@@ -1,0 +1,17 @@
+[%autowidth.stretch, cols="h,a"]
+|===
+|Base package
+|`com.odoomaster.ticketing.analytics`
+|Spring components
+|_Controllers_
+
+* `c.o.t.a.AnalyticsController`
+
+_Services_
+
+* `c.o.t.a.AnalyticsService`
+|Bean references
+|* `c.o.t.c.EventCatalog` (in Catalog)
+* `c.o.t.s.SalesReporting` (in Sales)
+* `c.o.t.t.TicketingReporting` (in Ticketing)
+|===

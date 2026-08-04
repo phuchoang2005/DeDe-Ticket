@@ -1,4 +1,4 @@
-package com.odoomaster.ticketing.shared.exception;
+package com.odoomaster.ticketing.shared;
 
 import org.springframework.http.HttpStatus;
 

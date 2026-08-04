@@ -1,6 +1,6 @@
 package com.odoomaster.ticketing.sales;
 
-import com.odoomaster.ticketing.shared.audit.Auditable;
+import com.odoomaster.ticketing.shared.Auditable;
 import com.odoomaster.ticketing.catalog.EventCatalog;
 import com.odoomaster.ticketing.catalog.EventCatalog.EventSummary;
 import com.odoomaster.ticketing.catalog.SeatInventory;
@@ -15,8 +15,8 @@ import com.odoomaster.ticketing.sales.internal.Payment;
 import com.odoomaster.ticketing.sales.internal.OrderRepository;
 import com.odoomaster.ticketing.sales.internal.OrderItemRepository;
 import com.odoomaster.ticketing.sales.internal.PaymentRepository;
-import com.odoomaster.ticketing.shared.event.TicketsIssuedEvent;
-import com.odoomaster.ticketing.shared.exception.AppException;
+import com.odoomaster.ticketing.shared.TicketsIssuedEvent;
+import com.odoomaster.ticketing.shared.AppException;
 import com.odoomaster.ticketing.sales.payment.PaymentGateway;
 import com.odoomaster.ticketing.sales.payment.PaymentGatewayResolver;
 import com.odoomaster.ticketing.sales.payment.PaymentRequest;

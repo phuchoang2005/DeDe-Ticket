@@ -1,4 +1,4 @@
-package com.odoomaster.ticketing.shared.audit;
+package com.odoomaster.ticketing.shared;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

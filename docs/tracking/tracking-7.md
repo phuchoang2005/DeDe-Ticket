@@ -1,6 +1,6 @@
 # Tracking Sheet — Iteration 7
 
-> Date: 2026-07-31 → 2026-08-03 (in progress)
+> Date: 2026-07-31 → 2026-08-03
 > Scope: backend re-architecture from a technically-layered monolith
 > (`controller / service / repository / domain / dto`) into
 > **Spring Modulith** modules sliced by business capability, with
@@ -210,4 +210,60 @@ entities/repositories behind each module's `internal` package.
   `refactor(backend): push module entities & repositories into internal`;
   `test(backend): cover Sprint 3 APIs & the EventDeletedEvent cascade`.
 
-## Sprint 4 — Enforce boundaries & documentation — _pending_
+## Sprint 4 — Enforce boundaries & documentation ✅
+
+> Date: 2026-08-03
+
+Goal: turn on Modulith boundary **verification** and produce the module
+documentation + ADR. No capability logic changes.
+
+| # | Change | Status |
+|---|---|---|
+| 1 | Declare `@ApplicationModule(allowedDependencies = …)` in a `package-info.java` for all **8 capability modules** per the agreed DAG (`catalog→shared`; `ticketing→catalog`; `sales→catalog,ticketing`; `feedback→catalog,iam`; `analytics→catalog,sales,ticketing`; `notification→iam`; `iam→shared`; `audit→shared`) | ✅ |
+| 2 | Add `ModularityTests` → `ApplicationModules.of(Application.class).verify()`: pure static classpath analysis (no Spring context, no datasource), so it runs in a plain `mvn test` and **fails the build** on any cycle or any cross-module dependency not in `allowedDependencies` | ✅ |
+| 3 | **Flatten the `shared` kernel** into its base package. `verify()` proved the Sprint 0 assumption wrong: Modulith 1.1 has **no** open modules (`type = Type.OPEN` only exists from 1.2) and `ApplicationModule.OPEN_TOKEN` only frees a module's *outgoing* deps — it does not expose nested-package types. So the sub-package kernel (`shared/exception`, `/web`, `/security`, `/audit`, `/event`) exposed an **empty** API and every reference to it read as an internal-access violation. Moved the 10 kernel types up into `com.odoomaster.ticketing.shared` (git renames, history preserved), rewrote ~35 consumer imports; consumers now allow a plain `"shared"` | ✅ |
+| 4 | Add `DocumentationTests` → `Documenter`: system-wide C4 `components.puml`, one `module-<name>.puml` per module, one `module-<name>.adoc` canvas per module. Writes to Documenter's default `target/` folder so a plain `mvn test` never dirties the repo; the snapshot is committed under `docs/architecture/modulith/` with a README (mermaid DAG, file guide, regeneration steps) | ✅ |
+| 5 | Docs: `adr/0011-spring-modulith.md` (+ ADR index row); rewrite `architecture/system-architecture.md` §3 to the capability-module view + DAG + module table; refresh the **Architecture** section of `CLAUDE.md` (module structure, flat kernel, `verify()` enforcement, updated cross-cutting package locations); this tracking entry | ✅ |
+
+### Impact
+- **Enforcement is live.** Module boundaries are no longer a convention — `ModularityTests.verify()`
+  fails the build on any cycle or any cross-module dependency not declared in `allowedDependencies`.
+  The full DAG (9 modules + kernel) is now machine-checked on every `mvn test`.
+- **Kernel correction (deviation from Sprint 0/3).** The "OPEN `shared` module" recorded in earlier
+  sprints never actually exposed its types — `OPEN_TOKEN` governs *outgoing* deps and 1.1 has no open
+  modules. Flattening the kernel into a single package is the Modulith 1.1 idiom and makes it genuinely
+  freely-usable (`"shared"`, no named interface). Rationale + rejected alternatives in
+  [`adr/0011`](../adr/0011-spring-modulith.md).
+- **Docs regenerate from code.** C4 diagrams + per-module canvases come from the live module model, so
+  they cannot silently drift; `docs/architecture/modulith/README.md` documents regeneration.
+- **No behaviour change.** Package moves + annotations + two tests + docs only; no logic, schema, or API touched.
+- **Tests.** 722 → 724 (`ModularityTests`, `DocumentationTests`).
+
+### Verification
+| Check | Result |
+|---|---|
+| `cd backend && mvn test` (JDK 21) | ✅ BUILD SUCCESS — 724 tests, 0 failures, 0 errors |
+| `ModularityTests.verify()` | ✅ green — no cycles, no boundary violations across the 9 modules + kernel |
+| `Documenter` regeneration | ✅ `mvn test -Dtest=DocumentationTests` writes `components.puml` + 9 `module-*.puml` + 9 `module-*.adoc` |
+| Runtime boot smoke — Docker MySQL + backend, dev profile | ✅ context boots (Flyway up-to-date, all `…/internal` entities mapped, filters wired); `GET /v1/health` → `UP`; `GET /v1/events` → 200 seeded events; `GET /v1/events/trending` → 200 (`findTrending` on `catalog.internal.EventSeat`) — the flattened `shared` kernel (HealthController/TraceIdFilter/GlobalExceptionHandler/SecurityConfig) resolves at runtime |
+| Behaviour / API / schema | unchanged |
+
+### Notes
+- **Deviation from the plan.** The plan (and Sprints 0/3) assumed `shared` was an OPEN module via
+  `OPEN_TOKEN`. Turning on `verify()` this sprint surfaced that this exposed nothing, so `shared` was
+  **flattened**. Rejected alternatives (documented in ADR-0011): per-facet `@NamedInterface`s — 1.1.12
+  does not merge same-named interfaces across packages, so every consumer would have to enumerate each
+  kernel facet it uses; and upgrading to Modulith 1.2 for real open modules — a *runtime* dependency
+  change targeting Boot 3.3, more risk than a one-time package flatten.
+- Commits: `test(backend): enforce Modulith boundaries via ModularityTests.verify()`;
+  `docs(architecture): generate Modulith module canvas & C4 diagrams`;
+  `docs(tracking): record Sprint 4 boundary enforcement & docs`.
+
+---
+
+## Iteration 7 — done
+
+All four sprints landed green and shippable. The backend is now a Spring Modulith modular monolith
+sliced by business capability, with `…/internal` encapsulation, published module APIs, an event-driven
+delete cascade, and **build-time boundary enforcement** (`ModularityTests.verify()`) — runtime behaviour,
+schema, and API unchanged from the [tracking-6](./tracking-6.md) baseline.

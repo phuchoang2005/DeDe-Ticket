@@ -1,0 +1,15 @@
+[%autowidth.stretch, cols="h,a"]
+|===
+|Base package
+|`com.odoomaster.ticketing.shared`
+|Spring components
+|_Controllers_
+
+* `c.o.t.s.HealthController`
+
+_Others_
+
+* `c.o.t.s.CurrentUser`
+* `c.o.t.s.GlobalExceptionHandler`
+* `c.o.t.s.TraceIdFilter`
+|===
